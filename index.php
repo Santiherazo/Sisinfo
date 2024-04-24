@@ -1,8 +1,25 @@
 <?php
-try {
-	if(!@include_once('app/index.php')) throw new Exception('Lo sentimos, no podemos iniciar.');
-	
-} catch (Exception $ex) {
-	$errorPage = file_get_contents('app/includes/error.html');
-	echo str_replace("{ERROR_MESSAGE}", $ex->getMessage(), $errorPage);
+session_start();
+require_once 'router.php';
+$routes = require_once 'routes.php';
+
+// Establecemos la ruta base
+$basePath = '/Sisinfo/';
+
+$router = new Router($basePath);
+
+// Definimos las rutas públicas
+foreach ($routes['public'] as $route => $handler) {
+    $router->get($route, $handler);
 }
+
+// Definimos las rutas privadas
+$router->setPrivateRoutes($routes['private']);
+
+// Asignamos el manejador de vistas
+$router->setViewHandler(function ($viewName) {
+    include 'views/' . $viewName . '.php';
+});
+
+// Manejar la solicitud
+$router->dispatch();
