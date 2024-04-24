@@ -6,12 +6,11 @@ class Router
     private $basePath;
     private $viewHandler;
     private $privateRoutes = [];
-    private $errorLogFile = 'error.log'; // Nombre del archivo de registro de errores
 
-    public function __construct($basePath = '/')
+    public function __construct()
     {
-        $this->basePath = rtrim($basePath, '/');
         $this->currentPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $this->basePath = dirname($_SERVER['SCRIPT_NAME']);
     }
 
     public function getCurrentPath()
@@ -117,20 +116,18 @@ class Router
     {
         http_response_code(404);
         echo "Error 404: Página no encontrada";
-        $this->logError("Error 404: Página no encontrada. Ruta: " . $this->currentPath);
     }
 
     private function handleError($message)
     {
         http_response_code(500);
         echo "Error 500: $message";
-        $this->logError("Error 500: $message");
-    }
 
-    private function logError($error)
-    {
-        $logMessage = "[" . date('Y-m-d H:i:s') . "] $error" . PHP_EOL;
-        file_put_contents($this->errorLogFile, $logMessage, FILE_APPEND | LOCK_EX);
+        // Si se ha configurado un manejador de vistas, mostrar un mensaje de error
+        if ($this->viewHandler) {
+            // Llamar al manejador de vistas pasando el nombre de la vista de error
+            call_user_func($this->viewHandler, 'error');
+        }
     }
 }
 ?>
