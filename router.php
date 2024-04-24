@@ -6,6 +6,7 @@ class Router
     private $basePath;
     private $viewHandler;
     private $privateRoutes = [];
+    private $errorLogFile = 'error.log'; // Nombre del archivo de registro de errores
 
     public function __construct($basePath = '/')
     {
@@ -20,7 +21,7 @@ class Router
 
     public function get($path, $handler)
     {
-        $this->routes[$this->basePath . $path] = $handler;
+        $this->routes[$path] = $handler;
     }
 
     public function setViewHandler($handler)
@@ -40,8 +41,7 @@ class Router
 
     private function isAuthenticated()
     {
-        // Aquí debes implementar tu lógica de autenticación.
-        // Por ejemplo, verificar si el usuario ha iniciado sesión.
+        // Implementa tu lógica de autenticación aquí
         return isset($_SESSION['user']);
     }
 
@@ -78,7 +78,7 @@ class Router
         // Llamar al manejador de vistas solo si se ha definido
         if ($this->viewHandler) {
             // Obtener el nombre de la vista del controlador y el método
-            $viewName ='/' . $method;
+            $viewName = '/' . $method;
             // Llamar al manejador de vistas pasando el nombre de la vista
             call_user_func($this->viewHandler, $viewName);
         }
@@ -86,11 +86,23 @@ class Router
 
     public function dispatch()
     {
-        if (isset($this->routes[$this->currentPath])) {
-            $handler = $this->routes[$this->currentPath];
+        // Eliminar la base path de la URL actual para obtener la ruta relativa
+        $requestPath = str_replace($this->basePath, '', $this->currentPath);
+
+        if (isset($this->routes[$requestPath])) {
+            $handler = $this->routes[$requestPath];
+
+            // Establecer el título de la página
+            $pageTitle = '';
+            if ($requestPath === '/' || $requestPath === '') {
+                $pageTitle = 'Bienvenido a Sisinfo';
+            } else {
+                $pageTitle = ucfirst(trim($requestPath, '/'));
+            }
+            echo "<script>document.title = '$pageTitle';</script>";
 
             // Verificar si la ruta es privada y el usuario no ha iniciado sesión
-            if ($this->isPrivateRoute($this->currentPath) && !$this->isAuthenticated()) {
+            if ($this->isPrivateRoute($requestPath) && !$this->isAuthenticated()) {
                 header("Location: /login"); // Redirigir a la página de inicio de sesión
                 exit();
             }
@@ -105,18 +117,20 @@ class Router
     {
         http_response_code(404);
         echo "Error 404: Página no encontrada";
+        $this->logError("Error 404: Página no encontrada. Ruta: " . $this->currentPath);
     }
 
     private function handleError($message)
     {
         http_response_code(500);
         echo "Error 500: $message";
+        $this->logError("Error 500: $message");
+    }
 
-        // Si se ha configurado un manejador de vistas, mostrar un mensaje de error
-        if ($this->viewHandler) {
-            // Llamar al manejador de vistas pasando el nombre de la vista de error
-            call_user_func($this->viewHandler, 'error');
-        }
+    private function logError($error)
+    {
+        $logMessage = "[" . date('Y-m-d H:i:s') . "] $error" . PHP_EOL;
+        file_put_contents($this->errorLogFile, $logMessage, FILE_APPEND | LOCK_EX);
     }
 }
 ?>

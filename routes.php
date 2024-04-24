@@ -10,11 +10,11 @@ define('ROUTE_LOGOUT', 'AuthController@logout');
 $publicRoutes = [
     '/' => ROUTE_HOME,
     '/about' => ROUTE_ABOUT,
-    '/login' => ROUTE_LOGIN
+    '/login' => ROUTE_LOGIN,
+    '/dashboard' => ROUTE_DASHBOARD
 ];
 
 $privateRoutes = [
-    '/dashboard' => ROUTE_DASHBOARD,
     '/logout' => ROUTE_LOGOUT
 ];
 
@@ -23,3 +23,4 @@ return [
     'public' => $publicRoutes,
     'private' => $privateRoutes
 ];
+?>
