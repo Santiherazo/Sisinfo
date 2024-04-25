@@ -1,24 +1,13 @@
 <?php
-session_start();
-require_once 'router.php'; // Asegúrate de que la ruta del archivo sea correcta
-$routes = require_once 'routes.php'; // Asegúrate de que la ruta del archivo sea correcta
+# Define CMS access
+define('access', 'index');
 
-
-$router = new Router();
-
-// Definimos las rutas públicas
-foreach ($routes['public'] as $route => $handler) {
-    $router->get($route, $handler);
+try {
+	# Load WebEngine
+	if(!@include_once('app/index.php')) throw new Exception('Could not load WebEngine CMS.');
+	
+} catch (Exception $ex) {
+	ob_clean();
+	$errorPage = file_get_contents('includes/error.html');
+	echo str_replace("{ERROR_MESSAGE}", $ex->getMessage(), $errorPage);
 }
-
-// Definimos las rutas privadas
-$router->setPrivateRoutes($routes['private']);
-
-// Asignamos el manejador de vistas
-$router->setViewHandler(function ($viewName) {
-    include 'views/' . $viewName . '.php';
-});
-
-// Manejar la solicitud
-$router->dispatch();
-?>

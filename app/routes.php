@@ -5,17 +5,19 @@ define('ROUTE_ABOUT', 'AboutController@index');
 define('ROUTE_DASHBOARD', 'DashboardController@index');
 define('ROUTE_LOGIN', 'AuthController@login');
 define('ROUTE_LOGOUT', 'AuthController@logout');
+define('ROUTE_REGISTER', 'AuthController@register');
 
 // Definimos las rutas públicas y privadas
 $publicRoutes = [
     '/' => ROUTE_HOME,
     '/about' => ROUTE_ABOUT,
     '/login' => ROUTE_LOGIN,
-    '/dashboard' => ROUTE_DASHBOARD
+    '/register' => ROUTE_REGISTER,
 ];
 
 $privateRoutes = [
-    '/logout' => ROUTE_LOGOUT
+    '/logout' => ROUTE_LOGOUT,
+    '/dashboard' => ROUTE_DASHBOARD
 ];
 
 // Exportamos las rutas públicas y privadas

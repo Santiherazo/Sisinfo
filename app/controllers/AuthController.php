@@ -16,6 +16,10 @@ class AuthController {
         header("Location: index.php"); // Redirigir al inicio después de cerrar sesión
         exit();
     }
+
+    public function register() {
+        
+    }
 }
 
 // Verificar si se está solicitando el cierre de sesión
