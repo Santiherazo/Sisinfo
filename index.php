@@ -1,9 +1,7 @@
 <?php
-# Define CMS access
 define('access', 'index');
 
 try {
-	# Load WebEngine
 	if(!@include_once('app/index.php')) throw new Exception('Could not load WebEngine CMS.');
 	
 } catch (Exception $ex) {
