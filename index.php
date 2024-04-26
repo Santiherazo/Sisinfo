@@ -2,7 +2,7 @@
 define('access', 'index');
 
 try {
-	if(!@include_once('app/index.php')) throw new Exception('Could not load WebEngine CMS.');
+	if(!@include_once('include/sisinfo')) throw new Exception('Could not load WebEngine CMS.');
 	
 } catch (Exception $ex) {
 	ob_clean();
