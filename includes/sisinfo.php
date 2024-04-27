@@ -1,7 +1,7 @@
 <?php
 
 # Version
-define('__WEBENGINE_VERSION__', '1.0.0');
+define('__WEBSITE_VERSION__', '1.0.0');
 
 # Set Encoding
 @ini_set('default_charset', 'utf-8');
@@ -26,28 +26,16 @@ define('__BASE_URL__', SERVER_PROTOCOL.HTTP_HOST.__RELATIVE_ROOT__); // http(s):
 # Private Paths
 define('__PATH_INCLUDES__', __ROOT_DIR__.'includes/');
 define('__PATH_TEMPLATES__', __ROOT_DIR__.'templates/');
-define('__PATH_LANGUAGES__', __PATH_INCLUDES__ . 'languages/');
 define('__PATH_CLASSES__', __PATH_INCLUDES__.'classes/');
 define('__PATH_FUNCTIONS__', __PATH_INCLUDES__.'functions/');
 define('__PATH_MODULES__', __ROOT_DIR__.'modules/');
 define('__PATH_MODULES_USERCP__', __PATH_MODULES__.'usercp/');
-define('__PATH_EMAILS__', __PATH_INCLUDES__.'emails/');
-define('__PATH_CACHE__', __PATH_INCLUDES__.'cache/');
 define('__PATH_ADMINCP__', __ROOT_DIR__.'admincp/');
-define('__PATH_ADMINCP_INC__', __ROOT_DIR__.'admincp/inc/');
-define('__PATH_ADMINCP_MODULES__', __ROOT_DIR__.'admincp/modules/');
-define('__PATH_NEWS_CACHE__', __PATH_CACHE__.'news/');
-define('__PATH_NEWS_TRANSLATIONS_CACHE__', __PATH_NEWS_CACHE__.'translations/');
-define('__PATH_PLUGINS__', __PATH_INCLUDES__.'plugins/');
 define('__PATH_CONFIGS__', __PATH_INCLUDES__.'config/');
 define('__PATH_MODULE_CONFIGS__', __PATH_CONFIGS__.'modules/');
-define('__PATH_CRON__', __PATH_INCLUDES__.'cron/');
-define('__PATH_LOGS__', __PATH_INCLUDES__.'logs/');
-define('__PATH_GUILD_PROFILES_CACHE__', __PATH_CACHE__.'profiles/guilds/');
-define('__PATH_PLAYER_PROFILES_CACHE__', __PATH_CACHE__.'profiles/players/');
 
 # Public Paths
-define('__PATH_MODULES_RANKINGS__', __BASE_URL__.'rankings/');
+/*define('__PATH_MODULES_RANKINGS__', __BASE_URL__.'rankings/');
 define('__PATH_ADMINCP_HOME__', __BASE_URL__.'admincp/');
 define('__PATH_IMG__', __BASE_URL__.'img/');
 define('__PATH_UPLOAD__PROFILE__',__PATH_IMG__.'uploads/profile');
@@ -56,6 +44,7 @@ define('__PATH_COUNTRY_FLAGS__', __PATH_IMG__.'flags/');
 define('__PATH_API__', __BASE_URL__.'api/');
 define('__PATH_ONLINE_STATUS__', __PATH_IMG__.'online.png');
 define('__PATH_OFFLINE_STATUS__', __PATH_IMG__.'offline.png');
+*/
 
 # Timezone
 //if(!@include_once(__PATH_CONFIGS__ . 'timezone.php')) throw new Exception('Could not load timezone.');
@@ -63,7 +52,7 @@ define('__PATH_OFFLINE_STATUS__', __PATH_IMG__.'offline.png');
 # Load Libraries
 //if(!@include_once(__PATH_CLASSES__ . 'class.database.php')) throw new Exception('Could not load class (database).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.common.php')) throw new Exception('Could not load class (common).');
-if(!@include_once(__PATH_CLASSES__ . 'class.handler.php')) throw new Exception('Ups, algo salió mal');
+if(!@include_once(__PATH_CLASSES__ . 'class.handler.php')) throw new Exception('Ooops!, algo salió mal');
 //if(!@include_once(__PATH_CLASSES__ . 'class.validator.php')) throw new Exception('Could not load class (validator).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.login.php')) throw new Exception('Could not load class (login).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.vote.php')) throw new Exception('Could not load class (vote).');
@@ -84,11 +73,10 @@ if(!@include_once(__PATH_CLASSES__ . 'class.handler.php')) throw new Exception('
 //if(!@include_once(__PATH_CLASSES__ . 'class.upload.php')) throw new Exception('Could not load class (upload).');
 
 # Load Functions
-//if(!@include_once(__PATH_INCLUDES__ . 'functions.php')) throw new Exception('Could not load functions.');
+if(!@include_once(__PATH_INCLUDES__ . 'functions.php')) throw new Exception('Ooops!, algo salió mal');
 
-# Load Configs
-//$config = webengineConfigs();
-
+# Website Configurations
+$config = webesiteConfigs();
 # Check if the website is installed
 /*if($config['webengine_cms_installed'] == false) {
 	header('Location: '.__BASE_URL__.'install/');
@@ -104,5 +92,5 @@ define('__PATH_TEMPLATE_JS__', __PATH_TEMPLATE__ . 'js/');
 define('__PATH_TEMPLATE_FONTS__', __PATH_TEMPLATE__ . 'fonts/');
 
 # Handler Instance
-//$handler = new Handler();
-//$handler->loadPage();
+$handler = new Handler();
+$handler->loadPage();
