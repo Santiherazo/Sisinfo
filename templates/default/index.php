@@ -1,403 +1,39 @@
-<style>
-    /* Importing Google font - Fira Sans */
-@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700&display=swap');
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Fira Sans', sans-serif;
-}
+<?php
+if(!defined('access') or !access) die();
+include('inc/template.functions.php');
+?>
 
-body {
-  background: #1B1B1D;
-}
-
-header {
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  z-index: 1;
-  padding: 20px;
-}
-
-header .navbar {
-  max-width: 1280px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.navbar .menu-links {
-  display: flex;
-  align-items: center;
-  list-style: none;
-  gap: 30px;
-}
-
-.navbar .menu-links li a {
-  color: #fff;
-  font-weight: 500;
-  text-decoration: none;
-  transition: 0.2s ease;
-}
-
-.navbar .menu-links .language-item a {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.navbar .menu-links .language-item span {
-  font-size: 1.3rem;
-}
-
-.navbar .menu-links li a:hover {
-  color: #1dbf73;
-}
-
-.navbar .menu-links .join-btn a {
-  border: 1px solid #fff;
-  padding: 8px 15px;
-  border-radius: 4px;
-}
-
-.navbar .menu-links .join-btn a:hover {
-  color: #fff;
-  border-color: transparent;
-  background: #1dbf73;
-}
-
-.hero-section {
-  height: 100vh;
-  background-image: url("images/hero-img.jpg");
-  background-position: center;
-  background-size: cover;
-  position: relative;
-  display: flex;
-  padding: 0 20px;
-  align-items: center;
-}
-
-.hero-section .content {
-  max-width: 1280px;
-  margin: 0 auto 40px;
-  width: 100%;
-}
-
-.hero-section .content h1 {
-  color: #fff;
-  font-size: 3rem;
-  max-width: 630px;
-  line-height: 65px;
-}
-
-.hero-section .search-form {
-  height: 48px;
-  display: flex;
-  max-width: 630px;
-  margin-top: 30px;
-}
-
-.hero-section .search-form input {
-  height: 100%;
-  width: 100%;
-  border: none;
-  outline: none;
-  padding: 0 15px;
-  font-size: 1rem;
-  border-radius: 4px 0 0 4px;
-}
-
-.hero-section .search-form button {
-  height: 100%;
-  width: 60px;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  background: #1dbf73;
-  color: #fff;
-  border-radius: 0 4px 4px 0;
-  transition: background 0.2s ease;
-}
-
-.hero-section .search-form button:hover {
-  background: #19a463;
-}
-
-.hero-section .popular-tags {
-  display: flex;
-  color: #fff;
-  gap: 25px;
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin-top: 25px;
-}
-
-.hero-section .popular-tags .tags {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  list-style: none;
-}
-
-.hero-section .tags li a {
-  text-decoration: none;
-  color: #fff;
-  border: 1px solid #fff;
-  padding: 4px 12px;
-  border-radius: 50px;
-  transition: 0.2s ease;
-}
-
-.hero-section .tags li a:hover {
-  color: #000;
-  background: #fff;
-}
-
-.navbar #hamburger-btn {
-  color: #fff;
-  cursor: pointer;
-  display: none;
-  font-size: 1.7rem;
-}
-
-.navbar #close-menu-btn {
-  position: absolute;
-  display: none;
-  color: #000;
-  top: 20px;
-  right: 20px;
-  cursor: pointer;
-  font-size: 1.7rem;
-}
-
-@media screen and (max-width: 900px) {
-  header.show-mobile-menu::before {
-    content: "";
-    height: 100%;
-    width: 100%;
-    position: fixed;
-    left: 0;
-    top: 0;
-    backdrop-filter: blur(5px);
-  }
-
-  .navbar .menu-links {
-    height: 100vh;
-    max-width: 300px;
-    width: 100%;
-    background: #fff;
-    position: fixed;
-    left: -300px;
-    top: 0;
-    display: block;
-    padding: 75px 40px 0;
-    transition: left 0.2s ease;
-  }
-
-  header.show-mobile-menu .navbar .menu-links {
-    left: 0;
-  }
-
-  .navbar .menu-links li {
-    margin-bottom: 30px;
-  }
-
-  .navbar .menu-links li a {
-    color: #000;
-    font-size: 1.1rem;
-  }
-
-  .navbar .menu-links .join-btn a {
-    padding: 0;
-  }
-
-  .navbar .menu-links .join-btn a:hover {
-    color: #1dbf73;
-    background: none;
-  }
-
-  .navbar :is(#close-menu-btn, #hamburger-btn) {
-    display: block;
-  }
-
-  .hero-section {
-    background: none;
-  }
-
-  .hero-section .content {
-    margin: 0 auto 80px;
-  }
-
-  .hero-section .content :is(h1, .search-form) {
-    max-width: 100%;
-  }
-
-  .hero-section .content h1 {
-    text-align: center;
-    font-size: 2.5rem;
-    line-height: 55px;
-  }
-
-  .hero-section .search-form {
-    display: block;
-    margin-top: 20px;
-  }
-
-  .hero-section .search-form input {
-    border-radius: 4px;
-  }
-  
-  .hero-section .search-form button {
-    margin-top: 10px;
-    border-radius: 4px;
-    width: 100%;
-  }
-
-  .hero-section .popular-tags {
-    display: none;
-  }
-}
-
-/* Importing Google font - Open Sans */
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
-
-.footer {
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  max-width: 1400px;
-  width: 100%;
-  border-radius: 6px;
-}
-
-.footer .footer-row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 3.5rem;
-  padding: 60px;
-}
-
-.footer-row .footer-col h4 {
-  color: #fff;
-  font-size: 1.2rem;
-  font-weight: 400;
-}
-
-.footer-col .links {
-  margin-top: 20px;
-}
-
-.footer-col .links li {
-  list-style: none;
-  margin-bottom: 10px;
-}
-
-.footer-col .links li a {
-  text-decoration: none;
-  color: #bfbfbf;
-}
-
-.footer-col .links li a:hover {
-  color: #fff;
-}
-
-.footer-col p {
-  margin: 20px 0;
-  color: #bfbfbf;
-  max-width: 300px;
-}
-
-.footer-col form {
-  display: flex;
-  gap: 5px;
-}
-
-.footer-col input {
-  height: 40px;
-  border-radius: 6px;
-  background: none;
-  width: 100%;
-  outline: none;
-  border: 1px solid #7489C6 ;
-  caret-color: #fff;
-  color: #fff;
-  padding-left: 10px;
-}
-
-.footer-col input::placeholder {
-  color: #ccc;
-}
-
- .footer-col form button {
-  background: #fff;
-  outline: none;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: 0.2s ease;
-}
-
-.footer-col form button:hover {
-  background: #cecccc;
-}
-
-.footer-col .icons {
-  display: flex;
-  margin-top: 30px;
-  gap: 30px;
-  cursor: pointer;
-}
-
-.footer-col .icons i {
-  color: #afb6c7;
-}
-
-.footer-col .icons i:hover  {
-  color: #fff;
-}
-
-@media (max-width: 768px) {
-  .footer {
-    position: relative;
-    bottom: 0;
-    left: 0;
-    transform: none;
-    width: 100%;
-    border-radius: 0;
-  }
-
-  .footer .footer-row {
-    padding: 20px;
-    gap: 1rem;
-  }
-
-  .footer-col form {
-    display: block;
-  }
-
-  .footer-col form :where(input, button) {
-    width: 100%;
-  }
-
-  .footer-col form button {
-    margin: 10px 0 0 0;
-  }
-}
-
-</style>
-<head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-  </head>
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<title></title>
+		<meta name="generator" content="WebEngine"/>
+		<meta name="author" content=""/>
+		<meta name="description" content=""/>
+		<meta name="keywords" content=""/>
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="" />
+		<meta property="og:description" content="" />
+		<meta property="og:image" content="" />
+		<meta property="og:url" content="<?php echo __BASE_URL__; ?>" />
+		<meta property="og:site_name" content="" />
+		<link rel="shortcut icon" href=""/>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<link href="https://fonts.googleapis.com/css?family=PT+Sans:400,400i,700" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Cinzel" rel="stylesheet">
+		<link href="<?php echo __PATH_TEMPLATE_CSS__; ?>style.css" rel="stylesheet" media="screen">
+		<link href="<?php echo __PATH_TEMPLATE_CSS__; ?>profiles.css" rel="stylesheet" media="screen">
+		<link href="<?php echo __PATH_TEMPLATE_CSS__; ?>castle-siege.css" rel="stylesheet" media="screen">
+		<link href="<?php echo __PATH_TEMPLATE_CSS__; ?>override.css" rel="stylesheet" media="screen">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+		<script>
+			var baseUrl = '<?php echo __BASE_URL__; ?>';
+		</script>
+	</head>
 <header>
     <nav class="navbar">
-      <a href="#" class="logo">
+      <a href="<?php echo __BASE_URL__; ?>" class="logo">
         <img src="images/logo.svg" alt="Sisinfo">
       </a>
       <ul class="menu-links">
@@ -432,60 +68,10 @@ header .navbar {
     </div>
   </section>
 
-  <section class="footer">
-      <div class="footer-row">
-        <div class="footer-col">
-          <h4>Info</h4>
-          <ul class="links">
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Compressions</a></li>
-            <li><a href="#">Customers</a></li>
-            <li><a href="#">Service</a></li>
-            <li><a href="#">Collection</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4>Explore</h4>
-          <ul class="links">
-            <li><a href="#">Free Designs</a></li>
-            <li><a href="#">Latest Designs</a></li>
-            <li><a href="#">Themes</a></li>
-            <li><a href="#">Popular Designs</a></li>
-            <li><a href="#">Art Skills</a></li>
-            <li><a href="#">New Uploads</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4>Legal</h4>
-          <ul class="links">
-            <li><a href="#">Customer Agreement</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">GDPR</a></li>
-            <li><a href="#">Security</a></li>
-            <li><a href="#">Testimonials</a></li>
-            <li><a href="#">Media Kit</a></li>
-          </ul>
-        </div>
-
-        <div class="footer-col">
-          <h4>Newsletter</h4>
-          <p>
-            Subscribe to our newsletter for a weekly dose
-            of news, updates, helpful tips, and
-            exclusive offers.
-          </p>
-          <form action="#">
-            <input type="text" placeholder="Your email" required>
-            <button type="submit">SUBSCRIBE</button>
-          </form>
-          <div class="icons">
-            <i class="fa-brands fa-facebook-f"></i>
-            <i class="fa-brands fa-twitter"></i>
-            <i class="fa-brands fa-linkedin"></i>
-            <i class="fa-brands fa-github"></i>
-          </div>
-        </div>
-      </div>
-    </section>
+    <footer class="footer">
+        <?php include(__PATH_TEMPLATE_ROOT__ . 'inc/modules/footer.php'); ?>
+    </footer>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	<script src="<?php echo __PATH_TEMPLATE_JS__; ?>main.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</html>
