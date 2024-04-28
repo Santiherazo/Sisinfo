@@ -18,16 +18,6 @@ function webesiteConfigs() {
     return $decodedConfigs;
 }
 
-function loadModuleConfigs() {
-	// Obtener la URL actual sin el nombre de dominio
-$currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-// Dividir la URL en segmentos utilizando el carácter "/"
-$urlSegments = explode('/', trim($currentUrl, '/'));
-
-// El primer segmento será el valor de 'page'
-$page = isset($urlSegments[0]) ? $urlSegments[0] : null;
-
-// El segundo segmento será el valor de 'subpage'
-$subpage = isset($urlSegments[1]) ? $urlSegments[1] : null;
+function updateTitle($title) {
+    echo $title;
 }

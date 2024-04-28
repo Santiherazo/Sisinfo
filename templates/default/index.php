@@ -7,7 +7,7 @@ include('inc/template.functions.php');
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title></title>
+    <title><?php echo $title ?></title>
     <meta name="generator" content="WebEngine"/>
     <meta name="author" content=""/>
     <meta name="description" content=""/>
@@ -72,20 +72,7 @@ include('inc/template.functions.php');
 
 
 
-<?php 
-    $currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    
-    $urlSegments = explode('/', trim($currentUrl, '/'));
-    echo '<pre>';
-    var_dump($urlSegments);
-    echo '</pre>';
-    // El primer segmento será el valor de 'page'
-    $page = isset($urlSegments[0]) ? $urlSegments[0] : null;
-    
-    // El segundo segmento será el valor de 'subpage'
-    $subpage = isset($urlSegments[1]) ? $urlSegments[1] : null;
-
-$handler->loadModule($page, $subpage); ?>
+<?php $handler->loadModuleFromUrl();?>
 
 <footer class="footer">
     <?php include(__PATH_TEMPLATE_ROOT__ . 'inc/modules/footer.php'); ?>

@@ -34,15 +34,37 @@ class Handler {
 		return false;
 	}
     
-	private function loadModule($page, $subpage) {
+	private function loadModuleFromUrl() {
+        $currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $urlSegments = explode('/', trim($currentUrl, '/'));
+        $page = isset($urlSegments[0]) ? $urlSegments[0] : null;
+        $subpage = isset($urlSegments[1]) ? $urlSegments[1] : null;
+        $title = $this->generateTitle($page, $subpage);
+    
+        // Llamar a la función de actualización del título utilizando JavaScript
+        $this->updateTitle($title);
+    
+        // Cargar el módulo después de actualizar el título
+        $this->loadModule($page, $subpage);
+    }
+    
+    private function generateTitle($page, $subpage) {
+        if (!$page) {
+            return "Bienvenido al sitio web";
+        } elseif (!$subpage) {
+            return ucfirst($page);
+        } else {
+            return ucfirst($page) . ' - ' . ucfirst($subpage);
+        }
+    }
+    
+    private function loadModule($page, $subpage) {
         global $config, $lang, $custom, $mconfig, $tSettings;
         try {
             $handler = $this;
             $page = $this->cleanRequest($page);
             $subpage = $this->cleanRequest($subpage);
-
-			echo "<script>alert('".$page."')</script>'";
-
+    
             if (!$subpage) {
                 if ($this->moduleExists($page)) {
                     include(__PATH_MODULES__ . $page . '.php');
@@ -64,7 +86,11 @@ class Handler {
             message('error', $ex->getMessage());
         }
     }
-	
+    
+    private function updateTitle($title) {
+        // Ejecutar el script JavaScript para actualizar el título
+        echo "<script>document.title = '$title';</script>";
+    }
 
     private function moduleExists($page) {
 		if(file_exists(__PATH_MODULES__ . $page . '.php')) return true;
