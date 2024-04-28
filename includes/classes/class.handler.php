@@ -34,54 +34,37 @@ class Handler {
 		return false;
 	}
     
+	private function loadModule($page, $subpage) {
+        global $config, $lang, $custom, $mconfig, $tSettings;
+        try {
+            $handler = $this;
+            $page = $this->cleanRequest($page);
+            $subpage = $this->cleanRequest($subpage);
 
-	public function loadModule($page,$subpage) {
-		global $config,$lang,$custom,$mconfig,$tSettings;
-		try {
-			$handler = $this;
-			$page = $this->cleanRequest($page);
-			$subpage = $this->cleanRequest($subpage);
-			
-			$request = explode("/", $_GET['request']);
-			if(is_array($request)) {
-				for($i = 0; $i < count($request); $i++) {
-					if(check_value($request[$i])) {
-						if(check_value($request[$i+1])) {
-							$_GET[$request[$i]] = filter_var($request[$i+1], FILTER_SANITIZE_STRING);
-						} else {
-							$_GET[$request[$i]] = NULL;
-						}
-					}
-					$i++;
-				}
-			}
-			
-			if(!check_value($subpage)) {
-				if($this->moduleExists($page)) {
-					@loadModuleConfigs($page);
-					include(__PATH_MODULES__ . $page . '.php');
-				} else {
-					echo 'not found';
-				}
-			} else {
-				// HANDLE PAGE AS DIRECTORY (PATH)
-				switch($page) {
-					default:
-						$path = $page.'/'.$subpage;
-						if($this->moduleExists($path)) {
-							$cnf = $page.'.'.$subpage;
-							@loadModuleConfigs($cnf);
-							include(__PATH_MODULES__ . $path . '.php');
-						} else {
-							
-						}
-					break;
-				}
-			}
-		} catch(Exception $ex) {
-			message('error', $ex->getMessage());
-		}
-	}
+			echo "<script>alert('".$page."')</script>'";
+
+            if (!$subpage) {
+                if ($this->moduleExists($page)) {
+                    include(__PATH_MODULES__ . $page . '.php');
+                } else {
+                    echo 'not found';
+                }
+            } else {
+                // Manejar la página como un directorio (ruta)
+                $path = $page . '/' . $subpage;
+                if ($this->moduleExists($path)) {
+                    $cnf = $page . '.' . $subpage;
+                    @loadModuleConfigs($cnf);
+                    include(__PATH_MODULES__ . $path . '.php');
+                } else {
+                    echo 'Oooops!, algo salió mal';
+                }
+            }
+        } catch (Exception $ex) {
+            message('error', $ex->getMessage());
+        }
+    }
+	
 
     private function moduleExists($page) {
 		if(file_exists(__PATH_MODULES__ . $page . '.php')) return true;
