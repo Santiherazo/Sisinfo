@@ -35,7 +35,7 @@ class Handler {
 	}
     
 
-	public function loadModule($page = 'news',$subpage = 'home') {
+	public function loadModule($page,$subpage) {
 		global $config,$lang,$custom,$mconfig,$tSettings;
 		try {
 			$handler = $this;
@@ -56,27 +56,16 @@ class Handler {
 				}
 			}
 			
-			if(!check_value($page)) { $page = 'news'; }
-			
 			if(!check_value($subpage)) {
 				if($this->moduleExists($page)) {
 					@loadModuleConfigs($page);
 					include(__PATH_MODULES__ . $page . '.php');
 				} else {
-					
+					echo 'not found';
 				}
 			} else {
 				// HANDLE PAGE AS DIRECTORY (PATH)
 				switch($page) {
-					case 'news':
-						if($this->moduleExists($page)) {
-							@loadModuleConfigs($page);
-							include('./templates/gebgames/inc/modules/header.php');
-							include(__PATH_MODULES__. $page . '.php');
-						} else {
-							
-						}
-					break;
 					default:
 						$path = $page.'/'.$subpage;
 						if($this->moduleExists($path)) {
@@ -93,13 +82,14 @@ class Handler {
 			message('error', $ex->getMessage());
 		}
 	}
-	private function moduleExists($page) {
+
+    private function moduleExists($page) {
 		if(file_exists(__PATH_MODULES__ . $page . '.php')) return true;
 		return false;
 	}
 	
 	private function module404() {
-		$this->redirect(); // Cambio aquí para llamar a la función redirect()
+		redirect();
 	}
 	
 	private function cleanRequest($string) {
@@ -126,11 +116,11 @@ class Handler {
 	
 	// Other private methods
 	
-	// Función para redireccionar
-	private function redirect($url = '/') {
-		header("Location: $url");
-		exit();
-	}
+}
+
+function message($type, $message) {
+    // Implementación de la función message
+    echo "<div class=\"$type\">$message</div>";
 }
 
 ?>

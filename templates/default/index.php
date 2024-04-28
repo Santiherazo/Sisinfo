@@ -70,6 +70,8 @@ include('inc/template.functions.php');
     </div>
 </section>
 
+<?php $handler->loadModule($_REQUEST['page'],$_REQUEST['subpage']); ?>
+
 <footer class="footer">
     <?php include(__PATH_TEMPLATE_ROOT__ . 'inc/modules/footer.php'); ?>
 </footer>
