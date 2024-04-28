@@ -1,22 +1,19 @@
 <?php
-function webesiteConfigs() {
-    // Comprobar si el archivo de configuración de WebEngine existe
-    $configFilePath = __PATH_CONFIGS__ . 'sisinfo.json';
-    if (!file_exists($configFilePath)) {
-        throw new Exception('WebEngine\'s configuration file doesn\'t exist, please reupload the website files.');
+
+function check_value($value) {
+    if((is_array($value) && count($value) > 0) || (!empty($value) && isset($value)) || $value === '0') {
+        return true;
     }
+    return false;
+}
+
+function webesiteConfigs() {
+    // Leer y decodificar el contenido del archivo de configuración de WebEngine
+    $decodedConfigs = json_decode(@file_get_contents(__PATH_CONFIGS__ . 'sisinfo.json'), true);
     
-    // Leer el contenido del archivo de configuración de WebEngine
-    $webengineConfigs = file_get_contents($configFilePath);
-    
-    // Decodificar el contenido JSON del archivo de configuración de WebEngine
-    $decodedConfigs = json_decode($webengineConfigs, true);
-    
-    // Comprobar si la decodificación fue exitosa
+    // Verificar si la decodificación fue exitosa y devolver las configuraciones
     if ($decodedConfigs === null) {
         throw new Exception('Error decoding JSON in WebEngine\'s configuration file.');
     }
-    
-    // Devolver las configuraciones decodificadas
     return $decodedConfigs;
 }

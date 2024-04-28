@@ -51,14 +51,24 @@ class Handler {
 				@loadModuleConfigs($page);
 				include(__PATH_MODULES__ . $page . '.php');
 			} else {
-				$this->module404();
+				
 			}
 		} else {
-			// Handle subpages
 		}
 	}
 	
-	// Other methods
+	private function moduleExists($page) {
+		if(file_exists(__PATH_MODULES__ . $page . '.php')) return true;
+		return false;
+	}
+	
+	private function module404() {
+		$this->redirect(); // Cambio aquí para llamar a la función redirect()
+	}
+	
+	private function cleanRequest($string) {
+		return preg_replace("/[^a-zA-Z0-9\s\/]/", "", $string);
+	}
 	
 	private function _parseRequest() {
 		if(!isset($_GET['request'])) return;
@@ -80,5 +90,11 @@ class Handler {
 	
 	// Other private methods
 	
+	// Función para redireccionar
+	private function redirect($url = '/') {
+		header("Location: $url");
+		exit();
+	}
 }
+
 ?>
