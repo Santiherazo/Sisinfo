@@ -35,28 +35,64 @@ class Handler {
 	}
     
 
-	public function loadModule($page = 'news', $subpage = 'home') {
+	public function loadModule($page = 'news',$subpage = 'home') {
 		global $config,$lang,$custom,$mconfig,$tSettings;
-		
-		$handler = $this;
-		$page = $this->cleanRequest($page);
-		$subpage = $this->cleanRequest($subpage);
-		
-		$this->_parseRequest();
-		
-		if(!check_value($page)) { $page = 'news'; }
-		
-		if(!check_value($subpage)) {
-			if($this->moduleExists($page)) {
-				@loadModuleConfigs($page);
-				include(__PATH_MODULES__ . $page . '.php');
-			} else {
-				
+		try {
+			$handler = $this;
+			$page = $this->cleanRequest($page);
+			$subpage = $this->cleanRequest($subpage);
+			
+			$request = explode("/", $_GET['request']);
+			if(is_array($request)) {
+				for($i = 0; $i < count($request); $i++) {
+					if(check_value($request[$i])) {
+						if(check_value($request[$i+1])) {
+							$_GET[$request[$i]] = filter_var($request[$i+1], FILTER_SANITIZE_STRING);
+						} else {
+							$_GET[$request[$i]] = NULL;
+						}
+					}
+					$i++;
+				}
 			}
-		} else {
+			
+			if(!check_value($page)) { $page = 'news'; }
+			
+			if(!check_value($subpage)) {
+				if($this->moduleExists($page)) {
+					@loadModuleConfigs($page);
+					include(__PATH_MODULES__ . $page . '.php');
+				} else {
+					
+				}
+			} else {
+				// HANDLE PAGE AS DIRECTORY (PATH)
+				switch($page) {
+					case 'news':
+						if($this->moduleExists($page)) {
+							@loadModuleConfigs($page);
+							include('./templates/gebgames/inc/modules/header.php');
+							include(__PATH_MODULES__. $page . '.php');
+						} else {
+							
+						}
+					break;
+					default:
+						$path = $page.'/'.$subpage;
+						if($this->moduleExists($path)) {
+							$cnf = $page.'.'.$subpage;
+							@loadModuleConfigs($cnf);
+							include(__PATH_MODULES__ . $path . '.php');
+						} else {
+							
+						}
+					break;
+				}
+			}
+		} catch(Exception $ex) {
+			message('error', $ex->getMessage());
 		}
 	}
-	
 	private function moduleExists($page) {
 		if(file_exists(__PATH_MODULES__ . $page . '.php')) return true;
 		return false;
