@@ -19,9 +19,6 @@ include('inc/template.functions.php');
     <meta property="og:url" content="<?php echo __BASE_URL__; ?>"/>
     <meta property="og:site_name" content=""/>
     <link rel="shortcut icon" href=""/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-          crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=PT+Sans:400,400i,700" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Cinzel" rel="stylesheet">
     <link href="<?php echo __PATH_TEMPLATE_CSS__; ?>style.css" rel="stylesheet" media="screen">
@@ -69,10 +66,6 @@ include('inc/template.functions.php');
         </div>
     </div>
 </section>
-
-
-
-<?php $handler->loadModuleFromUrl();?>
 
 <footer class="footer">
     <?php include(__PATH_TEMPLATE_ROOT__ . 'inc/modules/footer.php'); ?>
