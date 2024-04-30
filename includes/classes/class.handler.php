@@ -41,10 +41,7 @@ class Handler {
         $subpage = isset($urlSegments[1]) ? $urlSegments[1] : null;
         $title = $this->generateTitle($page, $subpage);
     
-        // Llamar a la función de actualización del título utilizando JavaScript
         $this->updateTitle($title);
-    
-        // Cargar el módulo después de actualizar el título
         $this->loadModule($page, $subpage);
     }
     

@@ -36,10 +36,10 @@ include('inc/template.functions.php');
             <img src="images/logo.svg" alt="Sisinfo">
         </a>
         <ul class="menu-links">
-            <li><a href="#">Noticias</a></li>
             <li><a href="#">Investigación</a></li>
-            <li><a href="#">Eventos</a></li>
             <li><a href="#">Noticias</a></li>
+            <li><a href="#">Eventos</a></li>
+            <li><a href="#">Galeria</a></li>
             <li><a href="<?php echo __BASE_URL__; ?>login/">Iniciar sesión</a></li>
             <li class="join-btn"><a href="<?php echo __BASE_URL__; ?>register/">Unirse</a></li>
             <span id="close-menu-btn" class="material-symbols-outlined">close</span>
