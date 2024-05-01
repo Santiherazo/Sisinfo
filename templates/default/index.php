@@ -2,7 +2,6 @@
 if (!defined('access') or !access) die();
 include('inc/template.functions.php');
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -48,6 +47,9 @@ include('inc/template.functions.php');
     </nav>
 </header>
 
+<>
+<>
+
 <section class="hero-section">
     <div class="content">
         <h1>Find the right freelance service, right away</h1>
@@ -66,6 +68,8 @@ include('inc/template.functions.php');
         </div>
     </div>
 </section>
+
+<?php $handler->loadModuleFromUrl(); ?>
 
 <footer class="footer">
     <?php include(__PATH_TEMPLATE_ROOT__ . 'inc/modules/footer.php'); ?>

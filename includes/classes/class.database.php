@@ -1,9 +1,9 @@
 <?php
 class ConexionDB {
     private $host = "localhost";
-    private $usuario = "tu_usuario";
-    private $contrasena = "tu_contraseña";
-    private $nombre_bd = "nombre_de_tu_base_de_datos";
+    private $usuario = "root";
+    private $contrasena = "";
+    private $nombre_bd = "sisinfo";
     private $conexion;
 
     public function __construct() {
@@ -24,10 +24,4 @@ class ConexionDB {
         return $this->conexion;
     }
 }
-
-// Ejemplo de uso:
-$conexionDB = new ConexionDB();
-$conexion = $conexionDB->obtenerConexion();
-
-// Ahora puedes utilizar $conexion para ejecutar consultas SQL de forma segura.
 ?>
