@@ -51,7 +51,7 @@ define('__PATH_OFFLINE_STATUS__', __PATH_IMG__.'offline.png');
 
 # Load Libraries
 if(!@include_once(__PATH_CLASSES__ . 'class.database.php')) throw new Exception('Ooops!, algo salió mal');
-//if(!@include_once(__PATH_CLASSES__ . 'class.common.php')) throw new Exception('Could not load class (common).');
+if(!@include_once(__PATH_CLASSES__ . 'class.common.php')) throw new Exception('Ooops!, algo salió mal');
 if(!@include_once(__PATH_CLASSES__ . 'class.handler.php')) throw new Exception('Ooops!, algo salió mal');
 //if(!@include_once(__PATH_CLASSES__ . 'class.validator.php')) throw new Exception('Could not load class (validator).');
 if(!@include_once(__PATH_CLASSES__ . 'class.login.php')) throw new Exception('Ooops!, algo salió mal');

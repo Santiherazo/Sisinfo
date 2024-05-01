@@ -1,0 +1,30 @@
+<div class="lightbox">
+      <div class="wrapper">
+        <header>
+          <div class="photographer">
+            <i class="uil uil-camera"></i>
+            <span></span>
+          </div>
+          <div class="buttons">
+            <i class="uil uil-import"></i>
+            <i class="close-icon uil uil-times"></i>
+          </div>
+        </header>
+        <div class="preview-img">
+          <div class="img"><img src="" alt="preview-img"></div>
+        </div>
+      </div>
+    </div>
+    <section class="search">
+      <div class="content">
+        <h1>Galeria</h1>
+        <div class="search-box">
+          <i class="uil uil-search"></i>
+          <input type="text" placeholder="Search images">
+        </div>
+      </div>
+    </section>
+    <section class="gallery">
+      <ul class="images"></ul>
+      <button class="load-more">Load More</button>
+    </section>

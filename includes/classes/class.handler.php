@@ -1,15 +1,9 @@
 <?php
 
 class Handler {
-	
-	private $_disableWebEngineFooterVersion = false;
-	private $_disableWebEngineFooterCredits = false;
-
     public function loadPage() {
-        global $config,$lang,$custom,$tSettings;
-        
+        global $config;
         $handler = $this;
-        
         switch(access) {
             case 'index':
                 if(!$this->templateExists($config['website_template'])) {
@@ -17,13 +11,10 @@ class Handler {
                 }
                 include(__PATH_TEMPLATES__ . $config['website_template'] . '/index.php');
                 break;
-            case 'admin':
-                // Handle admin page loading
+            case 'dashboard':
                 break;
             case 'install':
-                // Handle installation page loading
                 break;
-            // Other cases
             default:
                 throw new Exception('Access forbidden.');
         }
@@ -35,32 +26,28 @@ class Handler {
 	}
     
 	private function loadModuleFromUrl() {
+        $domain = $_SERVER['HTTP_HOST'];
         $currentUrl = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        $urlSegments = explode('/', trim($currentUrl, '/'));
+        $urlWithoutDomain = str_replace($domain, '', $currentUrl);
+        $urlWithoutDomain = trim($urlWithoutDomain, '/');
+        $urlSegments = explode('/', $urlWithoutDomain);
         $page = isset($urlSegments[0]) ? $urlSegments[0] : null;
         $subpage = isset($urlSegments[1]) ? $urlSegments[1] : null;
-        $title = $this->generateTitle($page, $subpage);
-    
-        $this->updateTitle($title);
         $this->loadModule($page, $subpage);
     }
     
-    private function generateTitle($page, $subpage) {
-        if (!$page) {
-            return "Bienvenido al sitio web";
-        } elseif (!$subpage) {
-            return ucfirst($page);
-        } else {
-            return ucfirst($page) . ' - ' . ucfirst($subpage);
-        }
-    }
     
     private function loadModule($page, $subpage) {
-        global $config, $lang, $custom, $mconfig, $tSettings;
+        global $config;
         try {
             $handler = $this;
             $page = $this->cleanRequest($page);
             $subpage = $this->cleanRequest($subpage);
+    
+            if (empty($page)) {
+                include(__PATH_MODULES__ . 'home.php');
+                return;
+            }
     
             if (!$subpage) {
                 if ($this->moduleExists($page)) {
@@ -69,7 +56,6 @@ class Handler {
                     echo 'not found';
                 }
             } else {
-                // Manejar la página como un directorio (ruta)
                 $path = $page . '/' . $subpage;
                 if ($this->moduleExists($path)) {
                     $cnf = $page . '.' . $subpage;
@@ -84,10 +70,6 @@ class Handler {
         }
     }
     
-    private function updateTitle($title) {
-        // Ejecutar el script JavaScript para actualizar el título
-        echo "<script>document.title = '$title';</script>";
-    }
 
     private function moduleExists($page) {
 		if(file_exists(__PATH_MODULES__ . $page . '.php')) return true;
@@ -118,14 +100,10 @@ class Handler {
 				$i++;
 			}
 		}
-	}
-	
-	// Other private methods
-	
+	}	
 }
 
 function message($type, $message) {
-    // Implementación de la función message
     echo "<div class=\"$type\">$message</div>";
 }
 
