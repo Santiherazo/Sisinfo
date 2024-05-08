@@ -35,16 +35,12 @@ define('__PATH_CONFIGS__', __PATH_INCLUDES__.'config/');
 define('__PATH_MODULE_CONFIGS__', __PATH_CONFIGS__.'modules/');
 
 # Public Paths
-/*define('__PATH_MODULES_RANKINGS__', __BASE_URL__.'rankings/');
 define('__PATH_ADMINCP_HOME__', __BASE_URL__.'admincp/');
 define('__PATH_IMG__', __BASE_URL__.'img/');
 define('__PATH_UPLOAD__PROFILE__',__PATH_IMG__.'uploads/profile');
 define('__PATH_UPLOAD__COVER__',__PATH_IMG__.'uploads/cover');
 define('__PATH_COUNTRY_FLAGS__', __PATH_IMG__.'flags/');
 define('__PATH_API__', __BASE_URL__.'api/');
-define('__PATH_ONLINE_STATUS__', __PATH_IMG__.'online.png');
-define('__PATH_OFFLINE_STATUS__', __PATH_IMG__.'offline.png');
-*/
 
 # Timezone
 //if(!@include_once(__PATH_CONFIGS__ . 'timezone.php')) throw new Exception('Could not load timezone.');
@@ -55,7 +51,7 @@ if(!@include_once(__PATH_CLASSES__ . 'class.common.php')) throw new Exception('O
 if(!@include_once(__PATH_CLASSES__ . 'class.handler.php')) throw new Exception('Ooops!, algo salió mal');
 //if(!@include_once(__PATH_CLASSES__ . 'class.validator.php')) throw new Exception('Could not load class (validator).');
 if(!@include_once(__PATH_CLASSES__ . 'class.login.php')) throw new Exception('Ooops!, algo salió mal');
-//if(!@include_once(__PATH_CLASSES__ . 'class.vote.php')) throw new Exception('Could not load class (vote).');
+if(!@include_once(__PATH_CLASSES__ . 'class.requests.php')) throw new Exception('Ooops!, algo salió mal');
 //if(!@include_once(__PATH_CLASSES__ . 'class.character.php')) throw new Exception('Could not load class (character).');
 //if(!@include_once(__PATH_CLASSES__ . 'phpmailer/autoload.php')) throw new Exception('Could not load class (phpmailer).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.rankings.php')) throw new Exception('Could not load class (rankings).');
@@ -83,6 +79,7 @@ $config = webesiteConfigs();
 	die();
 }
 */
+
 # Template Paths
 define('__PATH_TEMPLATE_ROOT__', __PATH_TEMPLATES__ . $config['website_template'] . '/');
 define('__PATH_TEMPLATE__', __BASE_URL__ . 'templates/' . $config['website_template'] . '/');

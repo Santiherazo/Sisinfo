@@ -1,12 +1,15 @@
 <?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  $username = check_value($_POST['username']);
-  $password = check_value($_POST['password']);
 
-  $Login = new Login();
-  $Login->validateLogin($username, $password);
+if(isset($_POST['username'], $_POST['password'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    dataStruture($username, $password); 
 }
 ?>
+
+
+
+
 <div class="container">
   <h2>Iniciar Sesión</h2>
   <div id="message"></div>

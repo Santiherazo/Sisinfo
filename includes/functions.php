@@ -8,16 +8,15 @@ function check_value($value) {
 }
 
 function webesiteConfigs() {
-    // Leer y decodificar el contenido del archivo de configuración de WebEngine
     $decodedConfigs = json_decode(@file_get_contents(__PATH_CONFIGS__ . 'sisinfo.json'), true);
-    
-    // Verificar si la decodificación fue exitosa y devolver las configuraciones
     if ($decodedConfigs === null) {
         throw new Exception('Error decoding JSON in WebEngine\'s configuration file.');
     }
     return $decodedConfigs;
 }
 
-function updateTitle($title) {
-    echo $title;
+function dataStruture($username,$password){
+    echo $username, $password;
+    $login = new login();
+    echo $login->validateLogin($username, $password);
 }
