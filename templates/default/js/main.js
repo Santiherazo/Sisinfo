@@ -1,15 +1,28 @@
+const header = document.querySelector("header");
+    const hamburgerBtn = document.querySelector("#hamburger-btn");
+    const closeMenuBtn = document.querySelector("#close-menu-btn");
+
+    // Toggle mobile menu on hamburger button click
+    hamburgerBtn.addEventListener("click", () => header.classList.toggle("show-mobile-menu"));
+
+    // Close mobile menu on close button click
+    closeMenuBtn.addEventListener("click", () => hamburgerBtn.click());
+
+
+    window.addEventListener('scroll', function() {
+        if (window.scrollY > 0) {
+          header.classList.add('active'); // Agrega clase al hacer scroll
+        } else {
+          header.classList.remove('active'); // Remueve clase al volver arriba
+        }
+      });
+      
+    
+
 const imageWrapper = document.querySelector(".images");
-const searchInput = document.querySelector(".search input");
-const loadMoreBtn = document.querySelector(".gallery .load-more");
 const lightbox = document.querySelector(".lightbox");
 const downloadImgBtn = lightbox.querySelector(".uil-import");
 const closeImgBtn = lightbox.querySelector(".close-icon");
-
-// API key, paginations, searchTerm variables
-const apiKey = "HXOD8qO3xmICa6FLSEgUOzTrq2zIJ88b6f7c5ZcfsD3G0nLI63QsxmWz";
-const perPage = 15;
-let currentPage = 1;
-let searchTerm = null;
 
 const downloadImg = (imgUrl) => {
     // Converting received img to blob, creating its download link, & downloading it
@@ -38,15 +51,15 @@ const hideLightbox = () => {
 
 const generateHTML = (images) => {
     // Making li of all fetched images and adding them to the existing image wrapper
-    imageWrapper.innerHTML += images.map(img =>
+    imageWrapper.innerHTML = images.map(img =>
         `<li class="card">
-            <img onclick="showLightbox('${img.photographer}', '${img.src.large2x}')" src="${img.src.large2x}" alt="img">
+            <img onclick="showLightbox('${img.name}', '${img.url}')" src="${img.url}" alt="${img.name}">
             <div class="details">
                 <div class="photographer">
                     <i class="uil uil-camera"></i>
-                    <span>${img.photographer}</span>
+                    <span>${img.name}</span>
                 </div>
-                <button onclick="downloadImg('${img.src.large2x}');">
+                <button onclick="downloadImg('${img.url}');">
                     <i class="uil uil-import"></i>
                 </button>
             </div>
@@ -54,42 +67,13 @@ const generateHTML = (images) => {
     ).join("");
 }
 
-const getImages = (apiURL) => {
-    // Fetching images by API call with authorization header
-    searchInput.blur();
-    loadMoreBtn.innerText = "Loading...";
-    loadMoreBtn.classList.add("disabled");
-    fetch(apiURL, {
-        headers: { Authorization: apiKey }
-    }).then(res => res.json()).then(data => {
-        generateHTML(data.photos);
-        loadMoreBtn.innerText = "Load More";
-        loadMoreBtn.classList.remove("disabled");
-    }).catch(() => alert("Failed to load images!"));
-}
+// Load images from server using PHP script
+fetch("load.php")
+    .then(response => response.json())
+    .then(images => generateHTML(images));
 
-const loadMoreImages = () => {
-    currentPage++; // Increment currentPage by 1
-    // If searchTerm has some value then call API with search term else call default API
-    let apiUrl = `https://api.pexels.com/v1/curated?page=${currentPage}&per_page=${perPage}`;
-    apiUrl = searchTerm ? `https://api.pexels.com/v1/search?query=${searchTerm}&page=${currentPage}&per_page=${perPage}` : apiUrl;
-    getImages(apiUrl);
-}
-
-const loadSearchImages = (e) => {
-    // If the search input is empty, set the search term to null and return from here
-    if (e.target.value === "") return searchTerm = null;
-    // If pressed key is Enter, update the current page, search term & call the getImages
-    if (e.key === "Enter") {
-        currentPage = 1;
-        searchTerm = e.target.value;
-        imageWrapper.innerHTML = "";
-        getImages(`https://api.pexels.com/v1/search?query=${searchTerm}&page=1&per_page=${perPage}`);
-    }
-}
-
-getImages(`https://api.pexels.com/v1/curated?page=${currentPage}&per_page=${perPage}`);
-loadMoreBtn.addEventListener("click", loadMoreImages);
-searchInput.addEventListener("keyup", loadSearchImages);
+// Event listener for close button
 closeImgBtn.addEventListener("click", hideLightbox);
+
+// Event listener for download button
 downloadImgBtn.addEventListener("click", (e) => downloadImg(e.target.dataset.img));

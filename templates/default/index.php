@@ -22,6 +22,7 @@ include('inc/template.functions.php');
     <link href="https://fonts.googleapis.com/css?family=Cinzel" rel="stylesheet">
     <link href="<?php echo __PATH_TEMPLATE_CSS__; ?>style.css" rel="stylesheet" media="screen">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0">
     <script>
         var baseUrl = '<?php echo __BASE_URL__; ?>';
     </script>
@@ -44,9 +45,9 @@ include('inc/template.functions.php');
     </nav>
 </header>
 
-<div class="main" style="margin-top: 100px;">
+<main style="">
     <?php $handler->loadModuleFromUrl(); ?>
-</div>
+</main>
 
 
 <footer class="footer">

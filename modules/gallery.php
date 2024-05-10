@@ -18,10 +18,6 @@
     <section class="search">
       <div class="content">
         <h1>Galeria</h1>
-        <div class="search-box">
-          <i class="uil uil-search"></i>
-          <input type="text" placeholder="Search images">
-        </div>
       </div>
     </section>
     <section class="gallery">

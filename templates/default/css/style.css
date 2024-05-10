@@ -12,14 +12,21 @@
     }
     
     header {
-      position: fixed;
+      position: -webkit-sticky;
+      position: sticky;
       left: 0;
       top: 0;
-      width: 100%;
       z-index: 1;
+      width: 100%;
       padding: 20px;
+      transition: all 1s;
     }
     
+    header.active {
+      background-color: #333; /* Fondo al hacer scroll */
+      transition: all 1s;
+    }
+
     header .navbar {
       max-width: 1280px;
       margin: 0 auto;
@@ -67,10 +74,14 @@
       border-color: transparent;
       background: #1dbf73;
     }
+
+
+
+
     
     .hero-section {
       height: 100vh;
-      background-image: url("images/hero-img.jpg");
+      background-image: url('../img/bg.jpg');
       background-position: center;
       background-size: cover;
       position: relative;
@@ -259,6 +270,14 @@
         display: none;
       }
     }
+
+
+
+
+
+
+
+    
     
     .footer {
       position: relative;
@@ -384,6 +403,10 @@
       }
     }
     
+
+
+
+
     .container {
       width: 300px;
       margin: 0 auto;
@@ -729,3 +752,253 @@
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+
+
+        /*CARDS*/
+        .card-list {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          max-width: 1250px;
+          margin: 150px auto;
+          padding: 20px;
+          gap: 20px;
+      }
+      
+      .card-list .card-item {
+          background: #fff;
+          padding: 26px;
+          border-radius: 8px;
+          box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.04);
+          list-style: none;
+          cursor: pointer;
+          text-decoration: none;
+          border: 2px solid transparent;
+          transition: border 0.5s ease;
+      }
+      
+      .card-list .card-item:hover {
+          border: 2px solid #000;
+      }
+      
+      .card-list .card-item img {
+          width: 100%;
+          aspect-ratio: 16/9;
+          border-radius: 8px;
+          object-fit: cover;
+      }
+      
+      .card-list span {
+          display: inline-block;
+          background: #F7DFF5;
+          margin-top: 32px;
+          padding: 8px 15px;
+          font-size: 0.75rem;
+          border-radius: 50px;
+          font-weight: 600;
+      }
+      
+      .card-list .developer {
+          background-color: #F7DFF5; 
+          color: #B22485;
+      }   
+      
+      .card-list .designer {
+          background-color: #d1e8ff;
+          color: #2968a8;
+      }
+      
+      .card-list .editor {
+          background-color: #d6f8d6; 
+          color: #205c20;
+      }
+      
+      .card-item h3 {
+          color: #000;
+          font-size: 1.438rem;
+          margin-top: 28px;
+          font-weight: 600;
+      }
+      
+      .card-item .arrow {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transform: rotate(-35deg);
+          height: 40px;
+          width: 40px;
+          color: #000;
+          border: 1px solid #000;
+          border-radius: 50%;
+          margin-top: 40px;
+          transition: 0.2s ease;
+      }
+      
+      .card-list .card-item:hover .arrow  {
+          background: #000;
+          color: #fff; 
+      }
+      
+      @media (max-width: 1200px) {
+          .card-list .card-item {
+              padding: 15px;
+          }
+      }
+      
+      @media screen and (max-width: 980px) {
+          .card-list {
+              margin: 0 auto;
+          }
+      }
+
+.blog-card{
+  height: 370px;
+  width: 95%;
+  max-width: 850px;
+  margin: auto;
+  border-radius: 25px;
+  background: white;
+  box-shadow: 0px 10px 50px rgba(252,56,56,.3);
+}
+.inner-part{
+  position: absolute;
+  display: flex;
+  height: 360px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 25px;
+}
+#imgTap:checked ~ .inner-part {
+  padding: 0;
+  transition: .1s ease-in;
+}
+.inner-part .img{
+  height: 260px;
+  width: 260px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 2px 3px 15px rgba(252,56,56,.1);
+}
+#imgTap:checked ~ .inner-part .img{
+  height: 370px;
+  width: 850px;
+  z-index: 99;
+  margin-top: 10px;
+  transition: .3s .2s ease-in;
+}
+.img img{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  cursor: pointer;
+  opacity: 0;
+  transition: .6s;
+}
+#tap-1:checked ~ .inner-part .img-1,
+#tap-2:checked ~ .inner-part .img-2,
+#tap-3:checked ~ .inner-part .img-3{
+  opacity: 1;
+  transition-delay: .2s;
+}
+.contenido{
+  padding: 0 20px 0 35px;
+  width: 530px;
+  margin-left: 50px;
+  opacity: 0;
+  transition: .6s;
+}
+#imgTap:checked ~ .inner-part .contenido{
+  display: none;
+}
+#tap-1:checked ~ .inner-part .contenido-1,
+#tap-2:checked ~ .inner-part .contenido-2,
+#tap-3:checked ~ .inner-part .contenido-3{
+  opacity: 1;
+  margin-left: 0px;
+  z-index: 100;
+  transition-delay: .3s;
+}
+.contenido span{
+  display: block;
+  color: #7b7992;
+  margin-bottom: 15px;
+  font-size: 22px;
+  font-weight: 500
+}
+.contenido .title{
+  font-size: 30px;
+  font-weight: 700;
+  color: #0d0925;
+  margin-bottom: 20px;
+}
+.contenido .text{
+  color: #4e4a67;
+  font-size: 19px;
+  margin-bottom: 30px;
+  line-height: 1.5em;
+  text-align: justify;
+}
+.contenido button{
+  display: inline-flex;
+  padding: 15px 20px;
+  border: none;
+  font-size: 16px;
+  text-transform: uppercase;
+  color: #fff0e6;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border-radius: 50px;
+  cursor: pointer;
+  outline: none;
+  border: 1px solid #fd3535;
+  background: linear-gradient(147deg, #fe8a39  0%, #fd3838 74%);
+}
+.contenido button:hover{
+  background: linear-gradient(147deg, #fe791b 0%, #fd1c1c 74%);
+}
+.sliders{
+  position: absolute;
+  bottom: 25px;
+  left: 65%;
+  transform: translateX(-50%);
+  z-index: 12;
+}
+#imgTap:checked ~ .sliders{
+  display: none;
+}
+.sliders .tap{
+  position: relative;
+  height: 10px;
+  width: 50px;
+  background: #d9d9d9;
+  border-radius: 5px;
+  display: inline-flex;
+  margin: 0 3px;
+  cursor: pointer;
+}
+.sliders .tap:hover{
+  background: #cccccc;
+}
+.sliders .tap:before{
+  position: absolute;
+  content: '';
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: -100%;
+  background: linear-gradient(147deg,#f6b323 0%, #f23b26 74%);
+  border-radius: 10px;
+  transform: scaleX(0);
+  transition: transform .6s;
+  transform-origin: left;
+}
+input[type="radio"],
+input[type="checkbox"]{
+  display: none;
+}
+#tap-1:checked ~ .sliders .tap-1:before,
+#tap-2:checked ~ .sliders .tap-2:before,
+#tap-3:checked ~ .sliders .tap-3:before{
+  transform: scaleX(1);
+  width: 100%;
+}

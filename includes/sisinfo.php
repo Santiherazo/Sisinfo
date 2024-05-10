@@ -38,7 +38,7 @@ define('__PATH_MODULE_CONFIGS__', __PATH_CONFIGS__.'modules/');
 define('__PATH_ADMINCP_HOME__', __BASE_URL__.'admincp/');
 define('__PATH_IMG__', __BASE_URL__.'img/');
 define('__PATH_UPLOAD__PROFILE__',__PATH_IMG__.'uploads/profile');
-define('__PATH_UPLOAD__COVER__',__PATH_IMG__.'uploads/cover');
+define('__PATH_UPLOAD__GALLERY__',__PATH_IMG__.'uploads/gallery');
 define('__PATH_COUNTRY_FLAGS__', __PATH_IMG__.'flags/');
 define('__PATH_API__', __BASE_URL__.'api/');
 
