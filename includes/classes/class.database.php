@@ -15,7 +15,7 @@ class ConexionDB {
             );
             $this->conexion = new PDO($dsn, $this->usuario, $this->contrasena, $opciones);
         } catch (PDOException $e) {
-            echo "Error de conexión: " . $e->getMessage();
+            throw new Exception('Ooops!, algo salió mal');
             die();
         }
     }
