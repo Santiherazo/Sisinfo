@@ -39,7 +39,6 @@ define('__PATH_ADMINCP_HOME__', __BASE_URL__.'admincp/');
 define('__PATH_IMG__', __BASE_URL__.'img/');
 define('__PATH_UPLOAD__PROFILE__',__PATH_IMG__.'uploads/profile');
 define('__PATH_UPLOAD__GALLERY__',__PATH_IMG__.'uploads/gallery');
-define('__PATH_COUNTRY_FLAGS__', __PATH_IMG__.'flags/');
 define('__PATH_API__', __BASE_URL__.'api/');
 
 # Timezone
@@ -51,7 +50,7 @@ if(!@include_once(__PATH_CLASSES__ . 'class.common.php')) throw new Exception('O
 if(!@include_once(__PATH_CLASSES__ . 'class.handler.php')) throw new Exception('Ooops!, algo salió mal');
 //if(!@include_once(__PATH_CLASSES__ . 'class.validator.php')) throw new Exception('Could not load class (validator).');
 if(!@include_once(__PATH_CLASSES__ . 'class.login.php')) throw new Exception('Ooops!, algo salió mal');
-if(!@include_once(__PATH_CLASSES__ . 'class.requests.php')) throw new Exception('Ooops!, algo salió mal');
+if(!@include_once(__PATH_CLASSES__ . 'class.register.php')) throw new Exception('Ooops!, algo salió mal');
 //if(!@include_once(__PATH_CLASSES__ . 'class.character.php')) throw new Exception('Could not load class (character).');
 //if(!@include_once(__PATH_CLASSES__ . 'phpmailer/autoload.php')) throw new Exception('Could not load class (phpmailer).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.rankings.php')) throw new Exception('Could not load class (rankings).');
