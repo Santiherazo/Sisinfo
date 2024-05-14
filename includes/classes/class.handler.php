@@ -13,6 +13,8 @@ class Handler {
                 break;
             case 'dashboard':
                 break;
+            case 'app':
+                break;
             case 'install':
                 break;
             default:
@@ -35,7 +37,6 @@ class Handler {
         $subpage = isset($urlSegments[1]) ? $urlSegments[1] : null;
         $this->loadModule($page, $subpage);
     }
-    
     
     private function loadModule($page, $subpage) {
         global $config;

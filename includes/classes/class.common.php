@@ -7,7 +7,7 @@ class common {
 	function __construct() {
 		
 		// load databases
-		$this->sisinfo = Connection::Database('sisinfo');
+		//$this->sisinfo = Connection::Database('sisinfo');
 	}
 
 	/*public function emailExists($email) {

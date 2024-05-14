@@ -39,6 +39,8 @@ include('inc/template.functions.php');
             <li><a href="<?php echo __BASE_URL__; ?>gallery">Galeria</a></li>
             <li><a href="<?php echo __BASE_URL__; ?>login">Iniciar sesión</a></li>
             <li class="join-btn"><a href="<?php echo __BASE_URL__; ?>register">Unirse</a></li>
+
+            <?php //templateBuildNavbar(); ?>
             <span id="close-menu-btn" class="material-symbols-outlined">close</span>
         </ul>
         <span id="hamburger-btn" class="material-symbols-outlined">menu</span>

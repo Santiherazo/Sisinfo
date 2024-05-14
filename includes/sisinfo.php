@@ -29,7 +29,7 @@ define('__PATH_TEMPLATES__', __ROOT_DIR__.'templates/');
 define('__PATH_CLASSES__', __PATH_INCLUDES__.'classes/');
 define('__PATH_FUNCTIONS__', __PATH_INCLUDES__.'functions/');
 define('__PATH_MODULES__', __ROOT_DIR__.'modules/');
-define('__PATH_MODULES_USERCP__', __PATH_MODULES__.'usercp/');
+define('__PATH_MODULES_USERCP__', __PATH_MODULES__.'user/');
 define('__PATH_ADMINCP__', __ROOT_DIR__.'admincp/');
 define('__PATH_CONFIGS__', __PATH_INCLUDES__.'config/');
 define('__PATH_MODULE_CONFIGS__', __PATH_CONFIGS__.'modules/');
