@@ -1,7 +1,6 @@
 <?php
-$conexionDB = new ConexionDB();
-$conexion = $conexionDB->obtenerConexion();
 
+class Register{
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $email = $_POST['email'];
@@ -29,5 +28,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 } else {
     echo "Acceso denegado";
+}
 }
 ?>
