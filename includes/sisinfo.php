@@ -48,9 +48,10 @@ define('__PATH_API__', __BASE_URL__.'api/');
 if(!@include_once(__PATH_CLASSES__ . 'class.database.php')) throw new Exception('Ooops!, algo salió mal');
 if(!@include_once(__PATH_CLASSES__ . 'class.common.php')) throw new Exception('Ooops!, algo salió mal');
 if(!@include_once(__PATH_CLASSES__ . 'class.handler.php')) throw new Exception('Ooops!, algo salió mal');
+if(!@include_once(__PATH_CLASSES__ . 'class.connection.php')) throw new Exception('Ooops!, algo salió mal');
 //if(!@include_once(__PATH_CLASSES__ . 'class.validator.php')) throw new Exception('Could not load class (validator).');
 if(!@include_once(__PATH_CLASSES__ . 'class.login.php')) throw new Exception('Ooops!, algo salió mal');
-if(!@include_once(__PATH_CLASSES__ . 'class.register.php')) throw new Exception('Ooops!, algo salió mal');
+//if(!@include_once(__PATH_CLASSES__ . 'class.register.php')) throw new Exception('Ooops!, algo salió mal');
 //if(!@include_once(__PATH_CLASSES__ . 'class.character.php')) throw new Exception('Could not load class (character).');
 //if(!@include_once(__PATH_CLASSES__ . 'phpmailer/autoload.php')) throw new Exception('Could not load class (phpmailer).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.rankings.php')) throw new Exception('Could not load class (rankings).');
@@ -60,7 +61,7 @@ if(!@include_once(__PATH_CLASSES__ . 'class.register.php')) throw new Exception(
 //if(!@include_once(__PATH_CLASSES__ . 'class.credits.php')) throw new Exception('Could not load class (credits).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.email.php')) throw new Exception('Could not load class (email).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.account.php')) throw new Exception('Could not load class (account).');
-if(!@include_once(__PATH_CLASSES__ . 'class.connection.php')) throw new Exception('Ooops!, algo salió mal');
+
 //if(!@include_once(__PATH_CLASSES__ . 'class.castlesiege.php')) throw new Exception('Could not load class (castlesiege).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.cron.php')) throw new Exception('Could not load class (cron).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.cache.php')) throw new Exception('Could not load class (cache).');

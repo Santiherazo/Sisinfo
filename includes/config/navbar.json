@@ -2,8 +2,8 @@
     {
         "active": true,
         "type": "internal",
-        "phrase": "menu_txt_1",
-        "link": "",
+        "phrase": "Investigación",
+        "link": "investigacion",
         "visibility": "always",
         "newtab": false,
         "order": 10
@@ -11,8 +11,8 @@
     {
         "active": true,
         "type": "internal",
-        "phrase": "menu_txt_11",
-        "link": "investigacion",
+        "phrase": "Noticias",
+        "link": "noticias",
         "visibility": "always",
         "newtab": false,
         "order": 20
@@ -20,8 +20,8 @@
     {
         "active": true,
         "type": "internal",
-        "phrase": "menu_txt_7",
-        "link": "noticias",
+        "phrase": "Eventos",
+        "link": "eventos",
         "visibility": "always",
         "newtab": false,
         "order": 30
@@ -29,8 +29,8 @@
     {
         "active": true,
         "type": "internal",
-        "phrase": "menu_txt_8",
-        "link": "eventos",
+        "phrase": "Galeria",
+        "link": "galeria",
         "visibility": "always",
         "newtab": false,
         "order": 40
@@ -38,8 +38,8 @@
     {
         "active": true,
         "type": "internal",
-        "phrase": "menu_txt_10",
-        "link": "galeria",
+        "phrase": "Nosotros",
+        "link": "nosotros",
         "visibility": "always",
         "newtab": false,
         "order": 50
@@ -47,17 +47,8 @@
     {
         "active": true,
         "type": "internal",
-        "phrase": "menu_txt_10",
+        "phrase": "Login",
         "link": "login",
-        "visibility": "always",
-        "newtab": false,
-        "order": 50
-    },
-    {
-        "active": true,
-        "type": "internal",
-        "phrase": "menu_txt_10",
-        "link": "register",
         "visibility": "always",
         "newtab": false,
         "order": 50

@@ -33,14 +33,8 @@ include('inc/template.functions.php');
             <img src="<?php echo __PATH_TEMPLATE_IMG__; ?>logo.png" width="50px"  alt="Sisinfo">
         </a>
         <ul class="menu-links">
-            <li><a href="<?php echo __BASE_URL__; ?>investigation">Investigación</a></li>
-            <li><a href="<?php echo __BASE_URL__; ?>news">Noticias</a></li>
-            <li><a href="<?php echo __BASE_URL__; ?>events">Eventos</a></li>
-            <li><a href="<?php echo __BASE_URL__; ?>gallery">Galeria</a></li>
-            <li><a href="<?php echo __BASE_URL__; ?>login">Iniciar sesión</a></li>
+            <?php templateBuildNavbar(); ?>
             <li class="join-btn"><a href="<?php echo __BASE_URL__; ?>register">Unirse</a></li>
-
-            <?php //templateBuildNavbar(); ?>
             <span id="close-menu-btn" class="material-symbols-outlined">close</span>
         </ul>
         <span id="hamburger-btn" class="material-symbols-outlined">menu</span>

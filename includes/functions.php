@@ -15,8 +15,10 @@ function webesiteConfigs() {
     return $decodedConfigs;
 }
 
-function dataStruture($username,$password){
-    echo $username, $password;
-    $login = new login();
-    echo $login->validateLogin($username, $password);
+function loadConfig($name="sisinfo") {
+	if(!check_value($name)) return;
+	if(!file_exists(__PATH_CONFIGS__ . $name . '.json')) return;
+	$cfg = file_get_contents(__PATH_CONFIGS__ . $name . '.json');
+	if(!check_value($cfg)) return;
+	return json_decode($cfg, true);
 }
