@@ -20,7 +20,7 @@ $(document).ready(function(){
     $('#registerForm').submit(function(e){
         e.preventDefault();
         var formData = $(this).serialize();
-        formData += '&csrfToken=' + $('#csrfToken').val(); // Agrega el token CSRF
+        formData += '&csrfToken=' + $('#csrfToken').val();
         $.ajax({
             type: 'POST',
             url: 'class.register.php',
