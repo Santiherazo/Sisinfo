@@ -51,7 +51,7 @@ if(!@include_once(__PATH_CLASSES__ . 'class.handler.php')) throw new Exception('
 if(!@include_once(__PATH_CLASSES__ . 'class.connection.php')) throw new Exception('Ooops!, algo salió mal');
 //if(!@include_once(__PATH_CLASSES__ . 'class.validator.php')) throw new Exception('Could not load class (validator).');
 if(!@include_once(__PATH_CLASSES__ . 'class.login.php')) throw new Exception('Ooops!, algo salió mal');
-//if(!@include_once(__PATH_CLASSES__ . 'class.register.php')) throw new Exception('Ooops!, algo salió mal');
+if(!@include_once(__PATH_CLASSES__ . 'class.register.php')) throw new Exception('Ooops!, algo salió mal');
 //if(!@include_once(__PATH_CLASSES__ . 'class.character.php')) throw new Exception('Could not load class (character).');
 //if(!@include_once(__PATH_CLASSES__ . 'phpmailer/autoload.php')) throw new Exception('Could not load class (phpmailer).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.rankings.php')) throw new Exception('Could not load class (rankings).');

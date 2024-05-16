@@ -1,6 +1,24 @@
+<?php
+session_start();
+
+function estaLogeado() {
+    if (isset($_SESSION['username'])) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+if (estaLogeado()) {
+    echo "El usuario está logeado.";
+} else {
+    echo "El usuario no está logeado.";
+    header("Location: ../login.php");
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,7 +27,6 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <title>Dashboard</title>
 </head>
-
 <body>
     <section class="header">
         <div class="logo">
