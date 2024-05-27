@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Only allow AJAX requests
+    RewriteCond %{HTTP:X-Requested-With} !^XMLHttpRequest$ [NC]
+    RewriteRule ^ - [F]
+
+    # Ensure the content type is JSON for responses
+    AddType application/json .json
+</IfModule>

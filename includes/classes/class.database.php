@@ -24,4 +24,8 @@ class ConexionDB {
         return $this->conexion;
     }
 }
+
+$conexionDB = new ConexionDB();
+$conexion = $conexionDB->obtenerConexion();
+
 ?>

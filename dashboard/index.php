@@ -1,5 +1,5 @@
 <?php
-session_start();
+/*session_start();
 
 function estaLogeado() {
     if (isset($_SESSION['username'])) {
@@ -13,9 +13,9 @@ if (estaLogeado()) {
     echo "El usuario está logeado.";
 } else {
     echo "El usuario no está logeado.";
-    header("Location: ../login.php");
+    header("Location: ../login");
 }
-
+*/
 ?>
 <!DOCTYPE html>
 <html lang="en">

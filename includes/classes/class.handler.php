@@ -2,6 +2,14 @@
 
 class Handler {
     public function loadPage() {
+        // Verificar si se está accediendo a la página principal
+        if($_SERVER['HTTP_HOST'] === 'app.sisinfo.local') {
+            // Cargar la vista de la aplicación
+            include('../modules/app/index.php');
+            return;
+        }
+
+        // Si no se está accediendo a la página principal, continuar con el enfoque existente
         global $config;
         $handler = $this;
         switch(access) {
@@ -13,9 +21,9 @@ class Handler {
                 break;
             case 'dashboard':
                 break;
-            case 'app':
-                break;
             case 'install':
+                break;
+            case 'endpoints':
                 break;
             default:
                 throw new Exception('Access forbidden.');

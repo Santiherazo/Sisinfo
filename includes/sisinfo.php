@@ -37,9 +37,10 @@ define('__PATH_MODULE_CONFIGS__', __PATH_CONFIGS__.'modules/');
 # Public Paths
 define('__PATH_ADMINCP_HOME__', __BASE_URL__.'admincp/');
 define('__PATH_IMG__', __BASE_URL__.'img/');
-define('__PATH_UPLOAD__PROFILE__',__PATH_IMG__.'uploads/profile');
-define('__PATH_UPLOAD__GALLERY__',__PATH_IMG__.'uploads/gallery');
+define('__PATH_UPLOAD__PROFILE__',__BASE_URL__.'uploads/profile');
+define('__PATH_UPLOAD__GALLERY__',__BASE_URL__.'uploads/gallery');
 define('__PATH_API__', __BASE_URL__.'api/');
+define('__PATH_ENDPOINTS__', __BASE_URL__.'endpoints/');
 
 # Timezone
 //if(!@include_once(__PATH_CONFIGS__ . 'timezone.php')) throw new Exception('Could not load timezone.');
@@ -48,10 +49,9 @@ define('__PATH_API__', __BASE_URL__.'api/');
 if(!@include_once(__PATH_CLASSES__ . 'class.database.php')) throw new Exception('Ooops!, algo salió mal');
 if(!@include_once(__PATH_CLASSES__ . 'class.common.php')) throw new Exception('Ooops!, algo salió mal');
 if(!@include_once(__PATH_CLASSES__ . 'class.handler.php')) throw new Exception('Ooops!, algo salió mal');
-if(!@include_once(__PATH_CLASSES__ . 'class.connection.php')) throw new Exception('Ooops!, algo salió mal');
-//if(!@include_once(__PATH_CLASSES__ . 'class.validator.php')) throw new Exception('Could not load class (validator).');
-if(!@include_once(__PATH_CLASSES__ . 'class.login.php')) throw new Exception('Ooops!, algo salió mal');
-if(!@include_once(__PATH_CLASSES__ . 'class.register.php')) throw new Exception('Ooops!, algo salió mal');
+//if(!@include_once(__PATH_CLASSES__ . 'class.connection.php')) throw new Exception('Ooops!, algo salió mal');
+//if(!@include_once(__PATH_CLASSES__ . 'class.login.php')) throw new Exception('Ooops!, algo salió mal');
+//if(!@include_once(__PATH_CLASSES__ . 'class.register.php')) throw new Exception('Ooops!, algo salió mal');
 //if(!@include_once(__PATH_CLASSES__ . 'class.character.php')) throw new Exception('Could not load class (character).');
 //if(!@include_once(__PATH_CLASSES__ . 'phpmailer/autoload.php')) throw new Exception('Could not load class (phpmailer).');
 //if(!@include_once(__PATH_CLASSES__ . 'class.rankings.php')) throw new Exception('Could not load class (rankings).');

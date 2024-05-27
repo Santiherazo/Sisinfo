@@ -2,7 +2,7 @@
 define('access', 'index');
 
 try {
-	if(!@include_once('includes/sisinfo.php')) throw new Exception('Could not load WebEngine CMS.');
+	if(!@include_once('includes/sisinfo.php')) throw new Exception('Opps, estamos presentando inconvenientes');
 	
 } catch (Exception $ex) {
 	$errorPage = file_get_contents('includes/error.html');

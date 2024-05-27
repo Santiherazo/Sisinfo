@@ -17,32 +17,35 @@
     </div>
 </section>
 
+<style>
+  .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+        }
+        .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+</style>
+
 <section>
-<div class="card-list">
-        <a href="#" class="card-item">
-            <img src="images/developer.jpg" alt="Card Image">
-            <span class="developer">Noticias</span>
-            <h3>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </h3>
-            <div class="arrow">
-                <i class="fas fa-arrow-right card-icon"></i>
-            </div>
-        </a>
-        <a href="#" class="card-item">
-            <img src="images/designer.jpg" alt="Card Image">
-            <span class="designer">Blog</span>
-            <h3>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</h3>
-            <div class="arrow">
-                <i class="fas fa-arrow-right card-icon"></i>
-            </div>
-        </a>
-        <a href="#" class="card-item">
-            <img src="images/editor.jpg" alt="Card Image">
-            <span class="editor">Noticias</span>
-            <h3>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</h3>
-            <div class="arrow">
-                <i class="fas fa-arrow-right card-icon"></i>
-            </div>
-        </a>
+<div class="card-list" id="news-container">
+</div>
+<div class="popup" id="news-popup">
+        <div class="close-btn">&times;</div>
+        <h2 id="popup-title"></h2>
+        <p id="popup-content"></p>
     </div>
 </section>
 
@@ -193,5 +196,3 @@
       </div>
     </div>
 </section>
-
-

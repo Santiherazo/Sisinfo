@@ -1,6 +1,4 @@
-<?php
-/*$conexionDB = new ConexionDB();
-$conexion = $conexionDB->obtenerConexion();
+<?php 
 
 class Login {
     private $conexion;
@@ -52,4 +50,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     json_encode(['success' => false]);
 }
 ?>
-*/
