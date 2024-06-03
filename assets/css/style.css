@@ -1,0 +1,134 @@
+.input-field {
+    background-color: #e5e7eb;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.btn-primary {
+    background-color: #6366f1;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    background-color: #4f46e5;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700&display=swap');
+
+body {
+    background-color: #f9fafb;
+    font-family: 'Fira Sans', sans-serif;
+    overflow: hidden;
+}
+
+
+.header {
+    background-color: #4b5563;
+    color: #ffffff;
+}
+
+.sidebar {
+    background-color: #374151;
+    color: #ffffff;
+    overflow-y: scroll;
+    max-height: calc(100vh - 100px);
+}
+
+.sidebar a {
+    color: #ffffff;
+}
+
+.table-header {
+    background-color: #4b5563;
+    color: #ffffff;
+}
+
+.table-row:nth-child(even) {
+    background-color: #f3f4f6;
+}
+
+.table-row:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.input-field {
+    background-color: #e5e7eb;
+    border: 1px solid #ccc;
+    padding: 8px;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.btn-primary {
+    background-color: #1f2937;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #3b82f6;
+}
+
+.total-row {
+    background-color: #d1fae5;
+}
+
+.timer-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 10px 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.timer {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: red;
+}
+
+.project-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #3b82f6;
+    border-radius: 8px;
+    color: #ffffff;
+    transition: background-color 0.3s;
+}
+
+.project-list-item:hover {
+    background-color: #2563eb;
+}
+
+.project-list-item .left-section {
+    flex-grow: 1;
+}
+
+.project-list-item .right-section {
+    text-align: right;
+}

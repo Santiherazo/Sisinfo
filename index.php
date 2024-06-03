@@ -2,10 +2,9 @@
 define('access', 'index');
 
 try {
-	if(!@include_once('include/sisinfo')) throw new Exception('Could not load WebEngine CMS.');
-	
+    if (!@include_once('includes/app.php')) throw new Exception('Opps, estamos presentando inconvenientes');
 } catch (Exception $ex) {
-	ob_clean();
-	$errorPage = file_get_contents('includes/error.html');
-	echo str_replace("{ERROR_MESSAGE}", $ex->getMessage(), $errorPage);
+    $errorPage = file_get_contents('includes/error.html');
+    echo str_replace("{ERROR_MESSAGE}", $ex->getMessage(), $errorPage);
 }
+?>

@@ -1,70 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .login-container {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
-        h2 {
-            margin-top: 0;
-        }
-        input[type="text"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #007bff;
-            border: none;
-            color: #fff;
-            padding: 12px 20px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 10px 0;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
-<body>
 
-<div class="login-container">
-    <h2>Iniciar Sesión</h2>
-    <form id="loginForm">
-        <input type="text" name="username" placeholder="Nombre de Usuario"><br>
-        <input type="password" name="password" placeholder="Contraseña"><br>
-        <button type="submit">Iniciar Sesión</button>
-    </form>
-</div>
-
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+        <div class="flex justify-center mb-4">
+            <img src="../assets/img/logo.png" alt="Logo" class="h-12 w-12">
+        </div>
+        <h2 class="text-2xl font-bold text-center mb-4">Welcome back</h2>
+        <p class="text-center mb-6">Please enter your details to sign in</p>
+        <?php if (!empty($error_message)): ?>
+            <p class="text-center mb-4 text-red-500"><?php echo $error_message; ?></p>
+        <?php endif; ?>
+        <form action="index.php?page=login" method="POST">
+            <div class="mb-4">
+                <label for="documento_identidad" class="block text-sm font-medium text-gray-700">Documento de Identidad</label>
+                <input type="text" id="documento_identidad" name="documento_identidad" class="input-field mt-1" placeholder="Enter your document ID">
+            </div>
+            <div class="mb-4">
+                <label for="contrasena" class="block text-sm font-medium text-gray-700">Password</label>
+                <div class="relative">
+                    <input type="password" id="contrasena" name="contrasena" class="input-field mt-1" placeholder="••••••••">
+                </div>
+            </div>
+            <button type="submit" class="w-full btn-primary">Sign in</button>
+        </form>
+    </div>
 </body>
 </html>
