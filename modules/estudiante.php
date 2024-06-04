@@ -7,9 +7,10 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body class="bg-gray-100 p-6">
-    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md" id="resultsContainer">
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-2xl font-semibold">Resultados Académicos</h2>
             <div class="flex space-x-4">
@@ -27,7 +28,7 @@
                 </button>
             </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div id="resultsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div class="bg-gray-50 p-4 rounded shadow">
                 <h3 class="text-lg font-semibold">Promedio General</h3>
                 <p class="text-4xl font-bold" id="average"></p>
@@ -118,59 +119,39 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
 
-            let yOffset = 10;
+            // Hide buttons before capturing
+            $('#downloadPdf').hide();
+            $('#logoutButton').hide();
 
-            doc.setFontSize(18);
-            doc.text("Resultados Académicos", 10, yOffset);
-            yOffset += 10;
+            html2canvas(document.body, {
+                scale: 2, // Aumentar la escala para mejorar la calidad
+                useCORS: true,
+                allowTaint: true
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 210; // Width of A4 in mm
+                const pageHeight = 297; // Height of A4 in mm
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                let heightLeft = imgHeight;
 
-            doc.setFontSize(14);
-            doc.text("Promedio General:", 10, yOffset);
-            doc.setFontSize(12);
-            doc.text($('#average').text(), 60, yOffset);
-            yOffset += 10;
+                let position = 0;
 
-            doc.setFontSize(14);
-            doc.text("Progreso:", 10, yOffset);
-            doc.setFontSize(12);
-            doc.text($('#progress').text(), 60, yOffset);
-            yOffset += 10;
+                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
 
-            doc.setFontSize(14);
-            doc.text("Retroalimentación:", 10, yOffset);
-            doc.setFontSize(12);
-            doc.text($('#feedback').text(), 60, yOffset);
-            yOffset += 20;
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
 
-            doc.setFontSize(14);
-            doc.text("Información del Proyecto", 10, yOffset);
-            yOffset += 10;
-            $('#projectInfo li').each(function() {
-                doc.setFontSize(12);
-                doc.text($(this).text(), 10, yOffset);
-                yOffset += 10;
+                doc.save('reporte.pdf');
+
+                // Show buttons after capturing
+                $('#downloadPdf').show();
+                $('#logoutButton').show();
             });
-
-            yOffset += 10;
-            doc.setFontSize(14);
-            doc.text("Criterios Evaluados", 10, yOffset);
-            yOffset += 10;
-
-            $('#evaluatedCriteria > div').each(function() {
-                let title = $(this).find('h4').text();
-                let feedback = $(this).find('p').text();
-                let score = $(this).find('span').text();
-
-                doc.setFontSize(12);
-                doc.text(`Título: ${title}`, 10, yOffset);
-                yOffset += 10;
-                doc.text(`Retroalimentación: ${feedback}`, 10, yOffset);
-                yOffset += 10;
-                doc.text(`Puntuación: ${score}`, 10, yOffset);
-                yOffset += 20;
-            });
-
-            doc.save('reporte.pdf');
         });
 
         $('#logoutButton').click(function() {
