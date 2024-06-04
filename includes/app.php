@@ -5,7 +5,6 @@ function sanitizeInput($input) {
     return htmlspecialchars(stripslashes(trim($input)));
 }
 
-// Autoload de clases
 spl_autoload_register(function ($class_name) {
     $file = __DIR__ . '/config/classes/class.' . $class_name . '.php';
     if (file_exists($file)) {
@@ -18,9 +17,10 @@ spl_autoload_register(function ($class_name) {
 try {
     $db = new Database();
     $auth = new Auth($db);
+    $user_name = $_SESSION['user'];
     $rubric = new Rubric($db);
-    $report = new Report($db);
     $handler = new Handler($auth, $db);
+    $report = new Report($db, $user_name);
     $projectHandler = new ProjectHandler($db);
 
     $page = isset($_GET['page']) ? sanitizeInput($_GET['page']) : 'login';

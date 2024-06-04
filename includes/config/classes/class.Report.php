@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 class Report {
     private $db;
 
@@ -7,107 +6,135 @@ class Report {
         $this->db = $db;
     }
 
-    public function getResults($type = 'all') {
-        switch ($type) {
-            case 'all':
-                return $this->getAllCalificationsWithProjects();
-            default:
-                return json_encode(['error' => 'Tipo de consulta no válido.']);
-        }
-    }
+    public function getResults() {
+        $user_name = $_SESSION['user'];
 
-    private function getAllCalificationsWithProjects() {
         try {
-            $query = "
-                SELECT p.id AS proyecto_id, p.investigadores, p.titulo AS proyecto_titulo, p.calificacion AS proyecto_calificacion, 
-                       c.id AS calificacion_id, c.titulo_proyecto, c.planteamiento_problema, c.justificacion, c.objetivos, 
-                       c.metodologia, c.resultados_iniciales, c.sustentacion, c.comentarios, c.total AS calificacion_total
-                FROM proyectos p
-                JOIN calificaciones c ON p.id = c.proyecto_id
+            // Iniciar la transacción
+            $this->db->beginTransaction();
+
+            // Validar si el usuario existe en la tabla `proyectos`
+            $queryValidateUser = "
+                SELECT id 
+                FROM `proyectos` 
+                WHERE `investigadores` LIKE CONCAT('%', :user_name, '%')
+                LIMIT 1
             ";
-            $stmt = $this->db->prepare($query);
-            $stmt->execute();
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmtValidateUser = $this->db->prepare($queryValidateUser);
+            $stmtValidateUser->bindParam(':user_name', $user_name);
+            $stmtValidateUser->execute();
+            $project = $stmtValidateUser->fetch(PDO::FETCH_ASSOC);
 
-            // Habilita el informe de errores y captura los errores en una variable
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
+            if ($project) {
+                $projectId = $project['id'];
 
-ob_start(); // Inicia el almacenamiento en búfer de salida
+                $query = "
+                    SELECT 
+                        p.`id`, 
+                        p.`titulo`, 
+                        p.`descripcion`,
+                        p.`investigadores`, 
+                        p.`docentes`,
+                        p.`linea`,
+                        p.`evaluador`,
+                        p.`fase`,
+                        c.`titleProject`,
+                        c.`feedProject`,
+                        c.`introduction`,
+                        c.`feedIntroduction`,
+                        c.`problemStatement`,
+                        c.`FeedStatement`,
+                        c.`justify`,
+                        c.`feedJustify`,
+                        c.`targets`,
+                        c.`feedTargets`,
+                        c.`theorical`,
+                        c.`feedTheorical`,
+                        c.`methodology`,
+                        c.`feedMethodology`,
+                        c.`mainResults`,
+                        c.`feedMainresults`,
+                        c.`support`,
+                        c.`feedSupport`,
+                        c.`rating`,
+                        c.`generalComments`
+                    FROM 
+                        `proyectos` p
+                        INNER JOIN `calificaciones` c ON p.`id` = c.`idProject`
+                    WHERE 
+                        p.`id` = :project_id
+                ";
+                $stmt = $this->db->prepare($query);
+                $stmt->bindParam(':project_id', $projectId);
+                $stmt->execute();
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-$formattedResults = array_reduce($results, function($acc, $result) {
-    $titulo = $result['proyecto_titulo'];
-    $calificacion = floatval($result['proyecto_calificacion']);
+                $report = [];
+                foreach ($results as $row) {
+                    $report[$row['id']] = [
+                        "titulo" => strip_tags($row['titulo']),
+                        "descripcion" => strip_tags($row['descripcion']),
+                        "estudiantes" => explode(",", strip_tags($row['investigadores'])),
+                        "Fase" => strip_tags($row['fase']),
+                        "Linea" => strip_tags($row['linea']),
+                        "docente" => strip_tags($row['docentes']),
+                        "evaluador" => strip_tags($row['evaluador']),
+                        "calificacion_general" => strip_tags($row['rating']),
+                        "comentarioGeneral" => strip_tags($row['generalComments']),
+                        "resultados" => [
+                            "titulo" => [
+                                "valor" => $row['titleProject'],
+                                "retroalimentación" => strip_tags($row['feedProject'])
+                            ],
+                            "introduccion" => [
+                                "valor" => $row['introduction'],
+                                "retroalimentación" => strip_tags($row['feedIntroduction'])
+                            ],
+                            "planteamiento" => [
+                                "valor" => $row['problemStatement'],
+                                "retroalimentación" => strip_tags($row['FeedStatement'])
+                            ],
+                            "justificacion" => [
+                                "valor" => $row['justify'],
+                                "retroalimentación" => strip_tags($row['feedJustify'])
+                            ],
+                            "objetivos" => [
+                                "valor" => $row['targets'],
+                                "retroalimentación" => strip_tags($row['feedTargets'])
+                            ],
+                            "marcoTeorico" => [
+                                "valor" => $row['theorical'],
+                                "retroalimentación" => strip_tags($row['feedTheorical'])
+                            ],
+                            "metodologia" => [
+                                "valor" => $row['methodology'],
+                                "retroalimentación" => strip_tags($row['feedMethodology'])
+                            ],
+                            "resultadosIniciales" => [
+                                "valor" => $row['mainResults'],
+                                "retroalimentación" => strip_tags($row['feedMainresults'])
+                            ],
+                            "sustentacion" => [
+                                "valor" => $row['support'],
+                                "retroalimentación" => strip_tags($row['feedSupport'])
+                            ]
+                        ]
+                    ];
+                }
 
-    $item = array(
-        "titulo" => $titulo,
-        "estudiantes" => array_map('trim', explode(',', $result['investigadores'])),
-        "calificacion" => $calificacion,
-        "resto_de_calificaciones" => array(
-            array(
-                "criterio" => "Planteamiento del problema",
-                "calificacion" => floatval($result['planteamiento_problema']),
-                "comentario" => $result['comentarios']
-            ),
-            array(
-                "criterio" => "Justificación",
-                "calificacion" => floatval($result['justificacion']),
-                "comentario" => $result['comentarios']
-            ),
-            array(
-                "criterio" => "Objetivos",
-                "calificacion" => floatval($result['objetivos']),
-                "comentario" => $result['comentarios']
-            ),
-            array(
-                "criterio" => "Metodología",
-                "calificacion" => floatval($result['metodologia']),
-                "comentario" => $result['comentarios']
-            ),
-            array(
-                "criterio" => "Resultados iniciales",
-                "calificacion" => floatval($result['resultados_iniciales']),
-                "comentario" => $result['comentarios']
-            ),
-            array(
-                "criterio" => "Sustentación",
-                "calificacion" => floatval($result['sustentacion']),
-                "comentario" => $result['comentarios']
-            )
-        )
-    );
+                // Confirmar la transacción
+                $this->db->commit();
 
-    $acc['items'][] = $item;
-    $acc['titulos'][] = $titulo;
-    $acc['calificaciones'][] = $calificacion;
-
-    return $acc;
-}, ['items' => [], 'titulos' => [], 'calificaciones' => []]);
-
-// Captura cualquier salida no deseada
-$output = ob_get_clean();
-
-// Configura el encabezado para la respuesta JSON
-header('Content-Type: application/json');
-
-if (!empty($output)) {
-    echo json_encode(['error' => 'Unexpected output: ' . $output]);
-    exit;
-}
-
-$json_response = json_encode($formattedResults);
-if ($json_response === false) {
-    $error_message = json_last_error_msg();
-    echo json_encode(['error' => 'Error al codificar JSON: ' . $error_message]);
-} else {
-    echo $json_response;
-}
-            
-
-        } catch (PDOException $e) {
-            http_response_code(500);
-            return json_encode(['error' => "Error al obtener los resultados y proyectos: " . $e->getMessage()]);
+                return json_encode($report);
+            } else {
+                // Si no se encuentra el usuario, deshacer la transacción
+                $this->db->rollBack();
+                return json_encode(["error" => "Usuario no encontrado en la tabla de proyectos."]);
+            }
+        } catch (Exception $e) {
+            // Si ocurre un error, deshacer la transacción
+            $this->db->rollBack();
+            return json_encode(["error" => $e->getMessage()]);
         }
     }
 }
-?>
