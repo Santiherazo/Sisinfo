@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-06-2024 a las 14:54:11
+-- Tiempo de generación: 04-06-2024 a las 03:20:14
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -58,22 +58,7 @@ CREATE TABLE `calificaciones` (
 --
 
 INSERT INTO `calificaciones` (`id`, `idProject`, `assessor`, `titleProject`, `feedProject`, `introduction`, `feedIntroduction`, `problemStatement`, `FeedStatement`, `justify`, `feedJustify`, `targets`, `feedTargets`, `theorical`, `feedTheorical`, `methodology`, `feedMethodology`, `mainResults`, `feedMainresults`, `support`, `feedSupport`, `rating`, `generalComments`) VALUES
-(1, 1, '4.50', 1.0, '', 0.0, '', 1.0, '', 1.0, NULL, 0.0, NULL, 0.0, NULL, 1.0, NULL, 1.0, NULL, 1.0, '1.0', 7.0, ''),
-(2, 1, '4.50', 1.0, '', 0.0, '', 1.0, '', 1.0, NULL, 0.0, NULL, 0.0, NULL, 1.0, NULL, 1.0, NULL, 1.0, '1.0', 7.0, ''),
-(3, 11, 'Dr. Ana Gómez', 1.0, '', 0.0, '', 1.0, '', 1.0, NULL, 0.0, NULL, 0.0, NULL, 1.0, NULL, 1.0, NULL, 1.0, '1.0', 7.0, ''),
-(4, 11, 'Dr. Ana Gómez', 1.0, '', 0.0, '', 1.0, '', 1.0, NULL, 0.0, NULL, 0.0, NULL, 1.0, NULL, 1.0, NULL, 1.0, '1.0', 7.0, ''),
-(15, 12, 'Dr. Ricardo Díaz', 5.0, '', 0.0, '', 2.0, '', 1.0, NULL, 0.0, NULL, 0.0, NULL, 1.0, NULL, 1.0, NULL, 1.0, '1.0', 12.0, ''),
-(52, 11, 'Santiago Herazo Pérez', 5.0, '5', 0.0, '', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 40.0, '5'),
-(53, 11, 'Santiago Herazo Pérez', 5.0, '5', 0.0, '', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 40.0, '5'),
-(54, 11, 'Santiago Herazo Pérez', 5.0, '5', 0.0, '', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 40.0, '5'),
-(55, 12, 'Santiago Herazo Pérez', 5.0, '5', 0.0, '', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 40.0, '5'),
-(56, 12, 'Santiago Herazo Pérez', 5.0, '5', 0.0, '', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 40.0, '5'),
-(57, 11, 'Santiago Herazo Pérez', 5.0, '5', 0.0, '', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 40.0, '5'),
-(58, 12, 'Santiago Herazo Pérez', 5.0, '5', 0.0, '', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 5.0, '5', 40.0, '5'),
-(59, 12, 'Santiago Herazo Pérez', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 45.0, '5'),
-(60, 11, 'Santiago Herazo Pérez', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 45.0, '5'),
-(61, 43, 'María Hernández', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 45.0, '5'),
-(62, 43, 'María Hernández', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 5.0, '', 45.0, '5');
+(60, 11, 'Santiago Herazo Pérez', 5.0, 'title feedback', 5.0, 'intro feedback', 5.0, 'planteamiento feedback', 5.0, 'justificacion feedback', 5.0, 'objetivos feedback', 5.0, 'marco teorico feedback', 5.0, 'metodologia feedback', 5.0, 'resultados feedback', 5.0, 'feed sustentacion', 45.0, 'comentarios generales');
 
 -- --------------------------------------------------------
 
@@ -106,7 +91,7 @@ CREATE TABLE `proyectos` (
 --
 
 INSERT INTO `proyectos` (`id`, `investigadores`, `docentes`, `linea`, `evaluador`, `fase`, `titulo`, `descripcion`, `fecha_inicio`, `fecha_fin`, `imagen`, `palabras_clave`, `calificacion`, `calificado`, `timer`, `hora`, `created_at`) VALUES
-(11, 'Juan Pérez, María López, Sergio Cornejo', 'Dr. Luis García', 'Ingeniería del conocimiento', 'Santiago Herazo Pérez', 'Propuesta', 'Impacto del Cambio Climático', 'Estudio sobre el impacto del cambio climático en la biodiversidad.', '2024-01-01', '2024-12-31', 'imagen1.jpg', 'cambio climático, biodiversidad, medio ambiente', 9.99, 1, 20, '13:00:00', '2024-05-26 15:00:00'),
+(11, 'Juan Pérez, María, Santiago Herazo Pérez López, Sergio Cornejo', 'Dr. Luis García', 'Ingeniería del conocimiento', 'Santiago Herazo Pérez', 'Propuesta', 'Impacto del Cambio Climático', 'Estudio sobre el impacto del cambio climático en la biodiversidad.', '2024-01-01', '2024-12-31', 'imagen1.jpg', 'cambio climático, biodiversidad, medio ambiente', 9.99, 1, 20, '13:00:00', '2024-05-26 15:00:00'),
 (12, 'Carlos Sánchez, Laura Martínez', 'Dra. Elena Torres', 'Gestión de la Seguridad Informática', 'Santiago Herazo Pérez', 'Propuesta', 'Desarrollo de Biofertilizantes', 'Investigación sobre biofertilizantes a partir de residuos orgánicos.', '2023-02-15', '2024-06-30', 'imagen2.jpg', 'biofertilizantes, residuos orgánicos, agricultura sostenible', 9.99, 1, 20, '10:00:00', '2024-05-26 15:10:00'),
 (31, 'Juan Pérez, María González', 'María González', 'Ingeniería del Software', 'Juan Pérez', 'Propuesta', 'Desarrollo de un sistema de gestión de proyectos', 'Desarrollo de un sistema de gestión de proyectos para la empresa XYZ.', '2022-01-01', '2022-06-30', 'imagen1.jpg', 'gestión de proyectos, sistema de gestión', 0.00, 0, 0, '08:00:00', '2022-01-01 13:00:00'),
 (32, 'Pedro Rodríguez, Ana Martínez, Luis García', 'Ana Martínez, Carlos López', '', 'Pedro Rodríguez, Luis García', 'Desarrollo', 'Seguridad en la nube y Redes de alta velocidad', 'Desarrollo de un sistema de seguridad en la nube y redes de alta velocidad para las empresas ABC y DEF.', '2022-02-01', '2022-09-30', 'imagen2.jpg', 'seguridad en la nube, sistema de seguridad, redes de alta velocidad, sistema de redes', 0.00, 0, 0, '09:00:00', '2022-02-01 14:00:00'),
@@ -157,7 +142,7 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id`, `nombre_completo`, `nombre_usuario`, `correo_electronico`, `documento_identidad`, `contrasena`, `rol`, `institucion`, `direccion`, `ciudad`, `estado_provincia`, `pais`, `codigo_postal`, `telefono`, `foto_perfil_url`, `fecha_nacimiento`, `genero`, `fecha_registro`) VALUES
 (1, NULL, 'admin', 'admin@admin.com', 0, '12345678', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-05-15 14:33:45'),
-(2, 'Santiago Herazo Pérez', 'santiagoherazo300007', 'herazopsantiago@gmail.com', 1002199330, '7c222fb2927d828af22f592134e8932480637c0d', 'Evaluador', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-05-16 01:23:16');
+(2, 'Santiago Herazo Pérez', 'santiagoherazo300007', 'herazopsantiago@gmail.com', 1002199330, '7c222fb2927d828af22f592134e8932480637c0d', 'Estudiante', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2024-05-16 01:23:16');
 
 --
 -- Índices para tablas volcadas
