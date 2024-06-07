@@ -201,7 +201,7 @@
                             <td class="border border-gray-300 px-4 py-2"><textarea id="feedMethodology" class="w-full border border-gray-300 rounded h-24"></textarea></td>
                         </tr>
                         <tr>
-                            <td class="border border-gray-300 px-4 py-2">Resultados Iniciales</td>
+                            <td class="border border-gray-300 px-4 py-2">Resultados</td>
                             <td class="border border-gray-300 px-4 py-2">
                                 <div>Deficiente (0-2.9)</div>
                                 <div>Bueno (3.0-3.9)</div>
