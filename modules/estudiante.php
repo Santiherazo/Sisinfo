@@ -12,23 +12,13 @@
 <body class="bg-gray-100 p-6">
     <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-semibold">Resultados Académicos</h2>
+            <h2 class="text-2xl font-semibold">Resultados de <span id="projectTitle"></span></h2>
             <div class="flex space-x-4">
-                <button id="downloadPdf" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11V5m0 6l3-3m-3 3l-3-3m6 8a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    Descargar Reporte
-                </button>
-                <button id="logoutButton" class="text-gray-500 hover:text-gray-700">
-                    <svg class="w-6 h-6 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6-4v16"></path>
-                    </svg>
-                    Cerrar Sesión
-                </button>
+                <button id="downloadPdf" class="text-gray-500 hover:text-gray-700">Descargar Reporte</button>
+                <button id="logoutButton" class="text-gray-500 hover:text-gray-700">Cerrar Sesión</button>
             </div>
         </div>
-        <div id="resultsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div class="bg-gray-50 p-4 rounded shadow">
                 <h3 class="text-lg font-semibold">Promedio General</h3>
                 <p class="text-4xl font-bold" id="average"></p>
@@ -54,116 +44,119 @@
             <!-- Se actualizará dinámicamente -->
         </div>
     </div>
-    
+
     <script>
     $(document).ready(function() {
-        function getResults() {
-            $.ajax({
-                url: 'includes/app.php?page=results',
-                type: 'GET',
-                dataType: 'json',
-                success: function(response) {
-                    console.log(response);
-                    try {
-                        let parsedResponse = JSON.parse(response);
-                        console.log('Parsed Response:', parsedResponse);
+    function renderProject(project) {
+        $('#projectTitle').text(project.titulo || 'Título no encontrado');
+        $('#average').text(parseFloat(project.calificacion_general).toFixed(2));
+        const progress = (project.calificacion_general / 5 * 100).toFixed(2);
+        $('#progress').text(`${progress}%`);
+        $('#progressBar').css('width', `${progress}%`);
+        $('#feedback').text(project.comentarioGeneral || 'No hay comentarios.');
 
-                        let project = parsedResponse["11"];
-                        let totalScore = parseFloat(project.calificacion_general);
-                        
-                        let projectInfoHtml = `
-                            <li><strong>Título:</strong> ${project.titulo}</li>
-                            <li><strong>Descripción:</strong> ${project.descripcion}</li>
-                            <li><strong>Estudiantes:</strong> ${project.estudiantes.join(', ')}</li>
-                            <li><strong>Fase:</strong> ${project.Fase}</li>
-                            <li><strong>Línea:</strong> ${project.Linea}</li>
-                            <li><strong>Docente:</strong> ${project.docente}</li>
-                            <li><strong>Evaluador:</strong> ${project.evaluador}</li>
-                        `;
-                        $('#projectInfo').html(projectInfoHtml);
+        let estudiantes = project.estudiantes ? project.estudiantes.join(', ') : 'N/A';
+        let projectInfoHtml = `
+            <li><strong>Título:</strong> ${project.titulo}</li>
+            <li><strong>Descripción:</strong> ${project.descripcion}</li>
+            <li><strong>Estudiantes:</strong> ${estudiantes}</li>
+            <li><strong>Fase:</strong> ${project.Fase}</li>
+            <li><strong>Línea:</strong> ${project.Linea}</li>
+            <li><strong>Docente:</strong> ${project.docente}</li>
+            <li><strong>Evaluador:</strong> ${project.evaluador}</li>
+        `;
+        $('#projectInfo').html(projectInfoHtml);
 
-                        $('#average').text(totalScore.toFixed(2));
-                        $('#progress').text(`${(totalScore / 50 * 100).toFixed(2)}%`);
-                        $('#progressBar').css('width', `${(totalScore / 50 * 100).toFixed(2)}%`);
-
-                        $('#feedback').text(project.comentarioGeneral);
-
-                        let criteriaHtml = '';
-                        Object.keys(project.resultados).forEach(key => {
-                            let criterio = project.resultados[key];
-                            criteriaHtml += `
-                                <div class="bg-gray-50 p-4 rounded shadow">
-                                    <h4 class="text-md font-semibold">${key}</h4>
-                                    <p>${criterio.retroalimentación}</p>
-                                    <span class="text-xl font-bold">${criterio.valor}</span>
-                                </div>
-                            `;
-                        });
-                        $('#evaluatedCriteria').html(criteriaHtml);
-                    } catch (e) {
-                        console.error('Error parsing or processing response:', e);
-                        $('#evaluatedCriteria').html('<p>Ocurrió un error al procesar los datos.</p>');
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error('Error fetching data:', textStatus, errorThrown);
-                    $('#evaluatedCriteria').html('<p>Ocurrió un error al obtener los datos.</p>');
-                }
+        let criteriaHtml = '';
+        if (project.resultados) {
+            Object.keys(project.resultados).forEach(key => {
+                let criterio = project.resultados[key];
+                criteriaHtml += `
+                    <div class="bg-gray-50 p-4 rounded shadow">
+                        <h4 class="text-md font-semibold">${key}</h4>
+                        <p>${criterio.retroalimentación}</p>
+                        <span class="text-xl font-bold">${criterio.valor}</span>
+                    </div>
+                `;
             });
         }
+        $('#evaluatedCriteria').html(criteriaHtml);
+    }
 
-        getResults();
-        setInterval(getResults, 20 * 1000);
+    function getResults() {
+        $.ajax({
+            url: 'includes/app.php?page=results',
+            type: 'GET',
+            success: function(response) {
+                try {
+                    let parsedResponse = JSON.parse(response);
 
-        $('#downloadPdf').click(function() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
+                    if (!Array.isArray(parsedResponse)) {
+                        parsedResponse = [parsedResponse];
+                    }
 
-            // Hide buttons before capturing
-            $('#downloadPdf').hide();
-            $('#logoutButton').hide();
+                    if (parsedResponse.length > 0 && !parsedResponse[0].error) {
+                        renderProject(parsedResponse[0]);
+                    } else {
+                        $('#evaluatedCriteria').html(`<p>${parsedResponse[0].error || 'No se encontraron proyectos.'}</p>`);
+                    }
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    $('#evaluatedCriteria').html('<p>Ocurrió un error al procesar los datos. Asegúrese de que el servidor está devolviendo JSON válido.</p>');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error fetching data:', textStatus, errorThrown);
+                $('#evaluatedCriteria').html('<p>Ocurrió un error al obtener los datos. Verifique la consola para más detalles.</p>');
+            }
+        });
+    }
 
-            html2canvas(document.body, {
-                scale: 2, // Aumentar la escala para mejorar la calidad
-                useCORS: true,
-                allowTaint: true
-            }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 210; // Width of A4 in mm
-                const pageHeight = 297; // Height of A4 in mm
-                const imgHeight = canvas.height * imgWidth / canvas.width;
-                let heightLeft = imgHeight;
+    getResults();
+    setInterval(getResults, 20 * 1000);
 
-                let position = 0;
+    $('#logoutButton').click(function() {
+        $.get('index.php?page=logout', function() {
+            location.reload();
+        });
+    });
 
+    $('#downloadPdf').click(function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'legal');
+
+        $('#downloadPdf').hide();
+        $('#logoutButton').hide();
+
+        html2canvas(document.body, {
+            scale: 2,
+            useCORS: true,
+            allowTaint: true
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const imgWidth = 216;
+            const pageHeight = 356;
+            const imgHeight = canvas.height * imgWidth / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                doc.addPage();
                 doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
+            }
 
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    doc.addPage();
-                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-                }
+            doc.save('reporte.pdf');
 
-                doc.save('reporte.pdf');
-
-                // Show buttons after capturing
-                $('#downloadPdf').show();
-                $('#logoutButton').show();
-            });
+            $('#downloadPdf').show();
+            $('#logoutButton').show();
         });
-
-        $('#logoutButton').click(function() {
-            logout();
-        });
-
-        function logout() {
-            $.get('index.php?page=logout', function(data) {
-                location.reload();
-            });
-        }
     });
+});
     </script>
 </body>
 </html>

@@ -336,7 +336,7 @@ $(document).ready(function() {
 
         const participantsContainer = $('#projectParticipants');
         participantsContainer.empty();
-        const investigadoresArray = project.investigadores.split(', ');
+        const investigadoresArray = project.nombre_investigador.split(', ');
         investigadoresArray.forEach(participante => {
             participantsContainer.append(
                 $('<input>')
@@ -388,7 +388,7 @@ $(document).ready(function() {
         $('.puntaje').each(function() {
             total += parseFloat($(this).val()) || 0;
         });
-        $('#rating').text(total.toFixed(1));
+        $('#rating').text(total.toFixed(1)/9);
     }
 
     function saveRubric() {

@@ -17,10 +17,9 @@ spl_autoload_register(function ($class_name) {
 try {
     $db = new Database();
     $auth = new Auth($db);
-    $user_name = $_SESSION['user'];
     $rubric = new Rubric($db);
     $handler = new Handler($auth, $db);
-    $report = new Report($db, $user_name);
+    $report = new Report($db);
     $projectHandler = new ProjectHandler($db);
 
     $page = isset($_GET['page']) ? sanitizeInput($_GET['page']) : 'login';

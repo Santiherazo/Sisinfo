@@ -1,4 +1,4 @@
-<?php 
+<?php
 class Report {
     private $db;
 
@@ -10,131 +10,197 @@ class Report {
         $user_name = $_SESSION['user'];
 
         try {
-            // Iniciar la transacción
             $this->db->beginTransaction();
-
-            // Validar si el usuario existe en la tabla `proyectos`
-            $queryValidateUser = "
-                SELECT id 
-                FROM `proyectos` 
-                WHERE `investigadores` LIKE CONCAT('%', :user_name, '%')
-                LIMIT 1
+            $queryGetInvestigatorsIds = "
+                SELECT id, investigadores 
+                FROM proyectos
             ";
-            $stmtValidateUser = $this->db->prepare($queryValidateUser);
-            $stmtValidateUser->bindParam(':user_name', $user_name);
-            $stmtValidateUser->execute();
-            $project = $stmtValidateUser->fetch(PDO::FETCH_ASSOC);
+            $stmtGetInvestigatorsIds = $this->db->prepare($queryGetInvestigatorsIds);
+            $stmtGetInvestigatorsIds->execute();
+            $investigatorsIds = $stmtGetInvestigatorsIds->fetchAll(PDO::FETCH_ASSOC);
 
-            if ($project) {
-                $projectId = $project['id'];
+            if ($investigatorsIds) {
+                $allInvestigatorsIds = [];
+                $projectIds = [];
+                foreach ($investigatorsIds as $row) {
+                    $ids = preg_split('/[\s,]+/', $row['investigadores']); // Separar por comas y espacios
+                    $allInvestigatorsIds = array_merge($allInvestigatorsIds, $ids);
+                    $projectIds[$row['id']] = $ids;
+                }
+                $allInvestigatorsIds = array_unique($allInvestigatorsIds);
 
-                $query = "
-                    SELECT 
-                        p.`id`, 
-                        p.`titulo`, 
-                        p.`descripcion`,
-                        p.`investigadores`, 
-                        p.`docentes`,
-                        p.`linea`,
-                        p.`evaluador`,
-                        p.`fase`,
-                        c.`titleProject`,
-                        c.`feedProject`,
-                        c.`introduction`,
-                        c.`feedIntroduction`,
-                        c.`problemStatement`,
-                        c.`FeedStatement`,
-                        c.`justify`,
-                        c.`feedJustify`,
-                        c.`targets`,
-                        c.`feedTargets`,
-                        c.`theorical`,
-                        c.`feedTheorical`,
-                        c.`methodology`,
-                        c.`feedMethodology`,
-                        c.`mainResults`,
-                        c.`feedMainresults`,
-                        c.`support`,
-                        c.`feedSupport`,
-                        c.`rating`,
-                        c.`generalComments`
-                    FROM 
-                        `proyectos` p
-                        INNER JOIN `calificaciones` c ON p.`id` = c.`idProject`
-                    WHERE 
-                        p.`id` = :project_id
+                // Obtener los nombres de los investigadores basados en sus IDs
+                $placeholders = implode(',', array_fill(0, count($allInvestigatorsIds), '?'));
+                $queryGetInvestigatorsNames = "
+                    SELECT id, nombre_completo 
+                    FROM usuarios 
+                    WHERE id IN ($placeholders)
                 ";
-                $stmt = $this->db->prepare($query);
-                $stmt->bindParam(':project_id', $projectId);
-                $stmt->execute();
-                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $stmtGetInvestigatorsNames = $this->db->prepare($queryGetInvestigatorsNames);
+                foreach ($allInvestigatorsIds as $index => $investigatorId) {
+                    $stmtGetInvestigatorsNames->bindValue(($index + 1), $investigatorId, PDO::PARAM_INT);
+                }
+                $stmtGetInvestigatorsNames->execute();
+                $investigatorsNames = $stmtGetInvestigatorsNames->fetchAll(PDO::FETCH_ASSOC);
 
-                $report = [];
-                foreach ($results as $row) {
-                    $report[$row['id']] = [
-                        "titulo" => strip_tags($row['titulo']),
-                        "descripcion" => strip_tags($row['descripcion']),
-                        "estudiantes" => explode(",", strip_tags($row['investigadores'])),
-                        "Fase" => strip_tags($row['fase']),
-                        "Linea" => strip_tags($row['linea']),
-                        "docente" => strip_tags($row['docentes']),
-                        "evaluador" => strip_tags($row['evaluador']),
-                        "calificacion_general" => strip_tags($row['rating']),
-                        "comentarioGeneral" => strip_tags($row['generalComments']),
-                        "resultados" => [
-                            "titulo" => [
-                                "valor" => $row['titleProject'],
-                                "retroalimentación" => strip_tags($row['feedProject'])
-                            ],
-                            "introduccion" => [
-                                "valor" => $row['introduction'],
-                                "retroalimentación" => strip_tags($row['feedIntroduction'])
-                            ],
-                            "planteamiento" => [
-                                "valor" => $row['problemStatement'],
-                                "retroalimentación" => strip_tags($row['FeedStatement'])
-                            ],
-                            "justificacion" => [
-                                "valor" => $row['justify'],
-                                "retroalimentación" => strip_tags($row['feedJustify'])
-                            ],
-                            "objetivos" => [
-                                "valor" => $row['targets'],
-                                "retroalimentación" => strip_tags($row['feedTargets'])
-                            ],
-                            "marcoTeorico" => [
-                                "valor" => $row['theorical'],
-                                "retroalimentación" => strip_tags($row['feedTheorical'])
-                            ],
-                            "metodologia" => [
-                                "valor" => $row['methodology'],
-                                "retroalimentación" => strip_tags($row['feedMethodology'])
-                            ],
-                            "resultadosIniciales" => [
-                                "valor" => $row['mainResults'],
-                                "retroalimentación" => strip_tags($row['feedMainresults'])
-                            ],
-                            "sustentacion" => [
-                                "valor" => $row['support'],
-                                "retroalimentación" => strip_tags($row['feedSupport'])
-                            ]
-                        ]
-                    ];
+                // Crear un array asociativo para un acceso más fácil a los nombres de los investigadores
+                $investigatorsMap = [];
+                foreach ($investigatorsNames as $investigator) {
+                    $investigatorsMap[$investigator['id']] = $investigator['nombre_completo'];
                 }
 
-                // Confirmar la transacción
-                $this->db->commit();
+                $queryValidateUser = "
+                    SELECT id 
+                    FROM usuarios 
+                    WHERE nombre_completo = :user_name
+                ";
+                $stmtValidateUser = $this->db->prepare($queryValidateUser);
+                $stmtValidateUser->bindParam(':user_name', $user_name, PDO::PARAM_STR);
+                $stmtValidateUser->execute();
+                $user = $stmtValidateUser->fetch(PDO::FETCH_ASSOC);
 
-                return json_encode($report);
+                if ($user && in_array($user['id'], $allInvestigatorsIds)) {
+                    $relatedProjectIds = [];
+                    foreach ($projectIds as $projectId => $investigatorIds) {
+                        if (in_array($user['id'], $investigatorIds)) {
+                            $relatedProjectIds[] = $projectId;
+                        }
+                    }
+
+                    if (!empty($relatedProjectIds)) {
+                        $placeholders = implode(',', array_fill(0, count($relatedProjectIds), '?'));
+                        $queryGetProjects = "
+                            SELECT 
+                                p.id, 
+                                p.titulo, 
+                                p.descripcion,
+                                p.investigadores, 
+                                p.docentes,
+                                p.linea,
+                                p.evaluador,
+                                p.fase,
+                                c.titleProject,
+                                c.feedProject,
+                                c.introduction,
+                                c.feedIntroduction,
+                                c.problemStatement,
+                                c.FeedStatement,
+                                c.justify,
+                                c.feedJustify,
+                                c.targets,
+                                c.feedTargets,
+                                c.theorical,
+                                c.feedTheorical,
+                                c.methodology,
+                                c.feedMethodology,
+                                c.mainResults,
+                                c.feedMainresults,
+                                c.support,
+                                c.feedSupport,
+                                c.rating,
+                                c.generalComments
+                            FROM 
+                                proyectos p
+                                INNER JOIN calificaciones c ON p.id = c.idProject
+                            WHERE 
+                                p.id IN ($placeholders)
+                        ";
+
+                        $stmtGetProjects = $this->db->prepare($queryGetProjects);
+                        foreach ($relatedProjectIds as $index => $projectId) {
+                            $stmtGetProjects->bindValue(($index + 1), $projectId, PDO::PARAM_INT);
+                        }
+                        $stmtGetProjects->execute();
+                        $results = $stmtGetProjects->fetchAll(PDO::FETCH_ASSOC);
+
+                        if ($results) {
+                            $reports = [];
+
+                            foreach ($results as $row) {
+                                // Convertir los IDs de los investigadores en nombres
+                                $investigatorNames = array_map(function($id) use ($investigatorsMap) {
+                                    return htmlspecialchars($investigatorsMap[$id]);
+                                }, explode(",", $row['investigadores']));
+
+                                $reports = [
+                                    "id" => htmlspecialchars($row['id']),
+                                    "titulo" => htmlspecialchars($row['titulo']),
+                                    "descripcion" => htmlspecialchars($row['descripcion']),
+                                    "estudiantes" => $investigatorNames,
+                                    "Fase" => htmlspecialchars($row['fase']),
+                                    "Linea" => htmlspecialchars($row['linea']),
+                                    "docente" => htmlspecialchars($row['docentes']),
+                                    "evaluador" => htmlspecialchars($row['evaluador']),
+                                    "calificacion_general" => htmlspecialchars($row['rating']),
+                                    "comentarioGeneral" => htmlspecialchars($row['generalComments']),
+                                    "resultados" => [
+                                        "titulo" => [
+                                            "valor" => htmlspecialchars($row['titleProject']),
+                                            "retroalimentación" => htmlspecialchars($row['feedProject'])
+                                        ],
+                                        "introduccion" => [
+                                            "valor" => htmlspecialchars($row['introduction']),
+                                            "retroalimentación" => htmlspecialchars($row['feedIntroduction'])
+                                        ],
+                                        "planteamiento" => [
+                                            "valor" => htmlspecialchars($row['problemStatement']),
+                                            "retroalimentación" => htmlspecialchars($row['FeedStatement'])
+                                        ],
+                                        "justificacion" => [
+                                            "valor" => htmlspecialchars($row['justify']),
+                                            "retroalimentación" => htmlspecialchars($row['feedJustify'])
+                                        ],
+                                        "objetivos" => [
+                                            "valor" => htmlspecialchars($row['targets']),
+                                            "retroalimentación" => htmlspecialchars($row['feedTargets'])
+                                        ],
+                                        "marcoTeorico" => [
+                                            "valor" => htmlspecialchars($row['theorical']),
+                                            "retroalimentación" => htmlspecialchars($row['feedTheorical'])
+                                        ],
+                                        "metodologia" => [
+                                            "valor" => htmlspecialchars($row['methodology']),
+                                            "retroalimentación" => htmlspecialchars($row['feedMethodology'])
+                                        ],
+                                        "resultadosIniciales" => [
+                                            "valor" => htmlspecialchars($row['mainResults']),
+                                            "retroalimentación" => htmlspecialchars($row['feedMainresults'])
+                                        ],
+                                        "sustentacion" => [
+                                            "valor" => htmlspecialchars($row['support']),
+                                            "retroalimentación" => htmlspecialchars($row['feedSupport'])
+                                        ]
+                                    ]
+                                ];
+                            }
+
+                            $this->db->commit();
+                            header('Content-Type: application/json');
+                            echo json_encode($reports);
+                        } else {
+                            $this->db->rollBack();
+                            header('Content-Type: application/json');
+                            echo json_encode(["error" => "No se encontraron resultados para los proyectos."]);
+                        }
+                    } else {
+                        $this->db->rollBack();
+                        header('Content-Type: application/json');
+                        echo json_encode(["error" => "No se encontraron proyectos relacionados con el usuario."]);
+                    }
+                } else {
+                    $this->db->rollBack();
+                    header('Content-Type: application/json');
+                    echo json_encode(["error" => "Usuario no encontrado en la tabla de usuarios o no está relacionado con ningún proyecto."]);
+                }
             } else {
-                // Si no se encuentra el usuario, deshacer la transacción
                 $this->db->rollBack();
-                return json_encode(["error" => "Usuario no encontrado en la tabla de proyectos."]);
+                header('Content-Type: application/json');
+                echo json_encode(["error" => "No se encontraron investigadores en la tabla de proyectos."]);
             }
         } catch (Exception $e) {
-            // Si ocurre un error, deshacer la transacción
             $this->db->rollBack();
-            return json_encode(["error" => $e->getMessage()]);
+            header('Content-Type: application/json');
+            echo json_encode(["error" => $e->getMessage()]);
         }
     }
 }
