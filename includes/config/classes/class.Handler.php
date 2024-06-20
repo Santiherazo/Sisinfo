@@ -9,22 +9,63 @@ class Handler {
 
     public function handleLogin() {
         if ($this->auth->isLoggedIn()) {
-            header('Location: index.php?page=dashboard');
+            header('Location: /dashboard');
             exit;
-        }
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $documento_identidad = isset($_POST['documento_identidad']) ? sanitizeInput($_POST['documento_identidad']) : '';
-            $contrasena = isset($_POST['contrasena']) ? sanitizeInput($_POST['contrasena']) : '';
-
-            if ($this->auth->login($documento_identidad, $contrasena)) {
-                header('Location: index.php?page=dashboard');
-                exit;
-            } else {
-                $this->renderLogin('Documento de identidad o contraseña incorrectos');
-            }
         } else {
             $this->renderLogin();
+        }
+    }
+
+    public function studentAuth() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $identifier = isset($_POST['idUser']) ? sanitizeInput($_POST['idUser']) : '';
+            $response = [];
+
+            $data = $this->auth->student($identifier);
+
+            if ($data['success'] === 'true') {
+                $response['success'] = $data['success'];
+                $response['redirect'] = 'dashboard';
+                $response['message'] = $data['message'];
+                $response['data'] = [
+                    'id' => $_SESSION['user_id'],
+                    'rol' => $_SESSION['user_role']
+                ];
+            } else {
+                $response['error'] = $data['success'];
+                $response['message'] = $data['message'];
+            }
+    
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;
+        }
+    }
+
+    public function adminAuth() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $identifier = isset($_POST['idUser']) ? sanitizeInput($_POST['idUser']) : '';
+            $password = isset($_POST['password']) ? sanitizeInput($_POST['password']) : '';
+            $response = [];
+
+            $data = $this->auth->admin($identifier,$password);
+
+           if ($data['success'] === 'true') {
+                $response['success'] = $data['success'];
+                $response['redirect'] = 'dashboard';
+                $response['message'] = $data['message'];
+                $response['data'] = [
+                    'id' => $_SESSION['user_id'],
+                    'rol' => $_SESSION['user_role']
+                ];
+            } else {
+                $response['error'] = $data['success'];
+                $response['message'] = $data['message'];
+            }
+    
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            exit;
         }
     }
 
@@ -34,7 +75,7 @@ class Handler {
 
     public function handleDashboard() {
         if (!$this->auth->isLoggedIn()) {
-            header('Location: index.php?page=login');
+            header('Location: .');
             exit;
         }
 
@@ -75,6 +116,7 @@ class Handler {
     public function sendRubric() {
         try {
             require_once '../classes/class.Rubric.php';
+            // Aquí puedes agregar la lógica para manejar la rúbrica
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => $e->getMessage()]);
@@ -84,19 +126,18 @@ class Handler {
     public function logout() {
         $_SESSION = array();
         session_destroy();
-        header("Location: index.php?page=login");
+        header("Location: .");
         exit;
     }
 
-    public function getResults(){
+    public function getResults() {
         try {
             require_once '../classes/class.Report.php';
+            // Aquí puedes agregar la lógica para manejar los resultados
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
 }
-
-
 ?>

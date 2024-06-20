@@ -7,12 +7,7 @@ class ProjectHandler {
     }
 
     public function getProjects() {
-        $query = "
-            SELECT p.*, u.nombre_completo AS nombre_investigador
-            FROM proyectos p
-            JOIN usuarios u ON p.investigadores = u.id
-            WHERE p.calificado = 0
-        ";
+        $query = "SELECT * FROM proyectos";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
         $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);

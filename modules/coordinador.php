@@ -1,16 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-        integrity="sha512-Fo3rlrZj/k7ujTnH2lKj8tOgi0GsN+LgGeCOU82a6m2I1vKE6RnG/mwaUenlGg1dwzflsj4/m3Q+fYP+hv7Pmw=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnH2lKj8tOgi0GsN+LgGeCOU82a6m2I1vKE6RnG/mwaUenlGg1dwzflsj4/m3Q+fYP+hv7Pmw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-
 <body class="bg-gray-100 font-sans">
     <nav class="bg-white p-4 shadow-md">
         <div class="container mx-auto flex justify-between items-center">
@@ -19,13 +15,11 @@
                 <button id="projects-tab" class="text-gray-600 hover:text-black focus:outline-none">Projects</button>
                 <button id="reports-tab" class="text-gray-600 hover:text-black focus:outline-none">Reports</button>
             </div>
-            <button id="add-button" class="bg-blue-500 text-white px-4 py-2 rounded-md">Add</button>
+            <button id="add-button" class="bg-blue-500 text-white px-4 py-2 rounded-md">agregar</button>
         </div>
     </nav>
     <div class="container mx-auto mt-6">
         <div id="users-section" class="grid grid-cols-3 gap-6">
-            <!-- User Cards -->
-            <!-- Repeat User Cards as needed -->
             <div class="bg-white p-4 rounded-lg shadow-md relative">
                 <div class="flex justify-between">
                     <div>
@@ -74,19 +68,18 @@
         <div id="reports-section" class="grid grid-cols-2 gap-6 hidden">
             <!-- Report Cards (Placeholders) -->
             <div class="bg-white p-4 rounded-lg shadow-md">
-                <div class="text-lg font-bold">User Report</div>
-                <div class="text-gray-600">Summary of all users</div>
-                <div class="text-gray-800 font-semibold">Total Users: 45</div>
-                <div class="text-gray-500">Admins: 5</div>
-                <div class="text-gray-500">Managers: 10</div>
-                <div class="text-gray-500">Users: 30</div>
+                <div class="text-lg font-bold">Reporte de usuarios</div>
+                <div class="text-gray-600"></div>
+                <a class="text-gray-800 font-semibold">Usuarios totales: </a>
+                <a class="text-gray-500">Estudiantes:</a>
+                <a class="text-gray-500">Evaluadores:</a>
             </div>
             <div class="bg-white p-4 rounded-lg shadow-md">
-                <div class="text-lg font-bold">Project Report</div>
-                <div class="text-gray-600">Summary of all projects</div>
-                <div class="text-gray-800 font-semibold">Total Projects: 25</div>
-                <div class="text-gray-500">Approved: 18</div>
-                <div class="text-gray-500">Rejected: 7</div>
+                <div class="text-lg font-bold">Reportes de proyectos</div>
+                <div class="text-gray-600">Resumen de proyectos</div>
+                <div class="text-gray-800 font-semibold">Proyectos totales: </div>
+                <div class="text-gray-500">Aprobados:</div>
+                <div class="text-gray-500">Rechazados:</div>
             </div>
         </div>
     </div>
@@ -290,6 +283,8 @@
                 document.getElementById('project-modal').classList.remove('hidden');
             });
         });
+
+        
     </script>
 </body>
 </html>

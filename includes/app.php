@@ -18,15 +18,44 @@ try {
     $db = new Database();
     $auth = new Auth($db);
     $rubric = new Rubric($db);
-    $handler = new Handler($auth, $db);
+    $handler = new Handler($auth);
     $report = new Report($db);
     $projectHandler = new ProjectHandler($db);
 
-    $page = isset($_GET['page']) ? sanitizeInput($_GET['page']) : 'login';
+    $requestUri = $_SERVER['REQUEST_URI'];
+    $scriptName = $_SERVER['SCRIPT_NAME'];
 
-    switch ($page) {
-        case 'login':
+    $route = str_replace(dirname($scriptName), '', $requestUri);
+    $route = sanitizeInput(trim($route, '/'));
+
+    $parts = explode('/', $route);
+
+    switch ($parts[0]) {
+        case '':
             $handler->handleLogin();
+            break;
+        case 'endpoint':
+            $subroute = isset($parts[1]) ? $parts[1] : '';
+            switch ($subroute) {
+                case 'studentAuth':
+                    $handler->studentAuth();
+                    break;
+                case 'adminAuth':
+                    $handler->adminAuth();
+                    break;
+                case 'projects':
+                    echo json_encode($projectHandler->getProjects());
+                    break;
+                case 'rubric':
+                    $rubric->sendRubric();
+                    break;
+                case 'report':
+                    echo json_encode($report->getResults());
+                    break;
+                default:
+                    echo json_encode(["error" => "Subruta no encontrada."]);
+                    break;
+            }
             break;
         case 'logout':
             $handler->logout();
@@ -34,16 +63,6 @@ try {
         case 'dashboard':
             $handler->handleDashboard();
             break;
-        case 'projects':
-            echo json_encode($projectHandler->getProjects());
-            break;
-        case 'send':
-            $rubric->sendRubric();
-            break;
-        case 'results':
-            echo json_encode($report->getResults());
-            break;
-        default:
             echo json_encode(["error" => "Página no encontrada."]);
             break;
     }

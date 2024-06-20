@@ -29,6 +29,14 @@
         <main id="infoTable" class="flex-grow p-4 flex max-h-screen">
             <aside class="w-1/4 bg-white p-4 rounded shadow overflow-y-auto max-h-1/2">
                 <h2 class="text-lg font-bold mb-4">Lista de tesis</h2>
+                <div class="mb-4">
+                    <input type="text" id="searchInput" class="w-full p-2 border border-gray-300 rounded" placeholder="Buscar tesis...">
+                </div>
+                <div class="mb-4 flex space-x-2">
+                    <button class="bg-black text-white text-sm py-1 px-2 rounded hover:bg-gray-700 focus:outline-none">Propuesta</button>
+                    <button class="bg-black text-white text-sm py-1 px-2 rounded hover:bg-gray-700 focus:outline-none">Desarrollo</button>
+                    <button class="bg-black text-white text-sm py-1 px-2 rounded hover:bg-gray-700 focus:outline-none">Aplicación</button>
+                </div>
                 <div id="projectList" class="space-y-4"></div>
             </aside>
             <section class="flex-grow bg-white p-4 ml-4 rounded shadow overflow-auto max-h-1/2">
@@ -282,7 +290,7 @@ $(document).ready(function() {
     let timerDuration = 20 * 60;
 
     function fetchProjects() {
-        $.get('includes/app.php?page=projects', function(data) {
+        $.get('endpoint/projects', function(data) {
             if (typeof data === 'string') {
                 try {
                     data = JSON.parse(data);
@@ -420,7 +428,7 @@ $(document).ready(function() {
         console.log(data);
 
         $.ajax({
-            url: 'includes/app.php?page=send',
+            url: 'endpoint/rubric',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(data),
@@ -536,7 +544,7 @@ $(document).ready(function() {
     });
 
     function logout() {
-        $.get('index.php?page=logout', function(data) {
+        $.get('/logout', function(data) {
             location.reload();
         });
     }

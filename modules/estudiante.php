@@ -85,7 +85,7 @@
 
     function getResults() {
         $.ajax({
-            url: 'includes/app.php?page=results',
+            url: 'endpoint/results',
             type: 'GET',
             success: function(response) {
                 try {
@@ -116,7 +116,7 @@
     setInterval(getResults, 20 * 1000);
 
     $('#logoutButton').click(function() {
-        $.get('index.php?page=logout', function() {
+        $.get('./logout', function() {
             location.reload();
         });
     });
