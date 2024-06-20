@@ -16,11 +16,12 @@ spl_autoload_register(function ($class_name) {
 
 try {
     $db = new Database();
+    $user = $_SESSION['user'];
     $auth = new Auth($db);
     $rubric = new Rubric($db);
     $handler = new Handler($auth);
     $report = new Report($db);
-    $projectHandler = new ProjectHandler($db);
+    $projectHandler = new ProjectHandler($db, $user);
 
     $requestUri = $_SERVER['REQUEST_URI'];
     $scriptName = $_SERVER['SCRIPT_NAME'];
