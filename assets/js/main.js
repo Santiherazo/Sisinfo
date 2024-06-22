@@ -6,7 +6,8 @@ $(document).ready(() => {
 });
 
 export function loadSelectionInterface() {
-    $('#content').html(`
+    const $content = $('#content');
+    const htmlContent = `
         <div id="role-selection" class="bg-white p-8 rounded-lg shadow-md fade-in">
             <div class="text-center">
                 <h1 class="text-3xl font-bold mb-4">¿Quién eres?</h1>
@@ -20,19 +21,15 @@ export function loadSelectionInterface() {
         <div class="text-center mt-20">
             <p class="text-gray-500 text-sm mb-2">Powered by</p>
             <div class="flex justify-center space-x-4">
-                <img src="../assets/img/logo.png" alt="Logo 1" class="h-20">
-                <img src="../assets/img/logo2.png" alt="Logo 2" class="h-20">
+                <img src="../assets/img/logo.png" alt="Logo 1" class="h-20" loading="lazy">
+                <img src="../assets/img/logo2.png" alt="Logo 2" class="h-20" loading="lazy">
             </div>
         </div>
-    `);
+    `;
+    $content.html(htmlContent);
 
-    $('#admin-btn').click(() => {
-        loadAdminInterface();
-    });
-
-    $('#student-btn').click(() => {
-        loadStudentInterface();
-    });
+    $('#admin-btn').click(loadAdminInterface);
+    $('#student-btn').click(loadStudentInterface);
 }
 
 export function handleLogin(url, userType) {
@@ -46,7 +43,7 @@ export function handleLogin(url, userType) {
 
     const data = { idUser };
     if (userType === 'admin') data.password = password;
-    
+
     $.ajax({
         type: 'POST',
         url: url,
@@ -55,7 +52,6 @@ export function handleLogin(url, userType) {
             'X-Requested-With': 'XMLHttpRequest'
         },
         success: (response) => {
-            console.log(response);
             if (response.success) {
                 displayMessage(response.message, 'success', response.redirect);
             } else {

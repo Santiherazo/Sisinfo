@@ -21,7 +21,7 @@
                         </svg>
                     </button>
                     <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 hidden">
-                    <a id="" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">My Account</a>
+                        <a id="" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">My Account</a>
                         <a id="logoutButton" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Logout</a>
                     </div>
                 </div>
