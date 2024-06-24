@@ -18,9 +18,9 @@ try {
     $db = new Database();
     $user = $_SESSION['user'];
     $auth = new Auth($db);
-    $rubric = new Rubric($db);
+    $rubric = new Rubric($db, $user);
     $handler = new Handler($auth);
-    $report = new Report($db);
+    $report = new Report($db, $user);
     $projectHandler = new ProjectHandler($db, $user);
 
     $requestUri = $_SERVER['REQUEST_URI'];
@@ -50,7 +50,7 @@ try {
                 case 'rubric':
                     $rubric->sendRubric();
                     break;
-                case 'report':
+                case 'results':
                     echo json_encode($report->getResults());
                     break;
                 default:

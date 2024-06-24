@@ -1,86 +1,96 @@
-<?php 
+<?php
 
 class Rubric {
     private $db;
+    private $user;
 
-    public function __construct($db) {
+    public function __construct($db, $user) {
         $this->db = $db;
+        $this->user = $user;
     }
 
     public function sendRubric() {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
-            $data = json_decode(file_get_contents("php://input"), true);
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            $this->sendResponse(['success' => false, 'error' => 'Esta página solo acepta solicitudes POST']);
+            return;
+        }
 
-            if ($data) {
-                $requiredFields = [
-                    'proyecto_id', 'assessor', 'titleProject', 'feedProject', 'introduction', 'feedIntroduction', 
-                    'problemStatement', 'feedStatement', 'justify', 'feedJustify', 'targets', 'feedTargets', 
-                    'theorical', 'feedTheorical', 'methodology', 'feedMethodology', 'mainResults', 'feedMainresults', 
-                    'support', 'feedSupport', 'rating', 'generalComments'
-                ];
+        $data = json_decode(file_get_contents("php://input"), true);
 
-                if ($this->validateData($data, $requiredFields)) {
-                    try {
-                        $this->db->beginTransaction();
-                        $insertStmt = $this->db->prepare('INSERT INTO calificaciones 
-                            (idProject, assessor, titleProject, feedProject, introduction, feedIntroduction, 
-                            problemStatement, feedStatement, justify, feedJustify, targets, feedTargets, theorical, 
-                            feedTheorical, methodology, feedMethodology, mainResults, feedMainresults, support, 
-                            feedSupport, rating, generalComments) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        if (!$data) {
+            $this->sendResponse(['success' => false, 'error' => 'Error al decodificar los datos JSON']);
+            return;
+        }
 
-                        $insertSuccess = $insertStmt->execute([
-                            $data['proyecto_id'], $data['assessor'], $data['titleProject'], $data['feedProject'], 
-                            $data['introduction'], $data['feedIntroduction'], $data['problemStatement'], 
-                            $data['feedStatement'], $data['justify'], $data['feedJustify'], $data['targets'], 
-                            $data['feedTargets'], $data['theorical'], $data['feedTheorical'], $data['methodology'], 
-                            $data['feedMethodology'], $data['mainResults'], $data['feedMainresults'], $data['support'], 
-                            $data['feedSupport'], $data['rating'], $data['generalComments']
-                        ]);
+        if (empty($this->user)) {
+            $this->sendResponse(['success' => false, 'error' => 'El usuario no está definido']);
+            return;
+        }
 
-                        if ($insertSuccess) {
-                            $updateStmt = $this->db->prepare('UPDATE proyectos SET calificacion = ?, calificado = ? WHERE id = ?');
-                            $updateSuccess = $updateStmt->execute([$data['rating'], 1, $data['proyecto_id']]);
+        $requiredFields = [
+            'proyecto_id', 'titleProject', 'introduction',
+            'problemStatement', 'justify', 'targets',
+            'theorical', 'methodology', 'mainResults',
+            'support', 'rating', 'generalComments'
+        ];
 
-                            if ($updateSuccess) {
-                                $this->db->commit();
-                                echo json_encode(['success' => true]);
-                                return;
-                            } else {
-                                $this->db->rollBack();
-                                echo json_encode(['success' => false, 'error' => 'Error al actualizar el proyecto']);
-                                return;
-                            }
-                        } else {
-                            $this->db->rollBack();
-                            echo json_encode(['success' => false, 'error' => 'Error al insertar los datos']);
-                            return;
-                        }
-                    } catch (Exception $e) {
-                        $this->db->rollBack();
-                        echo json_encode(['success' => false, 'error' => $e->getMessage()]);
-                        return;
-                    }
-                } else {
-                    echo json_encode(['success' => false, 'error' => 'Alguno de los datos recibidos es nulo']);
-                    return;
-                }
-            } else {
-                echo json_encode(['success' => false, 'error' => 'Error al decodificar los datos JSON']);
+        if (!$this->validateData($data, $requiredFields)) {
+            $this->sendResponse(['success' => false, 'error' => 'Alguno de los datos requeridos es nulo']);
+            return;
+        }
+
+        try {
+            $this->db->beginTransaction();
+
+            $insertStmt = $this->db->prepare('INSERT INTO calificaciones 
+                (idProject, assessor, titleProject, feedProject, introduction, feedIntroduction, 
+                problemStatement, feedStatement, justify, feedJustify, targets, feedTargets, theorical, 
+                feedTheorical, methodology, feedMethodology, mainResults, feedMainresults, support, 
+                feedSupport, rating, generalComments) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+
+            $insertSuccess = $insertStmt->execute([
+                $data['proyecto_id'], $this->user, $data['titleProject'], $data['feedProject'] ?? null,
+                $data['introduction'], $data['feedIntroduction'] ?? null, $data['problemStatement'],
+                $data['feedStatement'] ?? null, $data['justify'], $data['feedJustify'] ?? null, $data['targets'],
+                $data['feedTargets'] ?? null, $data['theorical'], $data['feedTheorical'] ?? null, $data['methodology'],
+                $data['feedMethodology'] ?? null, $data['mainResults'], $data['feedMainresults'] ?? null, $data['support'],
+                $data['feedSupport'] ?? null, $data['rating'], $data['generalComments']
+            ]);
+
+            if (!$insertSuccess) {
+                $this->db->rollBack();
+                $this->sendResponse(['success' => false, 'error' => 'Error al insertar los datos']);
                 return;
             }
-        } else {
-            echo json_encode(['success' => false, 'error' => 'Esta página solo acepta solicitudes POST']);
-            return;
+
+            $updateStmt = $this->db->prepare('UPDATE proyectos SET calificado = calificado + 1 WHERE id = ?');
+            $updateSuccess = $updateStmt->execute([$data['proyecto_id']]);
+
+            if (!$updateSuccess) {
+                $this->db->rollBack();
+                $this->sendResponse(['success' => false, 'error' => 'Error al actualizar el proyecto']);
+                return;
+            }
+
+            $this->db->commit();
+            $this->sendResponse(['success' => true]);
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            $this->sendResponse(['success' => false, 'error' => $e->getMessage()]);
         }
     }
 
     private function validateData($data, $fields) {
         foreach ($fields as $field) {
-            if (!isset($data[$field])) {
+            if (empty($data[$field])) {
                 return false;
             }
         }
         return true;
+    }
+
+    private function sendResponse($response) {
+        echo json_encode($response);
     }
 }

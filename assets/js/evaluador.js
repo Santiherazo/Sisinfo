@@ -14,7 +14,6 @@ $(document).ready(function() {
         const selectedPhase = $('.filter-button.active').data('phase');
 
         $.get('endpoint/projects', function(data) {
-            console.log(data);
             if (typeof data === 'string') {
                 try {
                     data = JSON.parse(data);
@@ -83,12 +82,10 @@ $(document).ready(function() {
         $('#projectName').val(project.titulo);
         $('#projectLine').val(project.linea);
         $('#projectPhase').val(project.fase);
-        $('#evaluatorName').val(project.evaluador);
 
         const participantsContainer = $('#projectParticipants');
         participantsContainer.empty();
-        const investigadoresArray = project.nombre_investigador.split(', ');
-        investigadoresArray.forEach(participante => {
+        project.investigadores.forEach(participante => {
             participantsContainer.append(
                 $('<input>')
                     .attr('type', 'text')
@@ -100,13 +97,24 @@ $(document).ready(function() {
 
         const advisorsContainer = $('#projectAdvisors');
         advisorsContainer.empty();
-        const docentesArray = project.docentes.split(', ');
-        docentesArray.forEach(docente => {
+        project.docentes.split(', ').forEach(docente => {
             advisorsContainer.append(
                 $('<input>')
                     .attr('type', 'text')
                     .addClass('mt-1 block w-full border-gray-300 rounded shadow-sm focus:ring focus:ring-opacity-50')
                     .val(docente)
+                    .prop('readonly', true)
+            );
+        });
+
+        const evaluatorsContainer = $('#projectEvaluators');
+        evaluatorsContainer.empty();
+        project.evaluadores.forEach(evaluador => {
+            evaluatorsContainer.append(
+                $('<input>')
+                    .attr('type', 'text')
+                    .addClass('mt-1 block w-full border-gray-300 rounded shadow-sm focus:ring focus:ring-opacity-50')
+                    .val(evaluador)
                     .prop('readonly', true)
             );
         });
@@ -119,13 +127,9 @@ $(document).ready(function() {
         $('#projectName').val('');
         $('#projectLine').val('');
         $('#projectPhase').val('');
-        $('#evaluatorName').val('');
-
-        const participantsContainer = $('#projectParticipants');
-        participantsContainer.empty();
-
-        const advisorsContainer = $('#projectAdvisors');
-        advisorsContainer.empty();
+        $('#projectParticipants').empty();
+        $('#projectAdvisors').empty();
+        $('#projectEvaluators').empty();
     }
 
     function formatTime(seconds) {
@@ -145,7 +149,6 @@ $(document).ready(function() {
     function saveRubric() {
         const data = {
             proyecto_id: currentProjectId,
-            assessor: $('#evaluatorName').val(),
             titleProject: $('[name="titleProject"]').val(),
             feedProject: $('#feedProject').val(),
             introduction: $('[name="introduction"]').val(),
@@ -168,7 +171,7 @@ $(document).ready(function() {
             generalComments: $('#generalComments').val()
         };
 
-        console.log(data);
+        console.log('Rubric data:', data);
 
         $.ajax({
             url: 'endpoint/rubric',
@@ -187,6 +190,7 @@ $(document).ready(function() {
                         showSuccessPopup();
                         clearInterval(timerInterval);
                         timerStarted = false;
+                        $('#startEvaluation').show(); // Mostrar el botón de iniciar evaluación
                     } else {
                         alert('Error al guardar la rúbrica: ' + res.error);
                     }
@@ -279,7 +283,7 @@ $(document).ready(function() {
 
     function removeProjectFromList(projectId) {
         fetchProjects();
-        clearFormAndHideTable();
+        clearProjectDetails();
     }
 
     $('#logoutButton').click(function() {

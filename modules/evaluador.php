@@ -64,8 +64,8 @@
                         <div id="projectAdvisors" class="input-group"></div>
                     </div>
                     <div>
-                        <label class="block text-gray-700">Evaluator:</label>
-                        <input type="text" id="evaluatorName" class="mt-1 block w-full border-gray-300 rounded shadow-sm focus:ring focus:ring-opacity-50 loadProjectDetails">
+                        <label class="block text-gray-700">Evaluador(es):</label>
+                        <div id="projectEvaluators" class="input-group"></div>
                     </div>
                 </div>
                 <div class="mt-4">
@@ -275,6 +275,6 @@
             <p class="mb-4">La respuesta fue enviada con éxito.</p>
         </div>
     </div>
-    <script src="../assets/js/coordinador.js"></script>
+    <script src="../assets/js/evaluador.js"></script>
 </body>
 </html>
