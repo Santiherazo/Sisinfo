@@ -20,7 +20,7 @@ export function loadAdminInterface() {
                     <p class="text-gray-500 text-sm mb-2">Powered by</p>
                     <div class="flex justify-center space-x-4">
                         <img src="../assets/img/logo.png" alt="Logo 1" class="h-20">
-                        <img src="../assets/img/logo2.png" alt="Logo 2" class="h-20">
+                        <!--<img src="../assets/img/logo2.png" alt="Logo 2" class="h-20">-->
                     </div>
                 </div>
             </div>

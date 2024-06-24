@@ -30,7 +30,6 @@ try {
     $route = sanitizeInput(trim($route, '/'));
 
     $parts = explode('/', $route);
-
     switch ($parts[0]) {
         case '':
             $handler->handleLogin();
