@@ -116,9 +116,9 @@
                             </td>
                             <td class="border border-gray-300 px-4 py-2">
                                 <ul class="list-disc ml-4">
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
+                                    <li>El estudiante sigue la estructura básica de la introducción, pero puede haber algunos elementos omitidos o desorganización.</li>
+                                    <li>El estudiante sigue en su mayoría la estructura de la introducción, incluyendo los elementos necesarios, pero puede haber alguna falta de coherencia.</li>
+                                    <li>El estudiante sigue claramente la estructura de la introducción, incluyendo los elementos necesarios y relacionándolos de manera coherente.</li>
                                 </ul>
                             </td>
                             <td class="border border-gray-300 px-4 py-2"><input type="number" id="introduction" name="introduction" min="0" max="5" step="0.1" class="puntaje w-full border border-gray-300 rounded puntuacion"></td>
@@ -135,7 +135,7 @@
                                 <ul class="list-disc ml-4">
                                     <li>La descripción del problema no es clara, ya que no enuncia sus causas, consecuencias y como abordarlo, no cita datos o cifras que respalda la problemática, no formula el problema con una pregunta.</li>
                                     <li>Describe el problema claramente, mostrando sus causas, consecuencias y como abordarlo, pero no cita datos o cifras que respalda la problemática, aunque formula el problema con una pregunta.</li>
-                                    <li>Describe el problema claramente, mostrando sus causas, consecuencias y como abordarlo, y cita datos o cifras que respalda la problemática, formulando el problema con una pregunta.</li>
+                                    <li>Describe el problema claramente, mostrando sus causas, consecuencias y como abordarlo, pero no cita datos o cifras que respalda la problemática, aunque formula el problema con una pregunta.</li>
                                 </ul>
                             </td>
                             <td class="border border-gray-300 px-4 py-2"><input type="number" id="problemStatement" name="problemStatement" min="0" max="5" step="0.1" class="puntaje w-full border border-gray-300 rounded puntuacion"></td>
@@ -167,9 +167,9 @@
                             </td>
                             <td class="border border-gray-300 px-4 py-2">
                                 <ul class="list-disc ml-4">
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
+                                    <li>El objetivo general no es medible, guarda poca relación con el título y la pregunta problema, debe ser mejorado, no es claro el qué se debe hacer, para qué, y el cómo hacerlo.  Algunos objetivos específicos no están bien formulados, por lo que no son medibles, y no permiten alcanzar el objetivo general, deben ser mejorados.</li>
+                                    <li>El objetivo general es medible, guarda relación con el título y la pregunta problema, y es claro el qué se debe hacer, para qué, y el cómo hacerlo, y algunos objetivos específicos están bien formulados y son medibles, y permiten alcanzar el objetivo general.</li>
+                                    <li>El objetivo general es medible, guarda relación con el título y la pregunta problema, y es claro el qué se debe hacer, para qué, y el cómo hacerlo, y todos los objetivos específicos están bien formulados y son medibles, y permiten alcanzar el objetivo general.</li>
                                 </ul>
                             </td>
                             <td class="border border-gray-300 px-4 py-2"><input type="number" id="targets" name="targets" min="0" max="5" step="0.1" class="puntaje w-full border border-gray-300 rounded puntuacion"></td>
@@ -184,9 +184,9 @@
                             </td>
                             <td class="border border-gray-300 px-4 py-2">
                                 <ul class="list-disc ml-4">
-                                    <li></li>
-                                    <li></li>
-                                    <li></li>
+                                    <li>No demuestra una comprensión profunda de los conceptos y teorías relevantes que debe tener su proyecto para poder implementarlos en su desarrollo.</li>
+                                    <li>Integra adecuadamente las ideas y teorías en la construcción del marco teórico	con base lo sustentado.</li>
+                                    <li>Explica claramente la relevancia y pertinencia del marco teórico para el proyecto de investigación que desarrolla.</li>
                                 </ul>
                             </td>
                             <td class="border border-gray-300 px-4 py-2"><input type="number" id="theorical" name="theorical" min="0" max="5" step="0.1" class="puntaje w-full border border-gray-300 rounded puntuacion"></td>

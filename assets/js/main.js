@@ -114,6 +114,6 @@ function displayMessage(message, type, redirect = null) {
     if (redirect) {
         setTimeout(() => {
             window.location.href = redirect;
-        }, 7000);
+        }, 5500);
     }
 }

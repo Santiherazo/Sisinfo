@@ -190,7 +190,7 @@ $(document).ready(function() {
                         showSuccessPopup();
                         clearInterval(timerInterval);
                         timerStarted = false;
-                        $('#startEvaluation').show(); // Mostrar el botón de iniciar evaluación
+                        $('#startEvaluation').show();
                     } else {
                         alert('Error al guardar la rúbrica: ' + res.error);
                     }

@@ -116,7 +116,6 @@ class Handler {
     public function sendRubric() {
         try {
             require_once '../classes/class.Rubric.php';
-            // Aquí puedes agregar la lógica para manejar la rúbrica
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => $e->getMessage()]);
@@ -133,7 +132,6 @@ class Handler {
     public function getResults() {
         try {
             require_once '../classes/class.Report.php';
-            // Aquí puedes agregar la lógica para manejar los resultados
         } catch (\Exception $e) {
             http_response_code(500);
             echo json_encode(['error' => $e->getMessage()]);

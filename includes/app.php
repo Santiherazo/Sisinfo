@@ -21,15 +21,23 @@ try {
     $rubric = new Rubric($db, $user);
     $handler = new Handler($auth);
     $report = new Report($db, $user);
+    $crud = new crud($db, $user);
     $projectHandler = new ProjectHandler($db, $user);
 
     $requestUri = $_SERVER['REQUEST_URI'];
     $scriptName = $_SERVER['SCRIPT_NAME'];
+    $scriptDir = dirname($scriptName);
+    if (strpos($requestUri, $scriptName) === 0) {
+        $route = substr($requestUri, strlen($scriptName));
+    } elseif (strpos($requestUri, $scriptDir) === 0) {
+        $route = substr($requestUri, strlen($scriptDir));
+    } else {
+        $route = $requestUri;
+    }
 
-    $route = str_replace(dirname($scriptName), '', $requestUri);
     $route = sanitizeInput(trim($route, '/'));
-
     $parts = explode('/', $route);
+
     switch ($parts[0]) {
         case '':
             $handler->handleLogin();
@@ -52,6 +60,8 @@ try {
                 case 'results':
                     echo json_encode($report->getResults());
                     break;
+                case 'users': 
+                    echo json_encode($crud->fetchUsers());
                 default:
                     echo json_encode(["error" => "Subruta no encontrada."]);
                     break;
@@ -63,6 +73,7 @@ try {
         case 'dashboard':
             $handler->handleDashboard();
             break;
+        default:
             echo json_encode(["error" => "Página no encontrada."]);
             break;
     }

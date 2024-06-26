@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnH2lKj8tOgi0GsN+LgGeCOU82a6m2I1vKE6RnG/mwaUenlGg1dwzflsj4/m3Q+fYP+hv7Pmw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body class="bg-gray-100 font-sans">
     <nav class="bg-white p-4 shadow-md">
@@ -15,31 +16,26 @@
                 <button id="projects-tab" class="text-gray-600 hover:text-black focus:outline-none">Projects</button>
                 <button id="reports-tab" class="text-gray-600 hover:text-black focus:outline-none">Reports</button>
             </div>
-            <button id="add-button" class="bg-blue-500 text-white px-4 py-2 rounded-md">agregar</button>
+            <button id="logout-button" class="bg-blue-500 text-white px-4 py-2 rounded-md">Logout</button>
         </div>
     </nav>
-    <div class="container mx-auto mt-6">
-        <div id="users-section" class="grid grid-cols-3 gap-6">
-            <div class="bg-white p-4 rounded-lg shadow-md relative">
-                <div class="flex justify-between">
-                    <div>
-                        <div class="text-lg font-bold">John Doe</div>
-                        <div class="text-gray-600">john@example.com</div>
-                        <div class="text-gray-800 font-semibold">Admin</div>
-                        <div class="text-gray-500">Joined 3 months ago</div>
-                    </div>
-                    <div class="relative">
-                        <button id="dropdownButton1" class="bg-gray-200 p-2 rounded-md">
-                            <i class="fas fa-ellipsis-v"></i>
-                        </button>
-                        <div id="dropdownMenu1" class="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg hidden">
-                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 edit-user">Edit</a>
-                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Delete</a>
-                        </div>
-                    </div>
-                </div>
+    <div class="container mx-auto mt-6 relative">
+        <div id="users-section">
+            <!-- Search and Filters -->
+            <div class="flex justify-between mb-4">
+                <input type="text" id="user-search" class="w-1/3 p-2 border rounded-md" placeholder="Search users...">
+                <select id="user-role-filter" class="w-1/4 p-2 border rounded-md">
+                    <option value="">Filter by role</option>
+                    <option value="Admin">Admin</option>
+                    <option value="User">User</option>
+                </select>
             </div>
-            <!-- Add more user cards as needed -->
+            <!-- User Cards -->
+            <div class="grid grid-cols-3 gap-6" id="user-cards"></div>
+            <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Error:</strong>
+                <span class="block sm:inline">Hay problemas para cargar la información.</span>
+            </div>
         </div>
         <div id="projects-section" class="grid grid-cols-3 gap-6 hidden">
             <!-- Project Cards -->
@@ -82,6 +78,7 @@
                 <div class="text-gray-500">Rechazados:</div>
             </div>
         </div>
+        <button id="add-button" class="fixed bottom-6 right-6 bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg">Agregar</button>
     </div>
 
     <!-- User Form Modal -->
@@ -137,154 +134,90 @@
                     <select id="role" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
                         <option value="">Select role</option>
                         <option value="Admin">Admin</option>
-                        <option value="Manager">Manager</option>
                         <option value="User">User</option>
                     </select>
                 </div>
-                <div>
-                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
-                    <input type="text" id="phone" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
             </form>
-            <div class="mt-4 flex justify-end space-x-2">
-                <button id="cancel-user" class="bg-gray-500 text-white px-4 py-2 rounded-md">Cancel</button>
+            <div class="flex justify-end mt-4">
+                <button id="close-modal" class="bg-gray-500 text-white px-4 py-2 rounded-md mr-2">Close</button>
                 <button id="save-user" class="bg-blue-500 text-white px-4 py-2 rounded-md">Save</button>
             </div>
         </div>
     </div>
 
-    <!-- Project Form Modal -->
-    <div id="project-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white p-6 rounded-md w-1/2">
-            <h2 class="text-xl font-bold mb-4" id="project-modal-title">Create Project</h2>
-            <form id="project-form" class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="projectName" class="block text-sm font-medium text-gray-700">Project Name</label>
-                    <input type="text" id="projectName" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="projectType" class="block text-sm font-medium text-gray-700">Project Type</label>
-                    <select id="projectType" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                        <option value="">Select project type</option>
-                        <!-- Add more project type options as needed -->
-                    </select>
-                </div>
-                <div>
-                    <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea id="description" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm"></textarea>
-                </div>
-                <div>
-                    <label for="responsible" class="block text-sm font-medium text-gray-700">Responsible</label>
-                    <input type="text" id="responsible" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                    <select id="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                        <option value="">Select status</option>
-                        <option value="Approved">Approved</option>
-                        <option value="Rejected">Rejected</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="startDate" class="block text-sm font-medium text-gray-700">Start Date</label>
-                    <input type="date" id="startDate" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="endDate" class="block text-sm font-medium text-gray-700">End Date</label>
-                    <input type="date" id="endDate" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-            </form>
-            <div class="mt-4 flex justify-end space-x-2">
-                <button id="cancel-project" class="bg-gray-500 text-white px-4 py-2 rounded-md">Cancel</button>
-                <button id="save-project" class="bg-blue-500 text-white px-4 py-2 rounded-md">Save</button>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // Tab navigation
-        document.getElementById('users-tab').addEventListener('click', function () {
-            document.getElementById('users-section').classList.remove('hidden');
-            document.getElementById('projects-section').classList.add('hidden');
-            document.getElementById('reports-section').classList.add('hidden');
-            this.classList.add('border-black', 'text-black');
-            document.getElementById('projects-tab').classList.remove('border-black', 'text-black');
-            document.getElementById('reports-tab').classList.remove('border-black', 'text-black');
-        });
+        $(document).ready(function () {
+            $('#users-tab').click(function () {
+                $('#users-section').show();
+                $('#projects-section, #reports-section').hide();
+                $(this).addClass('text-black font-bold border-b-2 border-black');
+                $('#projects-tab, #reports-tab').removeClass('text-black font-bold border-b-2 border-black').addClass('text-gray-600');
+            });
 
-        document.getElementById('projects-tab').addEventListener('click', function () {
-            document.getElementById('users-section').classList.add('hidden');
-            document.getElementById('projects-section').classList.remove('hidden');
-            document.getElementById('reports-section').classList.add('hidden');
-            this.classList.add('border-black', 'text-black');
-            document.getElementById('users-tab').classList.remove('border-black', 'text-black');
-            document.getElementById('reports-tab').classList.remove('border-black', 'text-black');
-        });
+            $('#projects-tab').click(function () {
+                $('#projects-section').show();
+                $('#users-section, #reports-section').hide();
+                $(this).addClass('text-black font-bold border-b-2 border-black');
+                $('#users-tab, #reports-tab').removeClass('text-black font-bold border-b-2 border-black').addClass('text-gray-600');
+            });
 
-        document.getElementById('reports-tab').addEventListener('click', function () {
-            document.getElementById('users-section').classList.add('hidden');
-            document.getElementById('projects-section').classList.add('hidden');
-            document.getElementById('reports-section').classList.remove('hidden');
-            this.classList.add('border-black', 'text-black');
-            document.getElementById('users-tab').classList.remove('border-black', 'text-black');
-            document.getElementById('projects-tab').classList.remove('border-black', 'text-black');
-        });
+            $('#reports-tab').click(function () {
+                $('#reports-section').show();
+                $('#users-section, #projects-section').hide();
+                $(this).addClass('text-black font-bold border-b-2 border-black');
+                $('#users-tab, #projects-tab').removeClass('text-black font-bold border-b-2 border-black').addClass('text-gray-600');
+            });
 
-        // Add button event
-        document.getElementById('add-button').addEventListener('click', function () {
-            const activeTab = document.querySelector('nav button.border-black');
-            if (activeTab.id === 'users-tab') {
-                document.getElementById('user-modal').classList.remove('hidden');
-            } else if (activeTab.id === 'projects-tab') {
-                document.getElementById('project-modal').classList.remove('hidden');
-            }
-        });
+            $('#add-button').click(function () {
+                $('#user-modal').removeClass('hidden');
+            });
 
-        // User form modal events
-        document.getElementById('cancel-user').addEventListener('click', function () {
-            document.getElementById('user-modal').classList.add('hidden');
-        });
+            $('#close-modal').click(function () {
+                $('#user-modal').addClass('hidden');
+            });
 
-        document.getElementById('save-user').addEventListener('click', function () {
-            // Save user logic here
-            document.getElementById('user-modal').classList.add('hidden');
-        });
+            $('#save-user').click(function () {
+                // Save user logic here
+                $('#user-modal').addClass('hidden');
+            });
 
-        // Project form modal events
-        document.getElementById('cancel-project').addEventListener('click', function () {
-            document.getElementById('project-modal').classList.add('hidden');
-        });
+            $('#logout-button').click(function () {
+                // Logout logic here
+            });
 
-        document.getElementById('save-project').addEventListener('click', function () {
-            // Save project logic here
-            document.getElementById('project-modal').classList.add('hidden');
-        });
-
-        // Dropdown menus
-        document.querySelectorAll('[id^="dropdownButton"]').forEach(button => {
-            button.addEventListener('click', function () {
-                const menuId = this.id.replace('Button', 'Menu');
-                document.getElementById(menuId).classList.toggle('hidden');
+            // Fetch and display users
+            $.ajax({
+                url: 'endpoint/users',  // Replace with your API endpoint
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);  // Añadir más detalles de depuración
+                    if (Array.isArray(data)) {
+                        var userCards = '';
+                        data.forEach(function (user) {
+                            userCards += `
+                                <div class="bg-white p-4 rounded-lg shadow-md">
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <div class="text-lg font-bold">${user.nombre_completo}</div>
+                                            <div class="text-gray-600">${user.rol}</div>
+                                            <div class="text-gray-600">${user.correo_electronico}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        $('#user-cards').html(userCards);
+                    } else {
+                        $('#error-message').removeClass('hidden');
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log("Error: ", textStatus, errorThrown);  // Añadir más detalles de depuración en caso de error
+                    $('#error-message').removeClass('hidden');
+                }
             });
         });
-
-        // Edit user
-        document.querySelectorAll('.edit-user').forEach(button => {
-            button.addEventListener('click', function () {
-                document.getElementById('user-modal-title').innerText = 'Edit User';
-                document.getElementById('user-modal').classList.remove('hidden');
-            });
-        });
-
-        // Edit project
-        document.querySelectorAll('.edit-project').forEach(button => {
-            button.addEventListener('click', function () {
-                document.getElementById('project-modal-title').innerText = 'Edit Project';
-                document.getElementById('project-modal').classList.remove('hidden');
-            });
-        });
-
-        
     </script>
 </body>
 </html>
