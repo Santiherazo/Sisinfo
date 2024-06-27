@@ -1,9 +1,9 @@
 <?php
 class Database {
-    private $host = 'localhost';
-    private $db_name = 'sisinfo';
-    private $username = 'root';
-    private $password = '';
+    private $host = '82.180.172.103';
+    private $db_name = 'u358414249_sisinfo';
+    private $username = 'u358414249_sisinfo';
+    private $password = 'sK2!aD1~eM5(jZ3,';
     private $conn;
 
     public function __construct() {
