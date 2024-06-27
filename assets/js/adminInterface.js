@@ -17,7 +17,7 @@ export function loadAdminInterface() {
                 <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-800">Iniciar sesión</button>
                 <p class="mt-4"><a href="#" class="text-blue-500 hover:underline">¿Olvidaste tu contraseña?</a></p>
                 <div class="text-center mb-4 mt-8">
-                    <p class="text-gray-500 text-sm mb-2">Powered by</p>
+                    <p class="text-gray-500 text-sm mb-2"></p>
                     <div class="flex justify-center space-x-4">
                         <img src="../assets/img/logo.png" alt="Logo 1" class="h-20">
                     </div>
