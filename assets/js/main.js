@@ -19,7 +19,7 @@ export function loadSelectionInterface() {
             </div>
         </div>
         <div class="text-center mt-20">
-            <p class="text-gray-500 text-sm mb-2">Ingeniería Informatica y sisinfo</p>
+            <p class="text-gray-500 text-sm mb-2"></p>
             <div class="flex justify-center space-x-4">
                 <img src="../assets/img/logo.png" alt="Unipaz" class="h-20" loading="lazy">
             </div>
