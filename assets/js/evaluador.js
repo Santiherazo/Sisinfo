@@ -14,6 +14,7 @@ $(document).ready(function() {
         const selectedPhase = $('.filter-button.active').data('phase');
 
         $.get('endpoint/projects', function(data) {
+            console.log(data);
             if (typeof data === 'string') {
                 try {
                     data = JSON.parse(data);
