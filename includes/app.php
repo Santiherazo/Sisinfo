@@ -62,6 +62,7 @@ try {
                     break;
                 case 'users': 
                     echo json_encode($crud->fetchUsers());
+                    break;
                 default:
                     echo json_encode(["error" => "Subruta no encontrada."]);
                     break;

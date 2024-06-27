@@ -6,7 +6,7 @@
     <title>Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body class="bg-gray-100 font-sans">
     <nav class="bg-white p-4 shadow-md">
@@ -16,23 +16,41 @@
                 <button id="projects-tab" class="text-gray-600 hover:text-black focus:outline-none">Projects</button>
                 <button id="reports-tab" class="text-gray-600 hover:text-black focus:outline-none">Reports</button>
             </div>
-            <button id="logout-button" class="bg-blue-500 text-white px-4 py-2 rounded-md">Logout</button>
+            <button id="logout-button" class="bg-red-500 text-white px-4 py-2 rounded-md">Logout</button>
         </div>
     </nav>
     <div class="container mx-auto mt-6 relative">
         <div id="users-section">
-            <!-- Search and Filters -->
             <div class="flex justify-between mb-4">
                 <input type="text" id="user-search" class="w-1/3 p-2 border rounded-md" placeholder="Search users...">
                 <select id="user-role-filter" class="w-1/4 p-2 border rounded-md">
                     <option value="">Filter by role</option>
-                    <option value="Admin">Admin</option>
-                    <option value="User">User</option>
+                    <option value="Evaluador">Evaluador</option>
+                    <option value="Estudiante">Estudiante</option>
                 </select>
             </div>
-            <!-- User Cards -->
-            <div class="grid grid-cols-3 gap-6" id="user-cards"></div>
-            <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+                <table id="user-table" class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre completo</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Correo electrónico</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Documento de identidad</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Carnet</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Institución</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Ciudad</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">País</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha de registro</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Comandos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="user-table-body" class="bg-white divide-y divide-gray-200">
+                        <!-- Aquí se cargarán dinámicamente los datos de los usuarios -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
                 <strong class="font-bold">Error:</strong>
                 <span class="block sm:inline">Hay problemas para cargar la información.</span>
             </div>
@@ -78,146 +96,195 @@
                 <div class="text-gray-500">Rechazados:</div>
             </div>
         </div>
-        <button id="add-button" class="fixed bottom-6 right-6 bg-blue-500 text-white px-4 py-2 rounded-full shadow-lg">Agregar</button>
-    </div>
-
-    <!-- User Form Modal -->
-    <div id="user-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-        <div class="bg-white p-6 rounded-md w-1/2">
-            <h2 class="text-xl font-bold mb-4" id="user-modal-title">Create User</h2>
-            <form id="user-form" class="grid grid-cols-2 gap-4">
-                <div>
-                    <label for="fullName" class="block text-sm font-medium text-gray-700">Full Name</label>
-                    <input type="text" id="fullName" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="institution" class="block text-sm font-medium text-gray-700">Institution</label>
-                    <input type="text" id="institution" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
-                    <input type="text" id="address" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="identification" class="block text-sm font-medium text-gray-700">Identification</label>
-                    <input type="text" id="identification" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="city" class="block text-sm font-medium text-gray-700">City</label>
-                    <input type="text" id="city" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="idCard" class="block text-sm font-medium text-gray-700">ID Card</label>
-                    <input type="text" id="idCard" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="stateProvince" class="block text-sm font-medium text-gray-700">State/Province</label>
-                    <input type="text" id="stateProvince" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                    <input type="password" id="password" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                </div>
-                <div>
-                    <label for="country" class="block text-sm font-medium text-gray-700">Country</label>
-                    <select id="country" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                        <option value="">Select country</option>
-                        <!-- Add more country options as needed -->
-                    </select>
-                </div>
-                <div>
-                    <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
-                    <select id="role" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">
-                        <option value="">Select role</option>
-                        <option value="Admin">Admin</option>
-                        <option value="User">User</option>
-                    </select>
-                </div>
-            </form>
-            <div class="flex justify-end mt-4">
-                <button id="close-modal" class="bg-gray-500 text-white px-4 py-2 rounded-md mr-2">Close</button>
-                <button id="save-user" class="bg-blue-500 text-white px-4 py-2 rounded-md">Save</button>
-            </div>
-        </div>
     </div>
 
     <script>
-        $(document).ready(function () {
-            $('#users-tab').click(function () {
-                $('#users-section').show();
-                $('#projects-section, #reports-section').hide();
-                $(this).addClass('text-black font-bold border-b-2 border-black');
-                $('#projects-tab, #reports-tab').removeClass('text-black font-bold border-b-2 border-black').addClass('text-gray-600');
-            });
-
-            $('#projects-tab').click(function () {
-                $('#projects-section').show();
-                $('#users-section, #reports-section').hide();
-                $(this).addClass('text-black font-bold border-b-2 border-black');
-                $('#users-tab, #reports-tab').removeClass('text-black font-bold border-b-2 border-black').addClass('text-gray-600');
-            });
-
-            $('#reports-tab').click(function () {
-                $('#reports-section').show();
-                $('#users-section, #projects-section').hide();
-                $(this).addClass('text-black font-bold border-b-2 border-black');
-                $('#users-tab, #projects-tab').removeClass('text-black font-bold border-b-2 border-black').addClass('text-gray-600');
-            });
-
-            $('#add-button').click(function () {
-                $('#user-modal').removeClass('hidden');
-            });
-
-            $('#close-modal').click(function () {
-                $('#user-modal').addClass('hidden');
-            });
-
-            $('#save-user').click(function () {
-                // Save user logic here
-                $('#user-modal').addClass('hidden');
-            });
-
-            $('#logout-button').click(function () {
-                // Logout logic here
-            });
-
-            // Fetch and display users
-            $.ajax({
-                url: 'endpoint/users',  // Replace with your API endpoint
-                method: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    console.log(data);  // Añadir más detalles de depuración
+      $(document).ready(function() {
+    // Cargar la tabla de usuarios cuando la página cargue
+    loadUserTable();
+    
+    function loadUserTable() {
+        $.ajax({
+            url: 'endpoint/users',
+            type: 'GET',
+            contentType: 'application/json',
+            success: function(response) {
+                try {
+                    var data = JSON.parse(response);
+                    console.log("Datos recibidos:", data);
+                    
                     if (Array.isArray(data)) {
-                        var userCards = '';
-                        data.forEach(function (user) {
-                            userCards += `
-                                <div class="bg-white p-4 rounded-lg shadow-md">
-                                    <div class="flex justify-between items-center">
-                                        <div>
-                                            <div class="text-lg font-bold">${user.nombre_completo}</div>
-                                            <div class="text-gray-600">${user.rol}</div>
-                                            <div class="text-gray-600">${user.correo_electronico}</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        $('#user-cards').html(userCards);
+                        displayUsers(data);
                     } else {
+                        console.error("Los datos no son un arreglo:", data);
                         $('#error-message').removeClass('hidden');
                     }
-                },
-                error: function (jqXHR, textStatus, errorThrown) {
-                    console.log("Error: ", textStatus, errorThrown);  // Añadir más detalles de depuración en caso de error
+                } catch (error) {
+                    console.error("Error al parsear JSON:", error);
                     $('#error-message').removeClass('hidden');
                 }
-            });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("Error AJAX: ", textStatus, errorThrown);
+                $('#error-message').removeClass('hidden');
+            }
         });
+    }
+
+    // Navegación por pestañas
+    $('#users-tab').click(function() {
+        $('#users-section').show();
+        $('#projects-section').hide();
+        $('#reports-section').hide();
+        $('#users-tab').addClass('border-black text-black').removeClass('text-gray-600');
+        $('#projects-tab, #reports-tab').removeClass('border-black text-black').addClass('text-gray-600');
+    });
+
+    // Abrir modal
+    $('#add-button').click(function() {
+        $('#user-modal').removeClass('hidden');
+    });
+
+    // Cerrar modal
+    $('#close-modal').click(function() {
+        $('#user-modal').addClass('hidden');
+    });
+
+    // Guardar usuario
+    $('#save-user').click(function() {
+        var userData = {
+            nombre_completo: $('#fullName').val(),
+            institucion: $('#institution').val(),
+            correo_electronico: $('#email').val(),
+            direccion: $('#address').val(),
+            identificacion: $('#identification').val(),
+            ciudad: $('#city').val(),
+            cedula: $('#idCard').val(),
+            provincia: $('#stateProvince').val(),
+            contraseña: $('#password').val(),
+            pais: $('#country').val(),
+            rol: $('#role').val()
+        };
+
+        $.ajax({
+            url: 'endpoint/users',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(userData),
+            success: function() {
+                $('#user-modal').addClass('hidden');
+                loadUserTable(); // Recargar la tabla de usuarios después de añadir un nuevo usuario
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("Error al guardar usuario: ", textStatus, errorThrown);
+            }
+        });
+    });
+
+    // Filtrar usuarios por rol
+    $('#user-role-filter').change(function() {
+        var selectedRole = $(this).val();
+        filterUsers(selectedRole);
+    });
+
+    // Buscar usuarios por nombre
+    $('#user-search').on('keyup', function() {
+        var searchQuery = $(this).val().toLowerCase();
+        filterUsersBySearch(searchQuery);
+    });
+
+    // Función para filtrar y mostrar usuarios
+    function filterUsers(role) {
+        $.ajax({
+            url: 'endpoint/users',
+            type: 'GET',
+            contentType: 'application/json',
+            success: function(response) {
+                try {
+                    var data = JSON.parse(response);
+                    console.log("Datos recibidos:", data);
+                    
+                    if (Array.isArray(data)) {
+                        var filteredUsers = role ? data.filter(user => user.rol === role) : data;
+                        displayUsers(filteredUsers);
+                    } else {
+                        console.error("Los datos no son un arreglo:", data);
+                        $('#error-message').removeClass('hidden');
+                    }
+                } catch (error) {
+                    console.error("Error al parsear JSON:", error);
+                    $('#error-message').removeClass('hidden');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("Error AJAX: ", textStatus, errorThrown);
+                $('#error-message').removeClass('hidden');
+            }
+        });
+    }
+
+    // Función para filtrar y mostrar usuarios por búsqueda
+    function filterUsersBySearch(query) {
+        $.ajax({
+            url: 'endpoint/users',
+            type: 'GET',
+            contentType: 'application/json',
+            success: function(response) {
+                try {
+                    var data = JSON.parse(response);
+                    console.log("Datos recibidos:", data);
+                    
+                    if (Array.isArray(data)) {
+                        var filteredUsers = data.filter(user => {
+                            return user.nombre_completo.toLowerCase().includes(query);
+                        });
+                        displayUsers(filteredUsers);
+                    } else {
+                        console.error("Los datos no son un arreglo:", data);
+                        $('#error-message').removeClass('hidden');
+                    }
+                } catch (error) {
+                    console.error("Error al parsear JSON:", error);
+                    $('#error-message').removeClass('hidden');
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("Error AJAX: ", textStatus, errorThrown);
+                $('#error-message').removeClass('hidden');
+            }
+        });
+    }
+
+    // Función para mostrar usuarios en la tabla
+    function displayUsers(users) {
+        var tableBody = '';
+        if (users.length > 0) {
+            users.forEach(function(user) {
+                tableBody += `
+                    <tr>
+                        <td>${user.nombre_completo}</td>
+                        <td>${user.correo_electronico}</td>
+                        <td>${user.documento_identidad}</td>
+                        <td>${user.carnet}</td>
+                        <td>${user.rol}</td>
+                        <td>${user.institucion}</td>
+                        <td>${user.ciudad}</td>
+                        <td>${user.pais}</td>
+                        <td>${user.fecha_registro}</td>
+                        <td>delete</td>
+                    </tr>
+                `;
+            });
+        } else {
+            tableBody = `
+                <tr>
+                    <td colspan="10" class="text-center py-4 text-gray-500">No se encontraron usuarios</td>
+                </tr>
+            `;
+        }
+        $('#user-table-body').html(tableBody);
+    }
+});
     </script>
 </body>
 </html>
