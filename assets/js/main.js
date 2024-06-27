@@ -10,16 +10,16 @@ export function loadSelectionInterface() {
     const htmlContent = `
         <div id="role-selection" class="bg-white p-8 rounded-lg shadow-md fade-in">
             <div class="text-center">
-                <h1 class="text-3xl font-bold mb-4">¿Quién eres?</h1>
+                <h1 class="text-3xl font-bold mb-4">Rubric Dev Online</h1>
                 <p class="text-gray-600 mb-6">Selecciona tu rol para continuar.</p>
                 <div class="flex justify-center space-x-4">
-                    <button id="admin-btn" class="px-6 py-2 bg-black text-white rounded-lg hover:bg-blue-800 transition duration-300">Soy Administrativo</button>
+                    <button id="admin-btn" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-800 transition duration-300">Soy Administrativo</button>
                     <button id="student-btn" class="px-6 py-2 bg-white text-black border rounded-lg hover:bg-gray-200 transition duration-300">Soy Estudiante</button>
                 </div>
             </div>
         </div>
         <div class="text-center mt-20">
-            <p class="text-gray-500 text-sm mb-2">Rubric Dev Online</p>
+            <p class="text-gray-500 text-sm mb-2"></p>
             <div class="flex justify-center space-x-4">
                 <img src="../assets/img/logo" alt="Ingeniería Informatica" class="h-20" loading="lazy">
                 <img src="../assets/img/logo.png" alt="Unipaz" class="h-20" loading="lazy">
