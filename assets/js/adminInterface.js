@@ -11,7 +11,7 @@ export function loadAdminInterface() {
                     Atrás
                 </button>
                 <h2 class="text-2xl font-bold mt-4 mb-4">¡Nos alegra verte!</h2>
-                <p class="mb-4">Ingresa tu ID/carné y contraseña para acceder a tu cuenta.</p>
+                <p class="mb-4">Ingresa tu ID y contraseña para acceder a tu cuenta.</p>
                 <input class="w-full p-3 mb-4 border border-gray-300 rounded-lg" type="text" id="idUser" name="documento_identidad" placeholder="Ingresa tu ID" required>
                 <input class="w-full p-3 mb-4 border border-gray-300 rounded-lg" type="password" id="password" name="contrasena" placeholder="Ingresa tu contraseña">
                 <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-800">Iniciar sesión</button>
