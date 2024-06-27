@@ -1,1 +1,3 @@
 deny from all
+allow from https://ruedadeproyectos.com/
+allow from http://ruedadeproyectos.com/
