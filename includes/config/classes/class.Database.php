@@ -1,6 +1,6 @@
 <?php
 class Database {
-    private $host = '82.180.172.139';
+    private $host = '82.180.172.103';
     private $db_name = 'u358414249_sisinfo';
     private $username = 'u358414249_sisinfo';
     private $password = 'sK2!aD1~eM5(jZ3,';
