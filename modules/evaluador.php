@@ -16,7 +16,7 @@
                 <h1 class="text-xl font-bold">Ficha de evaluación</h1>
                 <div id="timer" class="text-4xl mx-auto">00:00</div>
                 <div class="relative">
-                    <button id="logoutButton" class="bg-red-500 text-white text-xs px-2 py-1 rounded-md">
+                    <button id="logoutButton" class="text-white text-xs px-2 py-1 rounded-md">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
                 </div>
@@ -29,9 +29,9 @@
                     <input type="text" id="searchInput" class="w-full p-2 border border-gray-300 rounded" placeholder="Buscar tesis...">
                 </div>
                 <div class="mb-4 flex space-x-2">
-                    <button class="filter-button bg-black text-white text-sm py-1 px-2 rounded hover:bg-gray-700 focus:outline-none" data-phase="Propuesta">Propuesta</button>
-                    <button class="filter-button bg-black text-white text-sm py-1 px-2 rounded hover:bg-gray-700 focus:outline-none" data-phase="Desarrollo">Desarrollo</button>
-                    <button class="filter-button bg-black text-white text-sm py-1 px-2 rounded hover:bg-gray-700 focus:outline-none" data-phase="Aplicación">Aplicación</button>
+                    <button class="filter-button bg-black text-white text-sm py-1 px-2 rounded hover:bg-blue-700 focus:outline-none" data-phase="Propuesta">Propuesta</button>
+                    <button class="filter-button bg-black text-white text-sm py-1 px-2 rounded hover:bg-blue-700 focus:outline-none" data-phase="Desarrollo">Desarrollo</button>
+                    <button class="filter-button bg-black text-white text-sm py-1 px-2 rounded hover:bg-blue-700 focus:outline-none" data-phase="Aplicación">Aplicación</button>
                 </div>
                 <div id="projectList" class="space-y-4"></div>
             </aside>
