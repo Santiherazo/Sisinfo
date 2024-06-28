@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluación de tesis</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/ratchet/2.0.2/js/ratchet.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body class="bg-gray-100">
@@ -15,11 +16,6 @@
                 <h1 class="text-xl font-bold">Ficha de evaluación</h1>
                 <div id="timer" class="text-4xl mx-auto">00:00</div>
                 <div class="relative">
-                    <button class="bg-gray-700 rounded-full p-2 focus:outline-none focus:ring">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A12.05 12.05 0 0012 21c2.178 0 4.21-.56 5.879-1.532M15 12h.01M12 12h.01M9 12h.01M21 12c0 1.657-1.034 3.064-2.487 3.66M3 12c0 1.657 1.034 3.064 2.487 3.66M12 3c2.178 0 4.21.56 5.879 1.532M15 12a3 3 0 11-6 0 3 3 0 016 0zm4.379-6.328A9 9 0 013.621 6.328M12 3v.01M12 12v.01m0-6v.01M3.879 6.328A9 9 0 003 12a9 9 0 009 9h0" />
-                        </svg>
-                    </button>
                     <button id="logoutButton" class="bg-red-500 text-white text-xs px-2 py-1 rounded-md">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
