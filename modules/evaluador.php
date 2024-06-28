@@ -10,7 +10,7 @@
 </head>
 <body class="bg-gray-100">
     <div class="min-h-screen flex flex-col">
-        <header class="bg-gray-800 text-white p-4">
+        <header class="bg-blue-800 text-white p-4">
             <div class="flex justify-between items-center">
                 <h1 class="text-xl font-bold">Ficha de evaluación</h1>
                 <div id="timer" class="text-4xl mx-auto">00:00</div>
@@ -20,10 +20,9 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A12.05 12.05 0 0012 21c2.178 0 4.21-.56 5.879-1.532M15 12h.01M12 12h.01M9 12h.01M21 12c0 1.657-1.034 3.064-2.487 3.66M3 12c0 1.657 1.034 3.064 2.487 3.66M12 3c2.178 0 4.21.56 5.879 1.532M15 12a3 3 0 11-6 0 3 3 0 016 0zm4.379-6.328A9 9 0 013.621 6.328M12 3v.01M12 12v.01m0-6v.01M3.879 6.328A9 9 0 003 12a9 9 0 009 9h0" />
                         </svg>
                     </button>
-                    <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-20 hidden">
-                        <a id="" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">My Account</a>
-                        <a id="logoutButton" class="block px-4 py-2 text-gray-800 hover:bg-gray-200 cursor-pointer">Logout</a>
-                    </div>
+                    <button id="logoutButton" class="bg-red-500 text-white text-xs px-2 py-1 rounded-md">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
                 </div>
             </div>
         </header>
