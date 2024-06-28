@@ -29,9 +29,9 @@
                     <input type="text" id="searchInput" class="w-full p-2 border border-gray-300 rounded" placeholder="Buscar tesis...">
                 </div>
                 <div class="mb-4 flex space-x-2">
-                    <button class="filter-button bg-black text-white text-sm py-1 px-2 rounded hover:bg-blue-700 focus:outline-none" data-phase="Propuesta">Propuesta</button>
-                    <button class="filter-button bg-black text-white text-sm py-1 px-2 rounded hover:bg-blue-700 focus:outline-none" data-phase="Desarrollo">Desarrollo</button>
-                    <button class="filter-button bg-black text-white text-sm py-1 px-2 rounded hover:bg-blue-700 focus:outline-none" data-phase="Aplicación">Aplicación</button>
+                    <button class="filter-button bg-blue-800 text-white text-sm py-1 px-2 rounded hover:bg-blue-700 focus:outline-none" data-phase="Propuesta">Propuesta</button>
+                    <button class="filter-button bg-blue-800 text-white text-sm py-1 px-2 rounded hover:bg-blue-700 focus:outline-none" data-phase="Desarrollo">Desarrollo</button>
+                    <button class="filter-button bg-blue-800 text-white text-sm py-1 px-2 rounded hover:bg-blue-700 focus:outline-none" data-phase="Aplicación">Aplicación</button>
                 </div>
                 <div id="projectList" class="space-y-4"></div>
             </aside>
