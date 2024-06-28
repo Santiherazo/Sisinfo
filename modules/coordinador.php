@@ -156,224 +156,24 @@
             </div>
         </form>
     </div>
+
+    <div id="successPopup" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div class="relative bg-white p-6 rounded-lg shadow-lg text-center fade-in">
+            <button id="closePopupBtn" class="absolute top-0 right-0 mt-2 mr-2 text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <div class="flex justify-center mb-4">
+                <svg class="h-16 w-16 text-green-500 scale-in" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold mb-4">¡Éxito!</h2>
+            <p class="mb-4">La respuesta fue enviada con éxito.</p>
+        </div>
+    </div>
 </div>
-
-<script>
-    $(document).ready(function() {
-        var selectedRole = '';
-        var searchQuery = '';
-        var usersData = [];
-
-        function filterAndSearchUsers() {
-            selectedRole = $('#user-role-filter').val();
-            searchQuery = $('#user-search').val().toLowerCase();
-            loadUserTable();
-            setInterval(function() {
-                loadUserTable();
-            }, 20000);
-        }
-
-        function loadUserTable() {
-            $.ajax({
-                url: 'endpoint/users',
-                type: 'GET',
-                success: function(response) {
-                    try {
-                        var data = JSON.parse(response);
-                        if (Array.isArray(data)) {
-                            usersData = data;
-                            var filteredUsers = data.filter(function(user) {
-                                var matchesRole = !selectedRole || user.rol === selectedRole;
-                                var matchesSearch = !searchQuery || user.nombre_completo.toLowerCase().includes(searchQuery) || user.correo_electronico.toLowerCase().includes(searchQuery);
-                                return matchesRole && matchesSearch;
-                            });
-                            displayUsers(filteredUsers);
-                        } else {
-                            $('#error-message').removeClass('hidden');
-                        }
-                    } catch (error) {
-                        $('#error-message').removeClass('hidden');
-                    }
-                },
-                error: function() {
-                    $('#error-message').removeClass('hidden');
-                }
-            });
-        }
-
-        $('#user-role-filter').change(filterAndSearchUsers);
-        $('#user-search').on('input', filterAndSearchUsers);
-        $('#clear-filter').click(function() {
-            $('#user-role-filter').val('');
-            filterAndSearchUsers();
-        });
-
-        $('#clear-search').click(function() {
-            $('#user-search').val('');
-            filterAndSearchUsers();
-        });
-
-        function displayUsers(users) {
-            var tableBody = $('#user-table-body');
-            tableBody.empty();
-            users.forEach(function(user) {
-                var row = $('<tr></tr>');
-                row.append($('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900').text(user.nombre_completo || 'N/A'));
-                row.append($('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900').text(user.correo_electronico || 'N/A'));
-                row.append($('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900').text(user.documento_identidad || 'N/A'));
-                row.append($('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900').text(user.carnet || 'N/A'));
-                row.append($('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900').text(user.rol || 'N/A'));
-                row.append($('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900').text(user.institucion || 'N/A'));
-                row.append($('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900').text(user.ciudad || 'N/A'));
-                row.append($('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900').text(user.pais || 'N/A'));
-                row.append($('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900').text(user.fecha_registro || 'N/A'));
-                var commandsTd = $('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900');
-                var editButton = $('<button></button>').addClass('text-blue-500 edit-user').attr('data-id', user.id).html('<i class="fas fa-edit"></i>');
-                var deleteButton = $('<button></button>').addClass('text-red-500 delete-user').attr('data-id', user.id).html('<i class="fas fa-trash"></i>');
-                commandsTd.append(editButton);
-                commandsTd.append(deleteButton);
-                row.append(commandsTd);
-                tableBody.append(row);
-            });
-
-            $('.edit-user').click(function() {
-                var userId = $(this).data('id');
-                openEditPopup(userId);
-            });
-
-            $('.delete-user').click(function() {
-                var userId = $(this).data('id');
-                openDeletePopup(userId);
-            });
-        }
-
-        function openDeletePopup(userId){
-            var popup = $('#delete-user-popup');
-            popup.find('.delete-user-popup-title').text('¿Está seguro de eliminar el usuario?');
-            popup.find('.delete-user-popup-body').text('Esta acción no se puede deshacer.');
-            popup.find('.delete-user-popup-button').attr('data-id', userId).text('Eliminar');
-            popup.modal('show');
-        }
-
-        function openEditPopup(userId) {
-            var user = usersData.find(function(u) { return u.id === userId; });
-            if (user) {
-                $('#edit-user-id').val(user.id);
-                $('#edit-user-nombre_completo').val(user.nombre_completo);
-                $('#edit-user-correo_electronico').val(user.correo_electronico);
-                $('#edit-user-documento_identidad').val(user.documento_identidad);
-                $('#edit-user-carnet').val(user.carnet);
-                $('#edit-user-rol').val(user.rol);
-                $('#edit-user-institucion').val(user.institucion);
-                $('#edit-user-ciudad').val(user.ciudad);
-                $('#edit-user-pais').val(user.pais);
-                $('#edit-user-popup').removeClass('hidden');
-            } else {
-                alert('Usuario no encontrado.');
-            }
-        }
-
-        $('#close-popup').click(function() {
-            $('#edit-user-popup').addClass('hidden');
-        });
-
-        $('#edit-user-form').submit(function(e) {
-            e.preventDefault();
-            var userId = $('#edit-user-id').val();
-            var userData = {
-                userID: userId,
-                nombre_completo: $('#edit-user-nombre_completo').val(),
-                correo_electronico: $('#edit-user-correo_electronico').val(),
-                documento_identidad: $('#edit-user-documento_identidad').val(),
-                contrasena: $('#edit-user-password').val(),
-                carnet: $('#edit-user-carnet').val(),
-                rol: $('#edit-user-rol').val(),
-                institucion: $('#edit-user-institucion').val(),
-                ciudad: $('#edit-user-ciudad').val(),
-                pais: $('#edit-user-pais').val()
-            };
-            console.log(userData)
-            $.ajax({
-                url: 'endpoint/editUser',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(userData),
-                success: function() {
-                    alert('Usuario actualizado correctamente.');
-                    $('#edit-user-popup').addClass('hidden');
-                    loadUserTable();
-                },
-                error: function() {
-                    alert('Error al actualizar el usuario.');
-                }
-            });
-        });
-
-        loadUserTable();
-    });
-
-    $('#logoutButton').click(function() {
-        logout();
-    });
-
-    function logout() {
-        $.get('/logout', function(data) {
-            location.reload();
-        });
-    }
-
-    $(".edit-user").on("click", function() {
-                    var userId = $(this).data("user-id");
-                    var userName = $(this).data("user-name");
-                    var userEmail = $(this).data("user-email");
-                    var userDocument = $(this).data("user-document");
-                    var userCarnet = $(this).data("user-carnet");
-                    var userRole = $(this).data("user-role");
-                    var userInstitution = $(this).data("user-institution");
-                    var userCity = $(this).data("user-city");
-                    var userCountry = $(this).data("user-country");
-
-                    $("#edit-user-id").val(userId);
-                    $("#edit-user-nombre_completo").val(userName);
-                    $("#edit-user-correo_electronico").val(userEmail);
-                    $("#edit-user-documento_identidad").val(userDocument);
-                    $("#edit-user-carnet").val(userCarnet);
-                    $("#edit-user-rol").val(userRole);
-                    $("#edit-user-institucion").val(userInstitution);
-                    $("#edit-user-ciudad").val(userCity);
-                    $("#edit-user-pais").val(userCountry);
-
-                    $("#edit-user-popup").removeClass("hidden");
-                });
-
-                $("#cancel-edit").on("click", function() {
-                    $("#edit-user-popup").addClass("hidden");
-                });
-
-                $("#edit-user-form").on("submit", function(event) {
-                    event.preventDefault();
-
-                    var userId = $("#edit-user-id").val();
-                    var userName = $("#edit-user-nombre_completo").val();
-                    var userEmail = $("#edit-user-correo_electronico").val();
-                    var userDocument = $("#edit-user-documento_identidad").val();
-                    var userCarnet = $("#edit-user-carnet").val();
-                    var userRole = $("#edit-user-rol").val();
-                    var userInstitution = $("#edit-user-institucion").val();
-                    var userCity = $("#edit-user-ciudad").val();
-                    var userCountry = $("#edit-user-pais").val();
-
-                    $("#edit-user-popup").addClass("hidden");
-
-                    $("#user-row-" + userId).find(".user-nombre_completo").text(userName);
-                    $("#user-row-" + userId).find(".user-correo_electronico").text(userEmail);
-                    $("#user-row-" + userId).find(".user-documento_identidad").text(userDocument);
-                    $("#user-row-" + userId).find(".user-carnet").text(userCarnet);
-                    $("#user-row-" + userId).find(".user-rol").text(userRole);
-                    $("#user-row-" + userId).find(".user-institucion").text(userInstitution);
-                    $("#user-row-" + userId).find(".user-ciudad").text(userCity);
-                    $("#user-row-" + userId).find(".user-pais").text(userCountry);
-                });
-</script>
+<script src="../assets/js/coordinador.js"></script>
 </body>
 </html>
