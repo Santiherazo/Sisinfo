@@ -82,7 +82,7 @@ try {
                     $crud->fetchUsers();
                     break;  
                 case 'deleteProjects': 
-                    $crud->fetchUsers();
+                    $crud->deleteProject();
                     break;                       
                 default:
                     echo json_encode(["error" => "Subruta no encontrada."]);

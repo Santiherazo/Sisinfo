@@ -256,7 +256,7 @@ class Crud {
             error_log($error_message);
             return ['error' => $error_message];
         }
-        
+
         foreach ($proyectos as &$proyecto) {
             $proyecto['investigadores_nombres'] = $this->fetchUserNameById($proyecto['investigadores']);
             $proyecto['evaluador_nombre'] = $this->fetchUserNameById($proyecto['evaluador']);
@@ -287,6 +287,55 @@ class Crud {
         }
     }
 
+    public function deleteProject() {
+        header('Content-Type: application/json');
+    
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            $response = ['success' => false, 'error' => 'Esta página solo acepta solicitudes POST'];
+            echo json_encode($response);
+            return;
+        }
+    
+        $data = json_decode(file_get_contents("php://input"), true);
+    
+        if (!$data) {
+            $response = ['success' => false, 'error' => 'Error al decodificar los datos JSON'];
+            echo json_encode($response);
+            return;
+        }
+    
+        if (empty($data['id'])) {
+            $response = ['success' => false, 'error' => 'ID de usuario requerido'];
+            echo json_encode($response);
+            return;
+        }
+    
+        if (!$this->validateUserExists()) {
+            $error_message = "Usuario no válido: " . $this->user;
+            error_log($error_message);
+            $response = ['success' => false, 'error' => $error_message];
+            echo json_encode($response);
+            return;
+        }
+    
+        try {
+            $query = "DELETE FROM proyectos WHERE id = ?";
+            $stmt = $this->db->prepare($query);
+    
+            error_log("Ejecutando consulta: $query con ID: " . $data['id']);
+    
+            $stmt->execute([$data['id']]);
+    
+            error_log("Eliminación exitosa del proyecto con ID: " . $data['id']);
+            $response = ['success' => true];
+            echo json_encode($response);
+        } catch (Exception $e) {
+            $error_message = "Excepción al eliminar el proyecto: " . $e->getMessage();
+            error_log($error_message);
+            $response = ['success' => false, 'error' => $error_message];
+            echo json_encode($response);
+        }
+    }
     
 }
 ?>

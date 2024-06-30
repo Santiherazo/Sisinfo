@@ -258,7 +258,6 @@ $(document).ready(function() {
             url: 'endpoint/projects',
             type: 'GET',
             success: function(response) {
-                console.log(response);
                 try {
                     projectsData = JSON.parse(response);
                     if (Array.isArray(projectsData)) {

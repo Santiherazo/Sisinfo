@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body class="bg-gray-100">
+    <!-- Barra de navegación -->
     <nav class="bg-white shadow-lg">
         <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
             <div class="relative flex items-center justify-between h-16">
@@ -36,7 +37,10 @@
             </div>
         </div>
     </nav>
+
+    <!-- Sección principal -->
     <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-6">
+        <!-- Sección de Usuarios -->
         <div id="users-section" class="hidden">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-bold text-black">Usuarios</h2>
@@ -82,6 +86,8 @@
                 </div>
             </div>
         </div>
+
+        <!-- Sección de Proyectos -->
         <div id="projects-section" class="hidden">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-bold text-black">Proyectos</h2>
@@ -113,8 +119,8 @@
                             <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Evaluador</th>
                             <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Fase</th>
                             <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Titulo</th>
-                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Tiempo</th>
-                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Controles</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Duración</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="project-table-body">
@@ -125,9 +131,35 @@
                 </div>
             </div>
         </div>
+
+        <!-- Sección de Reportes -->
         <div id="reports-section" class="hidden">
-            <h2 class="text-2xl font-bold text-black">Reportes</h2>
-            <p class="mt-4">Aquí irían los reportes si tuvieras alguno para mostrar.</p>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-black">Reportes</h2>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <input id="report-search" type="text" placeholder="Buscar por título" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+                    </div>
+                    <button id="clear-report-search" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Limpiar</button>
+                </div>
+            </div>
+            <div class="overflow-x-auto bg-white rounded-lg shadow overflow-y-auto relative">
+                <table class="border-collapse table-auto w-full whitespace-no-wrap bg-white table-striped relative">
+                    <thead>
+                        <tr class="text-left">
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Título</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Descripción</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Fecha</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="report-table-body">
+                    </tbody>
+                </table>
+                <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4" role="alert">
+                    <span class="block sm:inline">¡Error al cargar datos!</span>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
