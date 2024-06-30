@@ -137,5 +137,14 @@ class Handler {
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
+
+    public function deleteUser(){
+        try {
+            require_once '../classes/class.crud.php';
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
 }
 ?>

@@ -63,12 +63,27 @@ try {
                 case 'users': 
                     echo json_encode($crud->fetchUsers());
                     break;
+                case 'addUser': 
+                    $crud->createUser();
+                    break;
                 case 'editUser':
                     $crud->updateUser();
                     break; 
                 case 'deleteUser':
                     $crud->deleteUser();
-                    break;                             
+                    break;
+                case 'adminProjects': 
+                    echo json_encode($crud->fetchProjects());
+                    break;
+                case 'addProjects': 
+                    $crud->fetchUsers();
+                    break;
+                case 'editProjects': 
+                    $crud->fetchUsers();
+                    break;  
+                case 'deleteProjects': 
+                    $crud->fetchUsers();
+                    break;                       
                 default:
                     echo json_encode(["error" => "Subruta no encontrada."]);
                     break;

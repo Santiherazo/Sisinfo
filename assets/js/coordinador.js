@@ -1,7 +1,33 @@
 $(document).ready(function() {
+    $('#users-section').show();
+
+    function showSection(sectionToShow) {
+        $('#users-section, #projects-section, #reports-section').hide();
+        $(`#${sectionToShow}`).show();
+    }
+
+    function handleTabClick(tabId, sectionId) {
+        $(`#${tabId}`).on('click', function () {
+            showSection(sectionId);
+            $(this).addClass('text-black border-black').removeClass('text-gray-600');
+            $('#users-tab, #projects-tab, #reports-tab').removeClass('text-black border-black').addClass('text-gray-600');
+            if (sectionId === 'projects-section') {
+                loadProjectTable();
+            } else if (sectionId === 'users-section') {
+                loadUserTable();
+            }
+        });
+    }
+
+    handleTabClick('users-tab', 'users-section');
+    handleTabClick('projects-tab', 'projects-section');
+    handleTabClick('reports-tab', 'reports-section');
+
     var selectedRole = '';
     var searchQuery = '';
+    var selectedPhase = '';
     var usersData = [];
+    var projectsData = [];
 
     $('#logoutButton').click(logout);
 
@@ -27,13 +53,15 @@ $(document).ready(function() {
                     if (Array.isArray(usersData)) {
                         displayUsers(usersData.filter(filterUsers));
                     } else {
-                        showError();
+                        showError('users');
                     }
                 } catch (error) {
-                    showError();
+                    showError('users');
                 }
             },
-            error: showError
+            error: function() {
+                showError('users');
+            }
         });
     }
 
@@ -41,10 +69,6 @@ $(document).ready(function() {
         var matchesRole = !selectedRole || user.rol === selectedRole;
         var matchesSearch = !searchQuery || user.nombre_completo.toLowerCase().includes(searchQuery) || user.correo_electronico.toLowerCase().includes(searchQuery);
         return matchesRole && matchesSearch;
-    }
-
-    function showError() {
-        displayMessage('Error al cargar los datos de usuarios.', 'error');
     }
 
     $('#user-role-filter').change(filterAndSearchUsers);
@@ -80,11 +104,11 @@ $(document).ready(function() {
         });
 
         $('.edit-user').click(function() {
-            openEditPopup($(this).data('id'));
+            openEditPopup($(this).data('id'), 'user');
         });
 
         $('.delete-user').click(function() {
-            openDeletePopup($(this).data('id'));
+            openDeletePopup($(this).data('id'), 'user');
         });
     }
 
@@ -96,48 +120,66 @@ $(document).ready(function() {
         return $('<button></button>').addClass(className).attr('data-id', id).attr('data-action', action).html(icon);
     }
 
-    function openDeletePopup(userId) {
-        if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
+    function openDeletePopup(id, type) {
+        var confirmMessage = type === 'user' ? '¿Estás seguro de que deseas eliminar este usuario?' : '¿Estás seguro de que deseas eliminar este proyecto?';
+        if (confirm(confirmMessage)) {
+            var endpoint = type === 'user' ? 'endpoint/deleteUser' : 'endpoint/deleteProject';
             $.ajax({
-                url: 'endpoint/deleteUser',
+                url: endpoint,
                 type: 'POST',
                 contentType: 'application/json',
-                data: JSON.stringify({ id: userId }),
+                data: JSON.stringify({ id: id }),
                 success: function(response) {
                     if (response.success) {
-                        displayMessage('Usuario eliminado correctamente.', 'success');
-                        loadUserTable();
+                        displayMessage(type === 'user' ? 'Usuario eliminado correctamente.' : 'Proyecto eliminado correctamente.', 'success');
+                        if (type === 'user') {
+                            loadUserTable();
+                        } else {
+                            loadProjectTable();
+                        }
                     } else {
-                        displayMessage(response.error || 'Error al eliminar el usuario.', 'error');
+                        displayMessage(response.error || (type === 'user' ? 'Error al eliminar el usuario.' : 'Error al eliminar el proyecto.'), 'error');
                     }
                 },
                 error: function() {
-                    displayMessage('Error al eliminar el usuario.', 'error');
+                    displayMessage(type === 'user' ? 'Error al eliminar el usuario.' : 'Error al eliminar el proyecto.', 'error');
                 }
             });
         }
     }
 
-    function openEditPopup(userId) {
-        var user = usersData.find(function(u) { return u.id === userId; });
-        if (user) {
-            $('#edit-user-id').val(user.id);
-            $('#edit-user-nombre_completo').val(user.nombre_completo);
-            $('#edit-user-correo_electronico').val(user.correo_electronico);
-            $('#edit-user-documento_identidad').val(user.documento_identidad);
-            $('#edit-user-carnet').val(user.carnet);
-            $('#edit-user-rol').val(user.rol);
-            $('#edit-user-institucion').val(user.institucion);
-            $('#edit-user-ciudad').val(user.ciudad);
-            $('#edit-user-pais').val(user.pais);
-            $('#edit-user-popup').removeClass('hidden');
+    function openEditPopup(id, type) {
+        var data = type === 'user' ? usersData.find(function(u) { return u.id === id; }) : projectsData.find(function(p) { return p.id === id; });
+        if (data) {
+            if (type === 'user') {
+                $('#edit-user-id').val(data.id);
+                $('#edit-user-nombre_completo').val(data.nombre_completo);
+                $('#edit-user-correo_electronico').val(data.correo_electronico);
+                $('#edit-user-documento_identidad').val(data.documento_identidad);
+                $('#edit-user-carnet').val(data.carnet);
+                $('#edit-user-rol').val(data.rol);
+                $('#edit-user-institucion').val(data.institucion);
+                $('#edit-user-ciudad').val(data.ciudad);
+                $('#edit-user-pais').val(data.pais);
+                $('#edit-user-popup').removeClass('hidden');
+            } else {
+                $('#edit-project-id').val(data.id);
+                $('#edit-project-nombre').val(data.nombre);
+                $('#edit-project-descripcion').val(data.descripcion);
+                $('#edit-project-fecha_inicio').val(data.fecha_inicio);
+                $('#edit-project-fecha_fin').val(data.fecha_fin);
+                $('#edit-project-fase').val(data.fase);
+                $('#edit-project-estado').val(data.estado);
+                $('#edit-project-popup').removeClass('hidden');
+            }
         } else {
-            displayMessage('Usuario no encontrado.', 'error');
+            displayMessage(type === 'user' ? 'Usuario no encontrado.' : 'Proyecto no encontrado.', 'error');
         }
     }
 
     $('#close-popup').click(function() {
         $('#edit-user-popup').addClass('hidden');
+        $('#edit-project-popup').addClass('hidden');
     });
 
     $('#edit-user-form').submit(function(e) {
@@ -174,53 +216,128 @@ $(document).ready(function() {
         });
     });
 
-    loadUserTable();
+    $('#edit-project-form').submit(function(e) {
+        e.preventDefault();
+        var projectData = {
+            id: $('#edit-project-id').val(),
+            nombre: $('#edit-project-nombre').val(),
+            descripcion: $('#edit-project-descripcion').val(),
+            fecha_inicio: $('#edit-project-fecha_inicio').val(),
+            fecha_fin: $('#edit-project-fecha_fin').val(),
+            fase: $('#edit-project-fase').val(),
+            estado: $('#edit-project-estado').val()
+        };
+        $.ajax({
+            url: 'endpoint/editProject',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(projectData),
+            success: function(response) {
+                if (response.success) {
+                    displayMessage('Proyecto actualizado correctamente.', 'success');
+                    $('#edit-project-popup').addClass('hidden');
+                    loadProjectTable();
+                } else {
+                    displayMessage(response.error || 'Error al actualizar el proyecto.', 'error');
+                }
+            },
+            error: function() {
+                displayMessage('Error al actualizar el proyecto.', 'error');
+            }
+        });
+    });
+
+    function filterAndSearchProjects() {
+        selectedPhase = $('#project-phase-filter').val();
+        searchQuery = $('#project-search').val().toLowerCase();
+        loadProjectTable();
+    }
+
+    function loadProjectTable() {
+        $.ajax({
+            url: 'endpoint/projects',
+            type: 'GET',
+            success: function(response) {
+                console.log(response);
+                try {
+                    projectsData = JSON.parse(response);
+                    if (Array.isArray(projectsData)) {
+                        displayProjects(projectsData.filter(filterProjects));
+                    } else {
+                        showError('projects');
+                    }
+                } catch (error) {
+                    showError('projects');
+                }
+            },
+            error: function() {
+                showError('projects');
+            }
+        });
+    }
+
+    function filterProjects(project) {
+        var matchesPhase = !selectedPhase || project.fase === selectedPhase;
+        var matchesSearch = !searchQuery || project.nombre.toLowerCase().includes(searchQuery) || project.descripcion.toLowerCase().includes(searchQuery);
+        return matchesPhase && matchesSearch;
+    }
+
+    $('#project-phase-filter').change(filterAndSearchProjects);
+    $('#project-search').on('input', filterAndSearchProjects);
+    $('#clear-project-filter').click(function() {
+        $('#project-phase-filter').val('');
+        filterAndSearchProjects();
+    });
+    $('#clear-project-search').click(function() {
+        $('#project-search').val('');
+        filterAndSearchProjects();
+    });
+
+    function displayProjects(projects) {
+        var tableBody = $('#project-table-body');
+        tableBody.empty();
+        projects.forEach(function(project) {
+            var row = $('<tr></tr>');
+            row.append(createCell(project.investigadores));
+            row.append(createCell(project.docentes));
+            row.append(createCell(project.linea));
+            row.append(createCell(project.evaluadores));
+            row.append(createCell(project.fase));
+            row.append(createCell(project.titulo));
+            row.append(createCell(project.timer));
+            var commandsTd = $('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900');
+            commandsTd.append(createButton('text-blue-500 edit-project', project.id, 'edit', '<i class="fas fa-edit"></i>'));
+            commandsTd.append(createButton('text-red-500 delete-project', project.id, 'delete', '<i class="fas fa-trash"></i>'));
+            row.append(commandsTd);
+            tableBody.append(row);
+        });
+
+        $('.edit-project').click(function() {
+            openEditPopup($(this).data('id'), 'project');
+        });
+
+        $('.delete-project').click(function() {
+            openDeletePopup($(this).data('id'), 'project');
+        });
+    }
+
+    function showError(type) {
+        displayMessage(`Error al cargar ${type === 'users' ? 'usuarios' : 'proyectos'}.`, 'error');
+    }
 
     function displayMessage(message, type) {
-        const messageTypes = {
-            success: {
-                bgColor: 'bg-green-100',
-                textColor: 'text-green-600',
-                icon: `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-green-600" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-11.707a1 1 0 00-1.414-1.414L9 8.586 7.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                `
-            },
-            error: {
-                bgColor: 'bg-red-100',
-                textColor: 'text-red-600',
-                icon: `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v4a1 1 0 102 0V7zm-1 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
-                    </svg>
-                `
-            }
-        };
-
-        const { bgColor, textColor, icon } = messageTypes[type];
-        const messageContainer = $(`
-            <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                <div class="bg-white rounded-lg p-6 max-w-sm mx-auto shadow-lg">
-                    <div class="flex items-center">
-                        <div class="w-12 h-12 flex items-center justify-center ${bgColor} rounded-full mr-4">
-                            ${icon}
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-semibold ${textColor}">${type.charAt(0).toUpperCase() + type.slice(1)}</h3>
-                            <p class="text-gray-600">${message}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `);
-
-        $('body').append(messageContainer);
-
-        setTimeout(() => {
-            messageContainer.fadeOut(500, function() {
-                $(this).remove();
-            });
-        }, 5000);
+        var messageContainer = $('#message');
+        messageContainer.removeClass('hidden').text(message);
+        if (type === 'success') {
+            messageContainer.addClass('text-green-600').removeClass('text-red-600');
+        } else {
+            messageContainer.addClass('text-red-600').removeClass('text-green-600');
+        }
+        setTimeout(function() {
+            messageContainer.addClass('hidden');
+        }, 3000);
     }
+
+    loadUserTable();
+    loadProjectTable();
 });

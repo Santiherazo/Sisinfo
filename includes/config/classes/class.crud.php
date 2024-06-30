@@ -1,5 +1,5 @@
 <?php
-class crud {
+class Crud {
     private $db;
     private $user;
 
@@ -39,7 +39,7 @@ class crud {
 
         return $users;
     }
-
+    
     private function validateUserExists() {
         $query = "SELECT id FROM usuarios WHERE nombre_completo = ?";
         $stmt = $this->db->prepare($query);
@@ -60,96 +60,233 @@ class crud {
         return $exists;
     }
 
-    public function updateUser() {
+    public function createUser() {
+        header('Content-Type: application/json');
+    
         if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-            return ['success' => false, 'error' => 'Esta página solo acepta solicitudes POST'];
+            echo json_encode(['success' => false, 'error' => 'Esta página solo acepta solicitudes POST']);
+            return;
         }
-
+    
         $data = json_decode(file_get_contents("php://input"), true);
-
+    
         if (!$data) {
-            return ['success' => false, 'error' => 'Error al decodificar los datos JSON'];
+            echo json_encode(['success' => false, 'error' => 'Error al decodificar los datos JSON']);
+            return;
         }
+    
+        $requiredFields = ['nombre_completo', 'correo_electronico', 'documento_identidad', 'carnet', 'rol', 'institucion', 'ciudad', 'pais'];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                echo json_encode(['success' => false, 'error' => 'Campo requerido faltante: ' . $field]);
+                return;
+            }
+        }
+    
+        try {
+            $query = "INSERT INTO usuarios (nombre_completo, correo_electronico, documento_identidad, carnet, rol, institucion, ciudad, pais) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt = $this->db->prepare($query);
+    
+            $stmt->execute([
+                $data['nombre_completo'],
+                $data['correo_electronico'],
+                $data['documento_identidad'],
+                $data['carnet'],
+                $data['rol'],
+                $data['institucion'],
+                $data['ciudad'],
+                $data['pais']
+            ]);
+    
+            echo json_encode(['success' => true]);
+        } catch (Exception $e) {
+            $error_message = "Excepción al crear usuario: " . $e->getMessage();
+            error_log($error_message);
+            echo json_encode(['success' => false, 'error' => $error_message]);
+        }
+    }
 
+    public function updateUser() {
+        header('Content-Type: application/json');
+    
+        if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+            echo json_encode(['success' => false, 'error' => 'Esta página solo acepta solicitudes POST']);
+            return;
+        }
+    
+        $data = json_decode(file_get_contents("php://input"), true);
+    
+        if (!$data) {
+            echo json_encode(['success' => false, 'error' => 'Error al decodificar los datos JSON']);
+            return;
+        }
+    
+        if (!isset($data['id'])) {
+            echo json_encode(['success' => false, 'error' => 'ID de usuario requerido']);
+            return;
+        }
+    
         if (!$this->validateUserExists()) {
             $error_message = "Usuario no válido: " . $this->user;
             error_log($error_message);
-            return ['error' => $error_message];
+            echo json_encode(['success' => false, 'error' => $error_message]);
+            return;
         }
-
+    
         try {
             $this->db->beginTransaction();
-
+    
             $updateFields = [];
             $params = [];
-
+    
+            $allowedFields = ['nombre_completo', 'correo_electronico', 'documento_identidad', 'carnet', 'contrasena', 'rol', 'institucion', 'direccion', 'ciudad', 'estado_provincia', 'pais'];
+    
             foreach ($data as $key => $value) {
-                if (!empty($value) || $value === 0) {
+                if ($key === 'contrasena' && $value !== '') {
+                    // Encriptar la contraseña con SHA-1
+                    $updateFields[] = "contrasena = SHA1(?)";
+                    $params[] = $value;
+                } elseif ($key !== 'id' && in_array($key, $allowedFields) && ($value !== '' || $value === 0 || $value === '')) {
                     $updateFields[] = "$key = ?";
                     $params[] = $value;
                 }
             }
-
+    
             if (empty($updateFields)) {
-                return ['success' => false, 'error' => 'No hay campos para actualizar'];
+                echo json_encode(['success' => false, 'error' => 'No hay campos para actualizar']);
+                return;
             }
-
-            $params[] = $data['id']; // Assuming 'id' is present in the incoming data
-
+    
+            $params[] = $data['id'];
+    
             $query = "UPDATE usuarios SET " . implode(", ", $updateFields) . " WHERE id = ?";
             $stmt = $this->db->prepare($query);
-
-            if (!$stmt->execute($params)) {
-                $this->db->rollBack();
-                return ['success' => false, 'error' => 'Error al actualizar los datos'];
-            }
-
+    
+            error_log("Ejecutando consulta: $query con parámetros: " . implode(", ", $params));
+    
+            $stmt->execute($params);
+    
             $this->db->commit();
-            return ['success' => true];
+            echo json_encode(['success' => true]);
         } catch (Exception $e) {
             $this->db->rollBack();
-            return ['success' => false, 'error' => $e->getMessage()];
+            $error_message = "Excepción al actualizar usuario: " . $e->getMessage();
+            error_log($error_message);
+            echo json_encode(['success' => false, 'error' => $error_message]);
         }
-    }
+    }           
 
     public function deleteUser() {
+        header('Content-Type: application/json');
+    
         if ($_SERVER["REQUEST_METHOD"] !== "POST") {
-            return ['success' => false, 'error' => 'Esta página solo acepta solicitudes POST'];
+            $response = ['success' => false, 'error' => 'Esta página solo acepta solicitudes POST'];
+            echo json_encode($response);
+            return;
         }
-
+    
         $data = json_decode(file_get_contents("php://input"), true);
-
+    
         if (!$data) {
-            return ['success' => false, 'error' => 'Error al decodificar los datos JSON'];
+            $response = ['success' => false, 'error' => 'Error al decodificar los datos JSON'];
+            echo json_encode($response);
+            return;
         }
-
+    
         if (empty($data['id'])) {
-            return ['success' => false, 'error' => 'ID de usuario requerido'];
+            $response = ['success' => false, 'error' => 'ID de usuario requerido'];
+            echo json_encode($response);
+            return;
         }
-
+    
+        if (!$this->validateUserExists()) {
+            $error_message = "Usuario no válido: " . $this->user;
+            error_log($error_message);
+            $response = ['success' => false, 'error' => $error_message];
+            echo json_encode($response);
+            return;
+        }
+    
+        try {
+            $query = "DELETE FROM usuarios WHERE id = ?";
+            $stmt = $this->db->prepare($query);
+    
+            error_log("Ejecutando consulta: $query con ID: " . $data['id']);
+    
+            $stmt->execute([$data['id']]);
+    
+            error_log("Eliminación exitosa del usuario con ID: " . $data['id']);
+            $response = ['success' => true];
+            echo json_encode($response);
+        } catch (Exception $e) {
+            $error_message = "Excepción al eliminar usuario: " . $e->getMessage();
+            error_log($error_message);
+            $response = ['success' => false, 'error' => $error_message];
+            echo json_encode($response);
+        }
+    }
+    
+    public function fetchProjects() {
         if (!$this->validateUserExists()) {
             $error_message = "Usuario no válido: " . $this->user;
             error_log($error_message);
             return ['error' => $error_message];
         }
 
-        try {
-            $this->db->beginTransaction();
+        // Seleccionar todos los campos de la tabla proyectos
+        $query = "SELECT * FROM proyectos";
+        $stmt = $this->db->prepare($query);
+        if (!$stmt) {
+            $error_message = "Error al preparar la consulta: " . implode(" ", $this->db->errorInfo());
+            error_log($error_message);
+            return ['error' => $error_message];
+        }
 
-            $query = "DELETE FROM usuarios WHERE id = ?";
-            $stmt = $this->db->prepare($query);
+        if (!$stmt->execute()) {
+            $errorInfo = $stmt->errorInfo();
+            $error_message = "Error al ejecutar la consulta: " . $errorInfo[2];
+            error_log($error_message);
+            return ['error' => $error_message];
+        }
 
-            if (!$stmt->execute([$data['id']])) {
-                $this->db->rollBack();
-                return ['success' => false, 'error' => 'Error al eliminar el usuario'];
-            }
+        $proyectos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if (!$proyectos) {
+            $error_message = "No se encontraron proyectos.";
+            error_log($error_message);
+            return ['error' => $error_message];
+        }
+        
+        foreach ($proyectos as &$proyecto) {
+            $proyecto['investigadores_nombres'] = $this->fetchUserNameById($proyecto['investigadores']);
+            $proyecto['evaluador_nombre'] = $this->fetchUserNameById($proyecto['evaluador']);
+        }
 
-            $this->db->commit();
-            return ['success' => true];
-        } catch (Exception $e) {
-            $this->db->rollBack();
-            return ['success' => false, 'error' => $e->getMessage()];
+        return $proyectos;
+    }
+
+    private function fetchUserNameById($userId) {
+        $query = "SELECT nombre_completo FROM usuarios WHERE id = ?";
+        $stmt = $this->db->prepare($query);
+        if (!$stmt) {
+            error_log("Error al preparar la consulta para obtener el nombre del usuario con ID $userId: " . implode(" ", $this->db->errorInfo()));
+            return "Error al obtener nombre";
+        }
+        
+        if (!$stmt->execute([$userId])) {
+            $errorInfo = $stmt->errorInfo();
+            error_log("Error al ejecutar la consulta para obtener el nombre del usuario con ID $userId: " . $errorInfo[2]);
+            return "Error al obtener nombre";
+        }
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            return $result['nombre_completo'];
+        } else {
+            return "Nombre no encontrado";
         }
     }
+
+    
 }
 ?>
