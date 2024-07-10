@@ -85,9 +85,6 @@ class Handler {
             case 'Estudiante':
                 $this->renderDashboard('estudiante.php');
                 break;
-            case 'Administrador':
-                $this->renderDashboard('administrador.php');
-                break;
             case 'Coordinador':
                 $this->renderDashboard('coordinador.php');
                 break;

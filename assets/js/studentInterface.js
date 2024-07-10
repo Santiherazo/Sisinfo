@@ -11,14 +11,12 @@ export function loadStudentInterface() {
                     Atrás
                 </button>
                 <h2 class="text-2xl font-bold mt-4 mb-4">¡Nos alegra verte!</h2>
-                <p class="mb-4">Ingresa tu ID/carné para ver los resultados</p>
-                <input class="w-full p-3 mb-4 border border-gray-300 rounded-lg" type="text" id="idUser" name="idUser" placeholder="Ingresa tu ID/carné">
-                <button type="submit" class="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800">Ver resultados</button>
+                <p class="mb-4">Ingresa tu ID para ver los resultados</p>
+                <input class="w-full p-3 mb-4 border border-gray-300 rounded-lg" type="text" id="idUser" name="idUser" placeholder="Ingresa tu ID">
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-500">Ver resultados</button>
                 <div class="text-center mb-4 mt-8">
-                    <p class="text-gray-500 text-sm mb-2">Powered by</p>
                     <div class="flex justify-center space-x-4">
                         <img src="../assets/img/logo.png" alt="Logo 1" class="h-20">
-                        <!--<img src="../assets/img/logo2.png" alt="Logo 2" class="h-20">-->
                     </div>
                 </div>
             </div>

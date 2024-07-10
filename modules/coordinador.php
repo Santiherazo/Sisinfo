@@ -13,7 +13,7 @@
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <a href="#" class="text-xl font-bold text-white">Rueda de Proyectos</a>
+                        <a class="text-xl font-bold text-white cursor-default">Rueda de Proyectos</a>
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
@@ -45,9 +45,7 @@
         </div>
     </nav>
 
-    <!-- Sección principal -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <!-- Sección de Usuarios -->
         <div id="users-section" class="hidden">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-2xl font-semibold text-gray-800">Usuarios</h2>

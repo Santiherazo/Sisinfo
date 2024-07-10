@@ -1,6 +1,4 @@
 <?php
-define('access', 'index');
-
 try {
     if (!@include_once('includes/app.php')) throw new Exception('Opps, estamos presentando inconvenientes');
 } catch (Exception $ex) {
