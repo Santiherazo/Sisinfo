@@ -1,5 +1,9 @@
 $(document).ready(function() {
     $('#users-section').show();
+    
+    $('#mobile-menu-button').click(function() {
+        $('#mobile-menu').toggleClass('hidden');
+    });
 
     function showSection(sectionToShow) {
         $('#users-section, #projects-section, #reports-section').hide();
