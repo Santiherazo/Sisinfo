@@ -1,6 +1,14 @@
 $(document).ready(function() {
     $('#users-section').show();
-    
+    loadUserTable();
+
+    $('#add-user-button').click(function() {
+        $('#user-popup-title').text('Crear Usuario');
+        $('#user-form')[0].reset();
+        $('#user-id').val('');
+        $('#user-popup').removeClass('hidden');
+    });
+
     $('#mobile-menu-button').click(function() {
         $('#mobile-menu').toggleClass('hidden');
     });
@@ -71,7 +79,7 @@ $(document).ready(function() {
 
     function filterUsers(user) {
         var matchesRole = !selectedRole || user.rol === selectedRole;
-        var matchesSearch = !searchQuery || user.nombre_completo.toLowerCase().includes(searchQuery) || user.correo_electronico.toLowerCase().includes(searchQuery);
+        var matchesSearch = !searchQuery || user.nombre_completo.toLowerCase().includes(searchQuery) || user.documento_identidad.toString().includes(searchQuery.toString());
         return matchesRole && matchesSearch;
     }
 
@@ -156,16 +164,20 @@ $(document).ready(function() {
         var data = type === 'user' ? usersData.find(function(u) { return u.id === id; }) : projectsData.find(function(p) { return p.id === id; });
         if (data) {
             if (type === 'user') {
-                $('#edit-user-id').val(data.id);
-                $('#edit-user-nombre_completo').val(data.nombre_completo);
-                $('#edit-user-correo_electronico').val(data.correo_electronico);
-                $('#edit-user-documento_identidad').val(data.documento_identidad);
-                $('#edit-user-carnet').val(data.carnet);
-                $('#edit-user-rol').val(data.rol);
-                $('#edit-user-institucion').val(data.institucion);
-                $('#edit-user-ciudad').val(data.ciudad);
-                $('#edit-user-pais').val(data.pais);
-                $('#edit-user-popup').removeClass('hidden');
+                $('#user-popup-title').text('Editar Usuario');
+                $('#user-id').val(data.id);
+                $('#nombre_completo').val(data.nombre_completo);
+                $('#correo_electronico').val(data.correo_electronico);
+                $('#documento_identidad').val(data.documento_identidad);
+                $('#carnet').val(data.carnet);
+                $('#contrasena').val('');
+                $('#rol').val(data.rol);
+                $('#institucion').val(data.institucion);
+                $('#direccion').val(data.direccion);
+                $('#ciudad').val(data.ciudad);
+                $('#estado_provincia').val(data.estado_provincia);
+                $('#pais').val(data.pais);
+                $('#user-popup').removeClass('hidden');
             } else {
                 $('#edit-project-id').val(data.id);
                 $('#edit-project-nombre').val(data.nombre);
@@ -174,31 +186,36 @@ $(document).ready(function() {
                 $('#edit-project-fecha_fin').val(data.fecha_fin);
                 $('#edit-project-fase').val(data.fase);
                 $('#edit-project-estado').val(data.estado);
-                $('#edit-project-popup').removeClass('hidden');
+                $('#project-popup').removeClass('hidden');
             }
         } else {
             displayMessage(type === 'user' ? 'Usuario no encontrado.' : 'Proyecto no encontrado.', 'error');
         }
     }
 
-    $('#close-popup').click(function() {
-        $('#edit-user-popup').addClass('hidden');
-        $('#edit-project-popup').addClass('hidden');
+    $('#cancel-user-button').click(function() {
+        $('#user-popup').addClass('hidden');
+    });
+
+    $('#cancel-project-button').click(function() {
+        $('#project-popup').addClass('hidden');
     });
 
     $('#edit-user-form').submit(function(e) {
         e.preventDefault();
         var userData = {
-            id: $('#edit-user-id').val(),
-            nombre_completo: $('#edit-user-nombre_completo').val(),
-            correo_electronico: $('#edit-user-correo_electronico').val(),
-            documento_identidad: $('#edit-user-documento_identidad').val(),
-            contrasena: $('#edit-user-password').val(),
-            carnet: $('#edit-user-carnet').val(),
-            rol: $('#edit-user-rol').val(),
-            institucion: $('#edit-user-institucion').val(),
-            ciudad: $('#edit-user-ciudad').val(),
-            pais: $('#edit-user-pais').val()
+            id: $('#user-id').val(),
+            nombre_completo: $('#nombre_completo').val(),
+            correo_electronico: $('#correo_electronico').val(),
+            documento_identidad: $('#documento_identidad').val(),
+            contrasena: $('#contrasena').val(),
+            carnet: $('#carnet').val(),
+            rol: $('#rol').val(),
+            institucion: $('#institucion').val(),
+            direccion: $('#direccion').val(),
+            ciudad: $('#ciudad').val(),
+            estado_provincia: $('#estado_provincia').val(),
+            pais: $('#pais').val()
         };
         $.ajax({
             url: 'endpoint/editUser',
@@ -208,7 +225,7 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.success) {
                     displayMessage('Usuario actualizado correctamente.', 'success');
-                    $('#edit-user-popup').addClass('hidden');
+                    $('#user-popup').addClass('hidden');
                     loadUserTable();
                 } else {
                     displayMessage(response.error || 'Error al actualizar el usuario.', 'error');
@@ -239,7 +256,7 @@ $(document).ready(function() {
             success: function(response) {
                 if (response.success) {
                     displayMessage('Proyecto actualizado correctamente.', 'success');
-                    $('#edit-project-popup').addClass('hidden');
+                    $('#project-popup').addClass('hidden');
                     loadProjectTable();
                 } else {
                     displayMessage(response.error || 'Error al actualizar el proyecto.', 'error');
@@ -251,11 +268,21 @@ $(document).ready(function() {
         });
     });
 
-    function filterAndSearchProjects() {
-        selectedPhase = $('#project-phase-filter').val();
-        searchQuery = $('#project-search').val().toLowerCase();
-        loadProjectTable();
+    function displayMessage(message, type) {
+        var messageBox = $('#message-box');
+        messageBox.removeClass('hidden').text(message);
+        messageBox.removeClass('bg-green-500 bg-red-500').addClass(type === 'success' ? 'bg-green-500' : 'bg-red-500');
+        setTimeout(function() {
+            messageBox.addClass('hidden');
+        }, 3000);
     }
+
+    $('#add-project-button').click(function() {
+        $('#project-popup-title').text('Crear Proyecto');
+        $('#project-form')[0].reset();
+        $('#project-id').val('');
+        $('#project-popup').removeClass('hidden');
+    });
 
     function loadProjectTable() {
         $.ajax({
@@ -285,15 +312,13 @@ $(document).ready(function() {
         return matchesPhase && matchesSearch;
     }
 
-    $('#project-phase-filter').change(filterAndSearchProjects);
-    $('#project-search').on('input', filterAndSearchProjects);
-    $('#clear-project-filter').click(function() {
-        $('#project-phase-filter').val('');
-        filterAndSearchProjects();
+    $('#project-phase-filter').change(function() {
+        selectedPhase = $(this).val();
+        loadProjectTable();
     });
-    $('#clear-project-search').click(function() {
-        $('#project-search').val('');
-        filterAndSearchProjects();
+    $('#project-search').on('input', function() {
+        searchQuery = $(this).val().toLowerCase();
+        loadProjectTable();
     });
 
     function displayProjects(projects) {
@@ -301,13 +326,12 @@ $(document).ready(function() {
         tableBody.empty();
         projects.forEach(function(project) {
             var row = $('<tr></tr>');
-            row.append(createCell(project.investigadores));
-            row.append(createCell(project.docentes));
-            row.append(createCell(project.linea));
-            row.append(createCell(project.evaluadores));
+            row.append(createCell(project.nombre));
+            row.append(createCell(project.descripcion));
+            row.append(createCell(project.fecha_inicio));
+            row.append(createCell(project.fecha_fin));
             row.append(createCell(project.fase));
-            row.append(createCell(project.titulo));
-            row.append(createCell(project.timer));
+            row.append(createCell(project.estado));
             var commandsTd = $('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900');
             commandsTd.append(createButton('text-blue-500 edit-project', project.id, 'edit', '<i class="fas fa-edit"></i>'));
             commandsTd.append(createButton('text-red-500 delete-project', project.id, 'delete', '<i class="fas fa-trash"></i>'));
@@ -325,22 +349,7 @@ $(document).ready(function() {
     }
 
     function showError(type) {
-        displayMessage(`Error al cargar ${type === 'users' ? 'usuarios' : 'proyectos'}.`, 'error');
+        var message = type === 'users' ? 'Error al cargar los usuarios.' : 'Error al cargar los proyectos.';
+        displayMessage(message, 'error');
     }
-
-    function displayMessage(message, type) {
-        var messageContainer = $('#message');
-        messageContainer.removeClass('hidden').text(message);
-        if (type === 'success') {
-            messageContainer.addClass('text-green-600').removeClass('text-red-600');
-        } else {
-            messageContainer.addClass('text-red-600').removeClass('text-green-600');
-        }
-        setTimeout(function() {
-            messageContainer.addClass('hidden');
-        }, 3000);
-    }
-
-    loadUserTable();
-    loadProjectTable();
 });
