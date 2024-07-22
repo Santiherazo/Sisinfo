@@ -72,6 +72,7 @@
                 <table class="border-collapse rounded-lg table-auto w-full whitespace-no-wrap bg-white table-striped relative mx-auto">
                     <thead>
                         <tr class="text-center">
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Id</th>
                             <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Nombre</th>
                             <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Correo</th>
                             <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Documento</th>
@@ -109,23 +110,27 @@
                         </div>
                     </div>
                     <div class="relative">
-                        <input id="project-search" type="text" placeholder="Buscar por título" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 rounded-md shadow-sm leading-tight focus:outline-none focus:shadow-outline">
+                        <input id="project-search" type="text" placeholder="Buscar por título" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 rounded-md shadow-sm leading-tight focus:outline-none focus:shadow-outline pr-8">
+                        <span id="clear-search" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+                            <i class="fas fa-times text-gray-400 cursor-pointer hover:text-gray-600"></i>
+                        </span>
                     </div>
-                    <button id="clear-search" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Limpiar</button>
                     <button id="add-project-button" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Agregar Proyecto</button>
                 </div>
             </div>
             <div class="overflow-x-auto bg-white rounded-lg shadow-md overflow-y-auto relative">
-                <table class="border-collapse table-auto w-full whitespace-no-wrap bg-white table-striped relative">
+                <table class="border-collapse rounded-lg table-auto w-full whitespace-no-wrap bg-white table-striped relative mx-auto">
                     <thead>
-                        <tr class="text-left">
-                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Título</th>
-                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Descripción</th>
-                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Fecha Inicio</th>
-                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Fecha Fin</th>
-                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Fase</th>
-                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Responsable</th>
-                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-100">Acciones</th>
+                        <tr class="text-center">
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Id</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Título</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Estudiantes</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Docentes</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Evaluadores</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Linea</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Fase</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Duración</th>
+                            <th class="py-2 px-3 sticky top-0 border-b border-gray-200 bg-gray-300">Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="project-table-body">
@@ -138,15 +143,15 @@
         </div>
 
         <div id="reports-section" class="hidden">
-            <h2 class="text-2xl font-semibold text-gray-800 mb-4">Reportes</h2>
-            <div class="flex items-center space-x-4 mb-4">
-                <button id="download-report" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Descargar Reporte</button>
-            </div>
-            <div id="report-content" class="bg-white rounded-lg shadow-md p-4">
-                <p class="text-gray-700">Generación de reportes aquí...</p>
-            </div>
-            <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-md relative mt-4" role="alert">
-                <span class="block sm:inline">¡Error al cargar datos!</span>
+            <h2 class="text-xl font-bold mb-4">Reportes</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div>Total de Usuarios: <span id="total-users"></span></div>
+                <div>Coordinadores: <span id="coordinators"></span></div>
+                <div>Evaluadores: <span id="evaluators"></span></div>
+                <div>Estudiantes: <span id="students"></span></div>
+                <div>Total de Proyectos: <span id="total-projects"></span></div>
+                <div>Proyectos Aprobados: <span id="approved-projects"></span></div>
+                <div>Proyectos Reprobados: <span id="failed-projects"></span></div>
             </div>
         </div>
     </div>
@@ -197,15 +202,11 @@
                                         <input type="text" id="institucion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                     </div>
                                     <div class="mb-4">
-                                        <label for="direccion" class="block text-sm font-medium text-gray-700">Dirección</label>
-                                        <input type="text" id="direccion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                    </div>
-                                    <div class="mb-4">
                                         <label for="ciudad" class="block text-sm font-medium text-gray-700">Ciudad</label>
                                         <input type="text" id="ciudad" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                     </div>
                                     <div class="mb-4">
-                                        <label for="estado_provincia" class="block text-sm font-medium text-gray-700">Estado/Provincia</label>
+                                        <label for="estado_provincia" class="block text-sm font-medium text-gray-700">Departamento</label>
                                         <input type="text" id="estado_provincia" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                     </div>
                                     <div class="mb-4">
@@ -220,6 +221,66 @@
                 <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                     <button id="save-user-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">Guardar</button>
                     <button id="cancel-user-button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="project-popup" class="fixed z-10 inset-0 overflow-y-auto hidden">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all sm:max-w-lg sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="project-popup-title">Crear Proyecto</h3>
+                            <div class="mt-2">
+                                <form id="project-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <input type="hidden" id="project-id">
+                                    <div class="mb-4">
+                                        <label for="titulo" class="block text-sm font-medium text-gray-700">Título</label>
+                                        <input type="text" id="titulo" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700">Estudiantes</label>
+                                        <div id="students-list" class="mt-1"></div>
+                                        <button type="button" id="add-student" class="mt-2 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-500 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Agregar Estudiante</button>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="docentes" class="block text-sm font-medium text-gray-700">Docentes</label>
+                                        <input type="text" id="docentes" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700">Evaluadores</label>
+                                        <div id="evaluators-list" class="mt-1"></div>
+                                        <button type="button" id="add-evaluator" class="mt-2 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-500 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Agregar Evaluador</button>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="linea" class="block text-sm font-medium text-gray-700">Línea</label>
+                                        <input type="text" id="linea" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="fase" class="block text-sm font-medium text-gray-700">Fase</label>
+                                        <select id="fase" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                            <option value="Propuesta">Propuesta</option>
+                                            <option value="Desarrollo">Desarrollo</option>
+                                            <option value="Aplicación">Aplicación</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label for="duracion" class="block text-sm font-medium text-gray-700">Duración</label>
+                                        <input type="text" id="duracion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button id="save-project-button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-500 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">Guardar</button>
+                    <button id="cancel-project-button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm">Cancelar</button>
                 </div>
             </div>
         </div>

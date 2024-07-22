@@ -140,14 +140,13 @@ class Crud {
             $updateFields = [];
             $params = [];
     
-            $allowedFields = ['nombre_completo', 'correo_electronico', 'documento_identidad', 'carnet', 'contrasena', 'rol', 'institucion', 'direccion', 'ciudad', 'estado_provincia', 'pais'];
+            $allowedFields = ['nombre_completo', 'correo_electronico', 'documento_identidad', 'carnet', 'rol', 'institucion', 'direccion', 'ciudad', 'estado_provincia', 'pais'];
     
             foreach ($data as $key => $value) {
                 if ($key === 'contrasena' && $value !== '') {
-                    // Encriptar la contraseña con SHA-1
                     $updateFields[] = "contrasena = SHA1(?)";
                     $params[] = $value;
-                } elseif ($key !== 'id' && in_array($key, $allowedFields) && ($value !== '' || $value === 0 || $value === '')) {
+                } elseif ($key !== 'id' && in_array($key, $allowedFields) && $value !== '') {
                     $updateFields[] = "$key = ?";
                     $params[] = $value;
                 }
@@ -175,7 +174,7 @@ class Crud {
             error_log($error_message);
             echo json_encode(['success' => false, 'error' => $error_message]);
         }
-    }           
+    }             
 
     public function deleteUser() {
         header('Content-Type: application/json');
