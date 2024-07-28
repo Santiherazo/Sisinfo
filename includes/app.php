@@ -76,10 +76,10 @@ try {
                     echo json_encode($crud->fetchProjects());
                     break;
                 case 'addProjects': 
-                    $crud->fetchUsers();
+                    $crud->createProject();
                     break;
                 case 'editProjects': 
-                    $crud->fetchUsers();
+                    $crud->updateProject();
                     break;  
                 case 'deleteProjects': 
                     $crud->deleteProject();

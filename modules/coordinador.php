@@ -143,17 +143,18 @@
         </div>
 
         <div id="reports-section" class="hidden">
-            <h2 class="text-xl font-bold mb-4">Reportes</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <div>Total de Usuarios: <span id="total-users"></span></div>
-                <div>Coordinadores: <span id="coordinators"></span></div>
-                <div>Evaluadores: <span id="evaluators"></span></div>
-                <div>Estudiantes: <span id="students"></span></div>
-                <div>Total de Proyectos: <span id="total-projects"></span></div>
-                <div>Proyectos Aprobados: <span id="approved-projects"></span></div>
-                <div>Proyectos Reprobados: <span id="failed-projects"></span></div>
+            <div id="contentToExport">
+                <h1 id="projectTitle">Título del Proyecto</h1>
+                <p><strong>Calificación General:</strong> <span id="average"></span></p>
+                <p><strong>Progreso:</strong> <span id="progress"></span></p>
+                <div class="progress">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+                <div id="feedback"></div>
+                <ul id="projectInfo"></ul>
+                <div id="evaluatedCriteria"></div>
             </div>
-        </div>
+            <button id="downloadPdf">Descargar PDF</button>
     </div>
 
     <div id="user-popup" class="fixed z-10 inset-0 overflow-y-auto hidden">
@@ -246,7 +247,7 @@
                                     <div class="mb-4">
                                         <label class="block text-sm font-medium text-gray-700">Estudiantes</label>
                                         <div id="students-list" class="mt-1"></div>
-                                        <button type="button" id="add-student" class="mt-2 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-500 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Agregar Estudiante</button>
+                                        <button type="button" id="add-student-button" class="mt-2 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-500 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Agregar Estudiante</button>
                                     </div>
                                     <div class="mb-4">
                                         <label for="docentes" class="block text-sm font-medium text-gray-700">Docentes</label>
@@ -255,11 +256,17 @@
                                     <div class="mb-4">
                                         <label class="block text-sm font-medium text-gray-700">Evaluadores</label>
                                         <div id="evaluators-list" class="mt-1"></div>
-                                        <button type="button" id="add-evaluator" class="mt-2 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-500 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Agregar Evaluador</button>
+                                        <button type="button" id="add-evaluator-button" class="mt-2 inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-500 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">Agregar Evaluador</button>
                                     </div>
                                     <div class="mb-4">
                                         <label for="linea" class="block text-sm font-medium text-gray-700">Línea</label>
-                                        <input type="text" id="linea" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                        <select id="linea" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                            <option value="Ingeniería del Software">Ingeniería del Software</option>
+                                            <option value="Gestión de la Seguridad Informática">Gestión de la Seguridad Informática</option>
+                                            <option value="Redes y Telemática">Redes y Telemática</option>
+                                            <option value="Ingeniería del conocimiento">Ingeniería del conocimiento</option>
+                                            <option value="Robótica">Robótica</option>
+                                        </select>
                                     </div>
                                     <div class="mb-4">
                                         <label for="fase" class="block text-sm font-medium text-gray-700">Fase</label>
@@ -271,7 +278,7 @@
                                     </div>
                                     <div class="mb-4">
                                         <label for="duracion" class="block text-sm font-medium text-gray-700">Duración</label>
-                                        <input type="text" id="duracion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                        <input type="number" id="duracion" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                     </div>
                                 </form>
                             </div>

@@ -17,11 +17,19 @@ $(document).ready(function() {
         $('#project-form')[0].reset();
         $('#project-id').val('');
         $('#project-popup').removeClass('hidden');
+        clearSelections();
     });
 
     $('#cancel-user-button').click(function() {
         $(this).closest('#user-popup').addClass('hidden');
+        clearSelections();
     });
+
+    function clearSelections() {
+        selectedStudents = [];
+        selectedEvaluators = [];
+        updateProjectPopup();
+    }
 
     $('#cancel-project-button').click(function() {
         $(this).closest('#project-popup').addClass('hidden');
@@ -171,7 +179,7 @@ $(document).ready(function() {
     function openDeletePopup(id, type) {
         var confirmMessage = type === 'user' ? '¿Estás seguro de que deseas eliminar este usuario?' : '¿Estás seguro de que deseas eliminar este proyecto?';
         if (confirm(confirmMessage)) {
-            var endpoint = type === 'user' ? 'endpoint/deleteUser' : 'endpoint/deleteProject';
+            var endpoint = type === 'user' ? 'endpoint/deleteUser' : 'endpoint/deleteProjects';
             $.ajax({
                 url: endpoint,
                 type: 'POST',
@@ -197,39 +205,69 @@ $(document).ready(function() {
     }
 
     function openEditPopup(id, type) {
-        var endpoint = type === 'user' ? 'endpoint/getUser' : 'endpoint/getProject';
-        var formPrefix = type === 'user' ? '#user-' : '#project-';
-        var popupSelector = type === 'user' ? '#user-popup' : '#project-popup';
+        var data = type === 'user' ? usersData.find(function(u) { return u.id === id; }) : projectsData.find(function(p) { return p.id === id; });
+        if (data) {
+            if (type === 'user') {
+                $('#user-popup-title').text('Editar Usuario');
+                $('#user-id').val(data.id);
+                $('#nombre_completo').val(data.nombre_completo);
+                $('#correo_electronico').val(data.correo_electronico);
+                $('#documento_identidad').val(data.documento_identidad);
+                $('#carnet').val(data.carnet);
+                $('#contrasena').val('');
+                $('#rol').val(data.rol);
+                $('#institucion').val(data.institucion);
+                $('#direccion').val(data.direccion);
+                $('#ciudad').val(data.ciudad);
+                $('#estado_provincia').val(data.estado_provincia);
+                $('#pais').val(data.pais);
+                $('#save-new-user-button').attr('id', 'save-edit-user-button');
+                $('#user-popup').removeClass('hidden');
+            }
+        } else {
+            console.error(`No se encontró ${type} con id:`, id);
+        }
+    }
+
+    $(document).on('click', '#save-new-user-button', function() {
+        var userData = {
+            nombre_completo: $('#nombre_completo').val(),
+            correo_electronico: $('#correo_electronico').val(),
+            documento_identidad: $('#documento_identidad').val(),
+            carnet: $('#carnet').val(),
+            contrasena: $('#contrasena').val(),
+            rol: $('#rol').val(),
+            institucion: $('#institucion').val(),
+            direccion: $('#direccion').val(),
+            ciudad: $('#ciudad').val(),
+            estado_provincia: $('#estado_provincia').val(),
+            pais: $('#pais').val()
+        };
+
+        var endpoint = 'endpoint/addUser';
+
         $.ajax({
             url: endpoint,
-            type: 'GET',
-            data: { id: id },
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(userData),
             success: function(response) {
-                if (response) {
-                    for (var key in response) {
-                        $(formPrefix + key).val(response[key]);
-                    }
-                    $(popupSelector).removeClass('hidden');
+                if (response.success) {
+                    displayMessage('Usuario creado correctamente.', 'success');
+                    loadUserTable();
+                    $('#user-popup').addClass('hidden');
                 } else {
-                    showError(type === 'user' ? 'user' : 'project');
+                    displayMessage(response.error || 'Error al crear el usuario.', 'error');
                 }
             },
             error: function() {
-                showError(type === 'user' ? 'user' : 'project');
+                displayMessage('Error al crear el usuario.', 'error');
             }
         });
-    }
-
-    $('#save-new-user-button').click(function() {
-        saveUser('create');
     });
 
-    $('#save-edit-user-button').click(function() {
-        saveUser('update');
-    });
-
-    function saveUser(action) {
-        var user = {
+    $(document).on('click', '#save-edit-user-button', function() {
+        var userData = {
             id: $('#user-id').val(),
             nombre_completo: $('#nombre_completo').val(),
             correo_electronico: $('#correo_electronico').val(),
@@ -238,29 +276,37 @@ $(document).ready(function() {
             contrasena: $('#contrasena').val(),
             rol: $('#rol').val(),
             institucion: $('#institucion').val(),
+            direccion: $('#direccion').val(),
             ciudad: $('#ciudad').val(),
+            estado_provincia: $('#estado_provincia').val(),
             pais: $('#pais').val()
         };
-        var endpoint = action === 'create' ? 'endpoint/createUser' : 'endpoint/updateUser';
+    
+        if (userData.contrasena === '') {
+            delete userData.contrasena;
+        }
+    
+        var endpoint = 'endpoint/editUser';
+    
         $.ajax({
             url: endpoint,
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(user),
+            data: JSON.stringify(userData),
             success: function(response) {
                 if (response.success) {
-                    displayMessage(action === 'create' ? 'Usuario creado correctamente.' : 'Usuario actualizado correctamente.', 'success');
-                    $('#user-popup').addClass('hidden');
+                    displayMessage('Usuario actualizado correctamente.', 'success');
                     loadUserTable();
+                    $('#user-popup').addClass('hidden');
                 } else {
-                    displayMessage(response.error || (action === 'create' ? 'Error al crear el usuario.' : 'Error al actualizar el usuario.'), 'error');
+                    displayMessage(response.error || 'Error al actualizar el usuario.', 'error');
                 }
             },
             error: function() {
-                displayMessage(action === 'create' ? 'Error al crear el usuario.' : 'Error al actualizar el usuario.', 'error');
+                displayMessage('Error al actualizar el usuario.', 'error');
             }
         });
-    }
+    });    
 
     function filterAndSearchProjects() {
         selectedPhase = $('#project-phase-filter').val();
@@ -270,7 +316,7 @@ $(document).ready(function() {
 
     function loadProjectTable() {
         $.ajax({
-            url: 'endpoint/projects',
+            url: 'endpoint/adminProjects',
             type: 'GET',
             success: function(response) {
                 try {
@@ -292,13 +338,13 @@ $(document).ready(function() {
 
     function filterProjects(project) {
         var matchesPhase = !selectedPhase || project.fase === selectedPhase;
-        var matchesSearch = !searchQuery || project.nombre_proyecto.toLowerCase().includes(searchQuery);
+        var matchesSearch = !searchQuery || project.titulo.toLowerCase().includes(searchQuery);
         return matchesPhase && matchesSearch;
     }
 
     $('#project-phase-filter').change(filterAndSearchProjects);
     $('#project-search').on('input', filterAndSearchProjects);
-    $('#clear-project-filter').click(function() {
+    $('#clear-phase-filter').click(function() {
         $('#project-phase-filter').val('');
         filterAndSearchProjects();
     });
@@ -313,13 +359,13 @@ $(document).ready(function() {
         projects.forEach(function(project) {
             var row = $('<tr></tr>');
             row.append(createCell(project.id));
-            row.append(createCell(project.nombre_proyecto));
-            row.append(createCell(project.nombre_corto));
+            row.append(createCell(project.titulo));
+            row.append(createCell(project.estudiantes));
+            row.append(createCell(project.docentes));
+            row.append(createCell(project.evaluadores));
+            row.append(createCell(project.linea));
             row.append(createCell(project.fase));
-            row.append(createCell(project.tipo_proyecto));
-            row.append(createCell(project.linea_investigacion));
-            row.append(createCell(project.fecha_inicio));
-            row.append(createCell(project.fecha_fin));
+            row.append(createCell(project.timer));
             var commandsTd = $('<td></td>').addClass('px-6 py-4 text-sm text-center text-gray-900');
             commandsTd.append(createButton('text-blue-500 edit-project', project.id, 'edit', '<i class="fas fa-edit"></i>'));
             commandsTd.append(createButton('text-red-500 delete-project', project.id, 'delete', '<i class="fas fa-trash"></i>'));
@@ -329,7 +375,6 @@ $(document).ready(function() {
 
         $('.edit-project').click(function() {
             openEditPopup($(this).data('id'), 'project');
-            $('#save-project-button').attr('id', 'save-edit-project-button');
         });
 
         $('.delete-project').click(function() {
@@ -337,57 +382,421 @@ $(document).ready(function() {
         });
     }
 
-    $('#save-new-project-button').click(function() {
-        saveProject('create');
-    });
-
-    $('#save-edit-project-button').click(function() {
-        saveProject('update');
-    });
-
-    function saveProject(action) {
-        var project = {
-            id: $('#project-id').val(),
-            nombre_proyecto: $('#nombre_proyecto').val(),
-            nombre_corto: $('#nombre_corto').val(),
-            fase: $('#fase').val(),
-            tipo_proyecto: $('#tipo_proyecto').val(),
-            linea_investigacion: $('#linea_investigacion').val(),
-            fecha_inicio: $('#fecha_inicio').val(),
-            fecha_fin: $('#fecha_fin').val()
-        };
-        var endpoint = action === 'create' ? 'endpoint/createProject' : 'endpoint/updateProject';
-        $.ajax({
-            url: endpoint,
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(project),
-            success: function(response) {
-                if (response.success) {
-                    displayMessage(action === 'create' ? 'Proyecto creado correctamente.' : 'Proyecto actualizado correctamente.', 'success');
-                    $('#project-popup').addClass('hidden');
-                    loadProjectTable();
-                } else {
-                    displayMessage(response.error || (action === 'create' ? 'Error al crear el proyecto.' : 'Error al actualizar el proyecto.'), 'error');
-                }
-            },
-            error: function() {
-                displayMessage(action === 'create' ? 'Error al crear el proyecto.' : 'Error al actualizar el proyecto.', 'error');
-            }
-        });
-    }
-
     function displayMessage(message, type) {
-        var messageDiv = $('<div></div>').addClass('fixed bottom-4 right-4 p-4 rounded shadow-lg max-w-xs z-50').hide();
-        var bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
-        messageDiv.addClass(bgColor).text(message);
-        $('body').append(messageDiv);
-        messageDiv.fadeIn().delay(3000).fadeOut(function() {
-            $(this).remove();
-        });
+        var alertBox = $('#alert-box');
+        alertBox.removeClass('hidden').text(message);
+        if (type === 'success') {
+            alertBox.addClass('bg-green-200 text-green-800').removeClass('bg-red-200 text-red-800');
+        } else if (type === 'error') {
+            alertBox.addClass('bg-red-200 text-red-800').removeClass('bg-green-200 text-green-800');
+        }
+        setTimeout(function() {
+            alertBox.addClass('hidden');
+        }, 3000);
     }
 
-    function showError(section) {
-        displayMessage(section === 'users' ? 'Error al cargar los usuarios.' : 'Error al cargar los proyectos.', 'error');
+   var projectsData = [];
+var selectedStudents = [];
+var selectedEvaluators = [];
+
+const createPopupHtml = (title, listId) => 
+    `<div id="${listId}-popup" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 z-50 hidden">
+        <div class="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+            <div class="flex justify-between items-center border-b pb-2 mb-4">
+                <h2 class="text-xl font-semibold">${title}</h2>
+                <button class="close-popup text-gray-500 hover:text-gray-800">&times;</button>
+            </div>
+            <div class="mb-4">
+                <input type="text" class="search-input w-full p-2 border rounded" placeholder="Buscar...">
+            </div>
+            <ul id="${listId}" class="max-h-60 overflow-y-auto"></ul>
+            <button class="add-selected mt-4 w-full bg-blue-500 text-white py-2 rounded" id="add-selected-${listId}">Agregar</button>
+        </div>
+    </div>`;
+
+$('body').append(createPopupHtml('Agregar Estudiantes', 'student-list'));
+$('body').append(createPopupHtml('Agregar Evaluadores', 'evaluator-list'));
+
+$('#add-student-button').click(function() {
+    displayUsersByRole('student-list', 'Estudiante');
+    $('#student-list-popup').removeClass('hidden');
+});
+
+$('#add-evaluator-button').click(function() {
+    displayUsersByRole('evaluator-list', 'Evaluador');
+    $('#evaluator-list-popup').removeClass('hidden');
+});
+
+$(document).on('click', '.close-popup', function() {
+    $(this).closest('.fixed').addClass('hidden');
+});
+
+function displayUsersByRole(listId, role) {
+    const users = usersData.filter(user => user.rol === role && !isUserSelected(user.id));
+    const list = $(`#${listId}`);
+    list.empty();
+    users.forEach(function(user) {
+        const item = $(`<li data-id="${user.id}" class="p-2 border-b cursor-pointer hover:bg-gray-100">${user.nombre_completo}</li>`);
+        item.click(function() {
+            $(this).toggleClass('bg-gray-200');
+            $(this).data('selected', !$(this).data('selected'));
+        });
+        list.append(item);
+    });
+}
+
+function isUserSelected(userId) {
+    return selectedStudents.includes(userId) || selectedEvaluators.includes(userId);
+}
+
+$(document).on('input', '.search-input', function() {
+    const searchTerm = $(this).val().toLowerCase();
+    const listId = $(this).closest('.bg-white').find('ul').attr('id');
+    const allItems = $(`#${listId} li`);
+
+    allItems.each(function() {
+        const itemText = $(this).text().toLowerCase();
+        $(this).toggle(itemText.includes(searchTerm));
+    });
+});
+
+$(document).on('click', '#add-selected-student-list', function() {
+    $('#student-list li').each(function() {
+        if ($(this).data('selected')) {
+            const userId = $(this).data('id');
+            if (!selectedStudents.includes(userId)) {
+                selectedStudents.push(userId);
+            }
+        }
+    });
+    updateProjectPopup();
+    $('#student-list-popup').addClass('hidden');
+});
+
+$(document).on('click', '#add-selected-evaluator-list', function() {
+    $('#evaluator-list li').each(function() {
+        if ($(this).data('selected')) {
+            const userId = $(this).data('id');
+            if (!selectedEvaluators.includes(userId)) {
+                selectedEvaluators.push(userId);
+            }
+        }
+    });
+    updateProjectPopup();
+    $('#evaluator-list-popup').addClass('hidden');
+});
+
+function updateProjectPopup() {
+    const studentListContainer = $('#students-list');
+    const evaluatorListContainer = $('#evaluators-list');
+
+    studentListContainer.empty();
+    evaluatorListContainer.empty();
+
+    selectedStudents.forEach(id => {
+        const user = getUserById(id);
+        if (user) {
+            const userDiv = $(`<div class="selected-user" data-id="${user.id}">${user.nombre_completo} <button class="remove-user" data-id="${user.id}"><i class="fas fa-times text-gray-400 cursor-pointer hover:text-gray-600"></i></button></div>`);
+            studentListContainer.append(userDiv);
+        } else {
+            console.warn(`Usuario con ID ${id} no encontrado`);
+        }
+    });
+
+    selectedEvaluators.forEach(id => {
+        const user = getUserById(id);
+        if (user) {
+            const userDiv = $(`<div class="selected-user" data-id="${user.id}">${user.nombre_completo} <button class="remove-user" data-id="${user.id}"><i class="fas fa-times text-gray-400 cursor-pointer hover:text-gray-600"></i></button></div>`);
+            evaluatorListContainer.append(userDiv);
+        } else {
+            console.warn(`Evaluador con ID ${id} no encontrado`);
+        }
+    });
+}
+
+function getUserById(userId) {
+    return usersData.find(user => user.id === userId);
+}
+
+function getUserByName(userName) {
+    return usersData.find(user => user.nombre_completo === userName);
+}
+
+function showError(entity) {
+    console.error(`Error al cargar los ${entity}. Por favor, inténtelo de nuevo más tarde.`);
+}
+
+$('#add-project-button').click(function() {
+    $('#project-popup-title').text('Crear Proyecto');
+    $('#project-form')[0].reset();
+    $('#project-id').val('');
+    selectedStudents = [];
+    selectedEvaluators = [];
+    updateProjectPopup();
+    $('#project-popup').removeClass('hidden');
+
+    $('#save-project-button').off('click').on('click', createProject);
+});
+
+function createProject() {
+    const projectData = {
+        titulo: $('#titulo').val(),
+        docentes: $('#docentes').val(),
+        linea: $('#linea').val(),
+        fase: $('#fase').val(),
+        timer: $('#duracion').val(),
+        estudiantes: selectedStudents.join(','),
+        evaluadores: selectedEvaluators.join(',')
+    };
+
+    $.ajax({
+        url: 'endpoint/addProjects',
+        type: 'POST',
+        data: JSON.stringify(projectData),
+        contentType: 'application/json',
+        success: function(response) {
+            if (response.success) {
+                displayMessage('Proyecto guardado correctamente.', 'success');
+                loadProjectTable();
+            } else {
+                displayMessage('Error al guardar el proyecto.', 'error');
+            }
+        },
+        error: function() {
+            showError('project');
+        }
+    });
+
+    $('#project-popup').addClass('hidden');
+    selectedStudents = [];
+    selectedEvaluators = [];
+    updateProjectPopup();
+}
+
+$(document).on('click', '.edit-project', function() {
+    const projectId = $(this).data('id');
+    const project = projectsData.find(p => p.id === projectId);
+
+    if (project) {
+        $('#project-id').val(project.id);
+        $('#titulo').val(project.titulo);
+        $('#docentes').val(project.docentes);
+        $('#linea').val(project.linea);
+        $('#fase').val(project.fase);
+        $('#duracion').val(project.timer);
+
+        if (typeof project.estudiantes === 'string') {
+            selectedStudents = project.estudiantes.split(',').map(name => getUserByName(name).id);
+        } else {
+            selectedStudents = Array.isArray(project.estudiantes) ? project.estudiantes.map(name => getUserByName(name).id) : [];
+        }
+
+        if (typeof project.evaluadores === 'string') {
+            selectedEvaluators = project.evaluadores.split(',').map(name => getUserByName(name).id);
+        } else {
+            selectedEvaluators = Array.isArray(project.evaluadores) ? project.evaluadores.map(name => getUserByName(name).id) : [];
+        }
+
+        updateProjectPopup();
+        $('#project-popup').removeClass('hidden');
+
+        $('#save-project-button').off('click').on('click', editProject);
+    } else {
+        console.error('Proyecto no encontrado con id:', projectId);
+        showError('project');
     }
+});
+
+function editProject() {
+    const projectId = $('#project-id').val();
+    const projectData = {
+        id: projectId,
+        titulo: $('#titulo').val(),
+        docentes: $('#docentes').val(),
+        linea: $('#linea').val(),
+        fase: $('#fase').val(),
+        timer: $('#duracion').val(),
+        investigadores: selectedStudents.join(','),
+        evaluador: selectedEvaluators.join(',')
+    };
+
+    console.log(projectData);
+
+    $.ajax({
+        url: 'endpoint/editProjects',
+        type: 'POST',
+        data: JSON.stringify(projectData),
+        contentType: 'application/json',
+        success: function(response) {
+            console.log(response);
+            if (response.success) {
+                displayMessage('Proyecto editado correctamente.', 'success');
+                loadProjectTable();
+            } else {
+                displayMessage('Error al editar el proyecto.', 'error');
+            }
+        },
+        error: function() {
+            showError('project');
+        }
+    });
+
+    $('#project-popup').addClass('hidden');
+    selectedStudents = [];
+    selectedEvaluators = [];
+    updateProjectPopup();
+}
+
+$('#cancel-project-button').click(function() {
+    $('#project-popup').addClass('hidden');
+    selectedStudents = [];
+    selectedEvaluators = [];
+    updateProjectPopup();
+});
+
+$('#cancel-project-button').click(function() {
+    $('#project-popup').addClass('hidden');
+    selectedStudents = [];
+    selectedEvaluators = [];
+    updateProjectPopup();
+});
+
+function renderProject(project) {
+    $('#projectTitle').text(project.titulo || 'Título no encontrado');
+
+    // Calificaciones y evaluadores
+    let calificaciones = project.calificaciones || [];
+    let evaluadores = project.evaluadores || [];
+    let calificacion_general = calificaciones.length > 0 
+        ? (calificaciones.reduce((acc, curr) => acc + parseFloat(curr.rating), 0) / calificaciones.length)
+        : 0;
+    $('#average').text(calificacion_general.toFixed(2));
+    
+    // Barra de progreso
+    const progress = (calificacion_general / 5 * 100).toFixed(2);
+    $('#progress').text(`${progress}%`);
+    if (calificacion_general >= 3) {
+        $('#progressBar').addClass('bg-green-500');
+    } else {
+        $('#progressBar').addClass('bg-red-500');
+    }
+    $('#progressBar').css('width', `${progress}%`);
+
+    // Comentarios generales
+    let feedbacks = calificaciones.map(criterio => `<p>${criterio.generalComments || "No hubo comentario adicional"}</p>`).join("");
+    $('#feedback').html(feedbacks);
+
+    // Información del proyecto
+    let estudiantes = project.investigadores ? project.investigadores.join(', ') : 'N/A';
+    let docentes = project.docentes ? project.docentes : 'N/A';
+    let evaluadoresHtml = evaluadores.length > 0 ? evaluadores.join(', ') : 'N/A';
+    let projectInfoHtml = `
+        <li><strong>Título:</strong> ${project.titulo}</li>
+        <li><strong>Descripción:</strong> ${project.descripcion || 'Descripción no disponible'}</li>
+        <li><strong>Estudiantes:</strong> ${estudiantes}</li>
+        <li><strong>Fase:</strong> ${project.fase}</li>
+        <li><strong>Línea:</strong> ${project.linea}</li>
+        <li><strong>Docentes:</strong> ${docentes}</li>
+        <li><strong>Evaluadores:</strong> ${evaluadoresHtml}</li>
+    `;
+    $('#projectInfo').html(projectInfoHtml);
+
+    // Criterios evaluados
+    let criteriaHtml = '';
+    const properties = [
+        { name: "titleProject", label: "Título del Proyecto", feed: "feedProject" },
+        { name: "introduction", label: "Introducción", feed: "feedIntroduction" },
+        { name: "problemStatement", label: "Planteamiento del Problema", feed: "FeedStatement" },
+        { name: "justify", label: "Justificación", feed: "feedJustify" },
+        { name: "targets", label: "Objetivos", feed: "feedTargets" },
+        { name: "theorical", label: "Marco Teórico", feed: "feedTheorical" },
+        { name: "methodology", label: "Metodología", feed: "feedMethodology" },
+        { name: "mainResults", label: "Resultados", feed: "feedMainresults" },
+        { name: "support", label: "Sustentación", feed: "feedSupport" }
+    ];
+
+    evaluadores.forEach((evaluador, index) => {
+        let calificacion = calificaciones[index];
+        criteriaHtml += `
+        <div class="mb-6">
+            <h4 class="text-xl font-semibold mb-2">${evaluador}</h4>
+            <table class="table-auto w-full bg-gray-50 shadow rounded mb-4">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2">Criterios</th>
+                        <th class="px-4 py-2">Comentarios</th>
+                        <th class="px-4 py-2">Resultado</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+        properties.forEach(property => {
+            let commentKey = property.feed;
+            let comment = calificacion[commentKey] || "No hay comentarios";
+            let value = calificacion[property.name] || "No hay comentarios";
+            criteriaHtml += `
+                    <tr>
+                        <td class="border px-4 py-2 font-semibold">${property.label}</td>
+                        <td class="border px-4 py-2">${comment}</td>
+                        <td class="border px-4 py-2">${value}</td>
+                    </tr>`;
+        });
+        let generalComment = calificacion.generalComments || "No hay comentarios";
+        let finalResult = calificacion.rating || "No hay una calificación";
+        criteriaHtml += `
+                    <tr>
+                        <td class="border px-4 py-2 font-semibold">Resultado Final</td>
+                        <td class="border px-4 py-2"></td>
+                        <td class="border px-4 py-2">${finalResult}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>`;
+    });
+
+    $('#evaluatedCriteria').html(criteriaHtml);
+}
+
+function generateReport() {
+    console.log("Generando el informe...");
+    $.ajax({
+        url: 'endpoint/results',
+        type: 'GET',
+        success: function(response) {
+            let projects = JSON.parse(response);
+            if (Array.isArray(projects) && projects.length > 0) {
+                renderProject(projects[0]);
+            } else {
+                $('#contentToExport').html('<p>No hay información que cargar</p>');
+            }
+        },
+        error: function(error) {
+            console.error('Error fetching results:', error);
+        }
+    });
+}
+
+generateReport();
+
+$('#downloadPdf').click(function() {
+    $('#btn_content').hide();
+
+    const { jsPDF } = window.jspdf;
+    const content = document.getElementById('contentToExport');
+
+    html2canvas(content, { scale: 6 }).then(canvas => {
+        const imgData = canvas.toDataURL('image/jpeg');
+        const pdf = new jsPDF();
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = 300;
+        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+        
+        const projectTitle = $('#projectTitle').text();
+        const maxChars = 60;
+        const trimmedTitle = projectTitle.slice(0, maxChars);
+
+        pdf.save(`${trimmedTitle}... .pdf`);
+    });
+
+    $('#btn_content').show();
+});
 });
