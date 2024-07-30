@@ -142,20 +142,11 @@
             </div>
         </div>
 
-      <!-- Sección de Reportes -->
-      <div id="reports-section" class="bg-white p-6 rounded-lg shadow-md mb-8">
-            <div id="contentToExport">
-                <h1 id="projectTitle" class="text-2xl font-bold mb-4">Título del Proyecto</h1>
-                <p class="mb-2"><strong>Calificación General:</strong> <span id="average"></span></p>
-                <p class="mb-4"><strong>Progreso:</strong> <span id="progress"></span></p>
-                <div class="progress mb-4">
-                    <div id="progressBar" class="progress-bar"></div>
-                </div>
-                <div id="feedback" class="mb-4"></div>
-                <ul id="projectInfo" class="mb-4"></ul>
-                <div id="evaluatedCriteria"></div>
-            </div>
-        </div>
+      <div id="reports-section" class="p-8 bg-white rounded-lg shadow-md max-w-7xl mx-auto mt-10">
+        <h2 class="text-2xl font-bold mb-6">Reporte de Proyectos</h2>
+        <div id="contentToExport"></div>
+    </div>
+
 
     <div id="user-popup" class="fixed z-10 inset-0 overflow-y-auto hidden">
         <div class="flex items-center justify-center min-h-screen">

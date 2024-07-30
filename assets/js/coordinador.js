@@ -675,31 +675,47 @@ $('#cancel-project-button').click(function() {
 });
 
 function renderProject(project, container) {
-    const projectContainer = $('<div class="project mb-10"></div>');
+    const projectContainer = $('<div class="project mb-10 bg-gray-50 p-6 rounded-lg shadow-md"></div>');
 
-    const title = $('<h1 class="text-2xl font-bold mb-4"></h1>').text(project.titulo || 'Título no encontrado');
-    const average = $('<p><strong>Calificación General:</strong> </p>').append($('<span></span>').text(project.calificacion_general.toFixed(2)));
-    const progressText = $('<p><strong>Progreso:</strong> </p>').append($('<span></span>').text(`${project.progress}%`));
-    const progressBar = $('<div class="progress w-full bg-gray-300 h-6 rounded"></div>').append(
-        $('<div class="progress-bar h-full rounded"></div>').css('width', `${project.progress}%`).addClass(project.calificacion_general >= 3 ? 'bg-green-500' : 'bg-red-500')
-    );
+    const header = $(`
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center space-x-2">
+                <span class="text-lg font-semibold">${project.titulo || 'Título no encontrado'}</span>
+            </div>
+            <div class="text-right">
+                <span class="block text-sm">Calificación General:</span>
+                <span class="block text-xl font-bold">${project.calificacion_general.toFixed(2)}</span>
+            </div>
+        </div>
+    `);
+
+    const progressContainer = $(`
+        <div class="mb-4">
+            <p><strong>Progreso:</strong> <span>${project.progress}%</span></p>
+            <div class="w-full bg-gray-200 rounded-full h-6">
+                <div class="progress-bar h-full rounded-full ${project.calificacion_general >= 3 ? 'bg-green-500' : 'bg-red-500'}" style="width: ${project.progress}%;"></div>
+            </div>
+        </div>
+    `);
 
     const feedback = $('<div id="feedback" class="my-4"></div>').html(
-        project.calificaciones.map(criterio => `<p>${criterio.generalComments || "No hubo comentario adicional"}</p>`).join("")
+        project.calificaciones.map((criterio, index) => `<p>"${criterio.generalComments || "No hubo comentario adicional"}" - <small>${project.evaluadores[index]}</small></p>`).join("")
     );
 
-    const estudiantes = project.investigadores ? project.investigadores.join(', ') : 'N/A';
-    const docentes = project.docentes ? project.docentes : 'N/A';
-    const evaluadoresHtml = project.evaluadores.length > 0 ? project.evaluadores.join(', ') : 'N/A';
-    const projectInfoHtml = `
-        <li><strong>Título:</strong> ${project.titulo}</li>
-        <li><strong>Estudiantes:</strong> ${estudiantes}</li>
-        <li><strong>Fase:</strong> ${project.fase}</li>
-        <li><strong>Línea:</strong> ${project.linea}</li>
-        <li><strong>Docentes:</strong> ${docentes}</li>
-        <li><strong>Evaluadores:</strong> ${evaluadoresHtml}</li>
-    `;
-    const projectInfo = $('<ul class="list-disc pl-5 mb-4"></ul>').html(projectInfoHtml);
+    const projectInfo = $(`
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold mb-2">Información del Proyecto</h3>
+            <ul class="list-disc pl-5">
+                <li><strong>Título:</strong> ${project.titulo}</li>
+                <li><strong>Descripción:</strong> ${project.descripcion || 'Descripción no disponible'}</li>
+                <li><strong>Estudiantes:</strong> ${project.investigadores ? project.investigadores.join(', ') : 'N/A'}</li>
+                <li><strong>Fase:</strong> ${project.fase}</li>
+                <li><strong>Línea:</strong> ${project.linea}</li>
+                <li><strong>Docentes:</strong> ${project.docentes ? project.docentes : 'N/A'}</li>
+                <li><strong>Evaluadores:</strong> ${project.evaluadores.length > 0 ? project.evaluadores.join(', ') : 'N/A'}</li>
+            </ul>
+        </div>
+    `);
 
     let criteriaHtml = '';
     const properties = [
@@ -718,8 +734,8 @@ function renderProject(project, container) {
         let calificacion = project.calificaciones[index];
         criteriaHtml += `
         <div class="mb-6">
-            <h4 class="text-xl font-semibold mb-2">${evaluador}</h4>
-            <table class="table-auto w-full bg-gray-50 shadow rounded mb-4">
+            <h4 class="text-lg font-semibold mb-2">${evaluador}</h4>
+            <table class="table-auto w-full bg-gray-100 shadow rounded mb-4">
                 <thead>
                     <tr>
                         <th class="px-4 py-2">Criterios</th>
@@ -744,7 +760,7 @@ function renderProject(project, container) {
         criteriaHtml += `
                     <tr>
                         <td class="border px-4 py-2 font-semibold">Resultado Final</td>
-                        <td class="border px-4 py-2"></td>
+                        <td class="border px-4 py-2">${generalComment}</td>
                         <td class="border px-4 py-2">${finalResult}</td>
                     </tr>
                 </tbody>
@@ -754,7 +770,16 @@ function renderProject(project, container) {
 
     const evaluatedCriteria = $('<div id="evaluatedCriteria"></div>').html(criteriaHtml);
 
-    projectContainer.append(title, average, progressText, progressBar, feedback, projectInfo, evaluatedCriteria);
+    const status = project.calificacion_general >= 3 ? 'Aprobado' : 'Reprobado';
+    const statusClass = project.calificacion_general >= 3 ? 'text-green-500' : 'text-red-500';
+
+    const statusHtml = $(`
+        <div class="mb-6 text-center">
+            <h3 class="text-2xl font-bold ${statusClass}">${status}</h3>
+        </div>
+    `);
+
+    projectContainer.append(header, progressContainer, feedback, projectInfo, statusHtml, evaluatedCriteria);
     container.append(projectContainer);
 }
 
@@ -766,8 +791,9 @@ function generateReport() {
             let projects = JSON.parse(response);
             if (Array.isArray(projects) && projects.length > 0) {
                 const container = $('#contentToExport');
-                container.empty();
+                container.empty(); // Clear the container first
                 projects.forEach(project => {
+                    // Calculate general rating and progress for each project
                     let calificaciones = project.calificaciones || [];
                     let calificacion_general = calificaciones.length > 0 
                         ? (calificaciones.reduce((acc, curr) => acc + parseFloat(curr.rating), 0) / calificaciones.length)
