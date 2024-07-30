@@ -49,6 +49,41 @@ class Report {
         return $result;
     }
 
+    public function getReport() {
+        $projects = $this->getAllProjects();
+        if (isset($projects['error'])) {
+            return $projects;
+        }
+
+        $result = [];
+        foreach ($projects as $project) {
+            error_log("Procesando proyecto ID: " . $project['id']);
+
+            $investigadores_ids = array_filter(explode(',', $project['investigadores']));
+            $investigadores_nombres = $this->getUserNamesByIds($investigadores_ids);
+
+            $evaluadores_ids = array_filter(explode(',', $project['evaluador']));
+            $evaluadores_nombres = $this->getUserNamesByIds($evaluadores_ids);
+
+            $calificaciones = $this->getCalificacionesByProjectId($project['id']);
+
+            $result[] = [
+                'id' => $project['id'],
+                'investigadores' => $investigadores_nombres,
+                'docentes' => $project['docentes'],
+                'evaluadores' => $evaluadores_nombres,
+                'titulo' => $project['titulo'],
+                'linea' => $project['linea'],
+                'fase' => $project['fase'],
+                'timer' => $project['timer'],
+                'calificaciones' => $calificaciones,
+            ];
+        }
+
+        error_log("Proyectos finales: " . json_encode($result));
+        return $result;
+    }
+
     private function getUserNamesByIds($ids) {
         if (empty($ids)) {
             $error_message = "Lista de IDs de usuarios vacía.";
@@ -178,6 +213,47 @@ class Report {
 
         $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
         error_log("Proyectos obtenidos para el usuario {$this->user}: " . json_encode($projects));
+        return $projects;
+    }
+
+    private function getAllProjects() {
+        $query = "
+            SELECT 
+                p.id,
+                p.titulo,
+                p.linea,
+                p.fase,
+                p.timer,
+                p.investigadores,
+                p.evaluador,
+                p.calificado,
+                p.docentes,
+                GROUP_CONCAT(DISTINCT u_investigadores.nombre_completo) AS investigadores_nombres,
+                GROUP_CONCAT(DISTINCT u_evaluadores.nombre_completo) AS evaluadores_nombres
+            FROM 
+                proyectos p
+            LEFT JOIN usuarios u_investigadores ON FIND_IN_SET(u_investigadores.id, p.investigadores)
+            LEFT JOIN usuarios u_evaluadores ON FIND_IN_SET(u_evaluadores.id, p.evaluador)
+            WHERE p.calificado = 2
+            GROUP BY p.id
+        ";
+
+        $stmt = $this->db->prepare($query);
+        if (!$stmt) {
+            $error_message = "Error al preparar la consulta en getAllProjects: " . implode(" ", $this->db->errorInfo());
+            error_log($error_message);
+            return ['error' => $error_message];
+        }
+
+        if (!$stmt->execute()) {
+            $errorInfo = $stmt->errorInfo();
+            $error_message = "Error al ejecutar la consulta en getAllProjects: " . $errorInfo[2];
+            error_log($error_message);
+            return ['error' => $error_message];
+        }
+
+        $projects = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        error_log("Proyectos obtenidos: " . json_encode($projects));
         return $projects;
     }
 }

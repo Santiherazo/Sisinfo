@@ -8,6 +8,9 @@ $(document).ready(function() {
         $('#user-form')[0].reset();
         $('#user-id').val('');
         $('#pais').val('Colombia');
+        $('#institucion').val('Unipaz');
+        $('#ciudad').val('Barrancabermeja');
+        $('#carnet').val('1');
         $('#save-user-button').attr('id', 'save-new-user-button');
         $('#user-popup').removeClass('hidden');
     });
@@ -245,6 +248,8 @@ $(document).ready(function() {
         };
 
         var endpoint = 'endpoint/addUser';
+
+        console.log(userData);
 
         $.ajax({
             url: endpoint,
@@ -512,6 +517,14 @@ function updateProjectPopup() {
             console.warn(`Evaluador con ID ${id} no encontrado`);
         }
     });
+
+    $('.remove-user').off('click').on('click', function() {
+        const userId = $(this).data('id');
+        $(this).parent().remove();
+
+        selectedStudents = selectedStudents.filter(id => id !== userId);
+        selectedEvaluators = selectedEvaluators.filter(id => id !== userId);
+    });
 }
 
 function getUserById(userId) {
@@ -661,47 +674,33 @@ $('#cancel-project-button').click(function() {
     updateProjectPopup();
 });
 
-function renderProject(project) {
-    $('#projectTitle').text(project.titulo || 'Título no encontrado');
+function renderProject(project, container) {
+    const projectContainer = $('<div class="project mb-10"></div>');
 
-    // Calificaciones y evaluadores
-    let calificaciones = project.calificaciones || [];
-    let evaluadores = project.evaluadores || [];
-    let calificacion_general = calificaciones.length > 0 
-        ? (calificaciones.reduce((acc, curr) => acc + parseFloat(curr.rating), 0) / calificaciones.length)
-        : 0;
-    $('#average').text(calificacion_general.toFixed(2));
-    
-    // Barra de progreso
-    const progress = (calificacion_general / 5 * 100).toFixed(2);
-    $('#progress').text(`${progress}%`);
-    if (calificacion_general >= 3) {
-        $('#progressBar').addClass('bg-green-500');
-    } else {
-        $('#progressBar').addClass('bg-red-500');
-    }
-    $('#progressBar').css('width', `${progress}%`);
+    const title = $('<h1 class="text-2xl font-bold mb-4"></h1>').text(project.titulo || 'Título no encontrado');
+    const average = $('<p><strong>Calificación General:</strong> </p>').append($('<span></span>').text(project.calificacion_general.toFixed(2)));
+    const progressText = $('<p><strong>Progreso:</strong> </p>').append($('<span></span>').text(`${project.progress}%`));
+    const progressBar = $('<div class="progress w-full bg-gray-300 h-6 rounded"></div>').append(
+        $('<div class="progress-bar h-full rounded"></div>').css('width', `${project.progress}%`).addClass(project.calificacion_general >= 3 ? 'bg-green-500' : 'bg-red-500')
+    );
 
-    // Comentarios generales
-    let feedbacks = calificaciones.map(criterio => `<p>${criterio.generalComments || "No hubo comentario adicional"}</p>`).join("");
-    $('#feedback').html(feedbacks);
+    const feedback = $('<div id="feedback" class="my-4"></div>').html(
+        project.calificaciones.map(criterio => `<p>${criterio.generalComments || "No hubo comentario adicional"}</p>`).join("")
+    );
 
-    // Información del proyecto
-    let estudiantes = project.investigadores ? project.investigadores.join(', ') : 'N/A';
-    let docentes = project.docentes ? project.docentes : 'N/A';
-    let evaluadoresHtml = evaluadores.length > 0 ? evaluadores.join(', ') : 'N/A';
-    let projectInfoHtml = `
+    const estudiantes = project.investigadores ? project.investigadores.join(', ') : 'N/A';
+    const docentes = project.docentes ? project.docentes : 'N/A';
+    const evaluadoresHtml = project.evaluadores.length > 0 ? project.evaluadores.join(', ') : 'N/A';
+    const projectInfoHtml = `
         <li><strong>Título:</strong> ${project.titulo}</li>
-        <li><strong>Descripción:</strong> ${project.descripcion || 'Descripción no disponible'}</li>
         <li><strong>Estudiantes:</strong> ${estudiantes}</li>
         <li><strong>Fase:</strong> ${project.fase}</li>
         <li><strong>Línea:</strong> ${project.linea}</li>
         <li><strong>Docentes:</strong> ${docentes}</li>
         <li><strong>Evaluadores:</strong> ${evaluadoresHtml}</li>
     `;
-    $('#projectInfo').html(projectInfoHtml);
+    const projectInfo = $('<ul class="list-disc pl-5 mb-4"></ul>').html(projectInfoHtml);
 
-    // Criterios evaluados
     let criteriaHtml = '';
     const properties = [
         { name: "titleProject", label: "Título del Proyecto", feed: "feedProject" },
@@ -715,8 +714,8 @@ function renderProject(project) {
         { name: "support", label: "Sustentación", feed: "feedSupport" }
     ];
 
-    evaluadores.forEach((evaluador, index) => {
-        let calificacion = calificaciones[index];
+    project.evaluadores.forEach((evaluador, index) => {
+        let calificacion = project.calificaciones[index];
         criteriaHtml += `
         <div class="mb-6">
             <h4 class="text-xl font-semibold mb-2">${evaluador}</h4>
@@ -753,18 +752,31 @@ function renderProject(project) {
         </div>`;
     });
 
-    $('#evaluatedCriteria').html(criteriaHtml);
+    const evaluatedCriteria = $('<div id="evaluatedCriteria"></div>').html(criteriaHtml);
+
+    projectContainer.append(title, average, progressText, progressBar, feedback, projectInfo, evaluatedCriteria);
+    container.append(projectContainer);
 }
 
 function generateReport() {
-    console.log("Generando el informe...");
     $.ajax({
-        url: 'endpoint/results',
+        url: 'endpoint/report',
         type: 'GET',
         success: function(response) {
             let projects = JSON.parse(response);
             if (Array.isArray(projects) && projects.length > 0) {
-                renderProject(projects[0]);
+                const container = $('#contentToExport');
+                container.empty();
+                projects.forEach(project => {
+                    let calificaciones = project.calificaciones || [];
+                    let calificacion_general = calificaciones.length > 0 
+                        ? (calificaciones.reduce((acc, curr) => acc + parseFloat(curr.rating), 0) / calificaciones.length)
+                        : 0;
+                    project.calificacion_general = calificacion_general;
+                    project.progress = (calificacion_general / 5 * 100).toFixed(2);
+
+                    renderProject(project, container);
+                });
             } else {
                 $('#contentToExport').html('<p>No hay información que cargar</p>');
             }
@@ -774,29 +786,4 @@ function generateReport() {
         }
     });
 }
-
-generateReport();
-
-$('#downloadPdf').click(function() {
-    $('#btn_content').hide();
-
-    const { jsPDF } = window.jspdf;
-    const content = document.getElementById('contentToExport');
-
-    html2canvas(content, { scale: 6 }).then(canvas => {
-        const imgData = canvas.toDataURL('image/jpeg');
-        const pdf = new jsPDF();
-        const pdfWidth = pdf.internal.pageSize.getWidth();
-        const pdfHeight = 300;
-        pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-        
-        const projectTitle = $('#projectTitle').text();
-        const maxChars = 60;
-        const trimmedTitle = projectTitle.slice(0, maxChars);
-
-        pdf.save(`${trimmedTitle}... .pdf`);
-    });
-
-    $('#btn_content').show();
-});
-});
+})

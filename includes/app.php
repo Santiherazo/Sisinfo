@@ -60,6 +60,9 @@ try {
                 case 'results':
                     echo json_encode($report->getResults());
                     break;
+                case 'report':
+                    echo json_encode($report->getReport());
+                    break;
                 case 'users': 
                     echo json_encode($crud->fetchUsers());
                     break;

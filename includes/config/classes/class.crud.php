@@ -75,7 +75,7 @@ class Crud {
             return;
         }
     
-        $requiredFields = ['nombre_completo', 'correo_electronico', 'documento_identidad', 'carnet', 'rol', 'institucion', 'ciudad', 'pais'];
+        $requiredFields = ['nombre_completo', 'correo_electronico', 'documento_identidad', 'carnet', 'rol', 'institucion', 'ciudad', 'pais', 'contrasena'];
         foreach ($requiredFields as $field) {
             if (empty($data[$field])) {
                 echo json_encode(['success' => false, 'error' => 'Campo requerido faltante: ' . $field]);
@@ -84,8 +84,8 @@ class Crud {
         }
     
         try {
-            $query = "INSERT INTO usuarios (nombre_completo, correo_electronico, documento_identidad, carnet, rol, institucion, ciudad, pais) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            $query = "INSERT INTO usuarios (nombre_completo, correo_electronico, documento_identidad, carnet, rol, institucion, ciudad, pais, contrasena) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $this->db->prepare($query);
     
             $stmt->execute([
@@ -96,7 +96,8 @@ class Crud {
                 $data['rol'],
                 $data['institucion'],
                 $data['ciudad'],
-                $data['pais']
+                $data['pais'],
+                sha1($data['contrasena'])
             ]);
     
             echo json_encode(['success' => true]);
@@ -105,7 +106,7 @@ class Crud {
             error_log($error_message);
             echo json_encode(['success' => false, 'error' => $error_message]);
         }
-    }
+    }    
 
     public function updateUser() {
         header('Content-Type: application/json');

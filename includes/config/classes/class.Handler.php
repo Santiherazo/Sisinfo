@@ -7,6 +7,10 @@ class Handler {
         $this->auth = $auth;
     }
 
+    function sanitizeInput($input) {
+        return htmlspecialchars(strip_tags(trim($input)));
+    }
+
     public function handleLogin() {
         if ($this->auth->isLoggedIn()) {
             header('Location: /dashboard');
@@ -35,7 +39,7 @@ class Handler {
                 $response['error'] = $data['success'];
                 $response['message'] = $data['message'];
             }
-    
+
             header('Content-Type: application/json');
             echo json_encode($response);
             exit;
@@ -48,9 +52,9 @@ class Handler {
             $password = isset($_POST['password']) ? sanitizeInput($_POST['password']) : '';
             $response = [];
 
-            $data = $this->auth->admin($identifier,$password);
+            $data = $this->auth->admin($identifier, $password);
 
-           if ($data['success'] === 'true') {
+            if ($data['success'] === 'true') {
                 $response['success'] = $data['success'];
                 $response['redirect'] = 'dashboard';
                 $response['message'] = $data['message'];
@@ -62,7 +66,7 @@ class Handler {
                 $response['error'] = $data['success'];
                 $response['message'] = $data['message'];
             }
-    
+
             header('Content-Type: application/json');
             echo json_encode($response);
             exit;

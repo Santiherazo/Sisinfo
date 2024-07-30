@@ -142,20 +142,20 @@
             </div>
         </div>
 
-        <div id="reports-section" class="hidden">
+      <!-- Sección de Reportes -->
+      <div id="reports-section" class="bg-white p-6 rounded-lg shadow-md mb-8">
             <div id="contentToExport">
-                <h1 id="projectTitle">Título del Proyecto</h1>
-                <p><strong>Calificación General:</strong> <span id="average"></span></p>
-                <p><strong>Progreso:</strong> <span id="progress"></span></p>
-                <div class="progress">
+                <h1 id="projectTitle" class="text-2xl font-bold mb-4">Título del Proyecto</h1>
+                <p class="mb-2"><strong>Calificación General:</strong> <span id="average"></span></p>
+                <p class="mb-4"><strong>Progreso:</strong> <span id="progress"></span></p>
+                <div class="progress mb-4">
                     <div id="progressBar" class="progress-bar"></div>
                 </div>
-                <div id="feedback"></div>
-                <ul id="projectInfo"></ul>
+                <div id="feedback" class="mb-4"></div>
+                <ul id="projectInfo" class="mb-4"></ul>
                 <div id="evaluatedCriteria"></div>
             </div>
-            <button id="downloadPdf">Descargar PDF</button>
-    </div>
+        </div>
 
     <div id="user-popup" class="fixed z-10 inset-0 overflow-y-auto hidden">
         <div class="flex items-center justify-center min-h-screen">
@@ -205,10 +205,6 @@
                                     <div class="mb-4">
                                         <label for="ciudad" class="block text-sm font-medium text-gray-700">Ciudad</label>
                                         <input type="text" id="ciudad" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="estado_provincia" class="block text-sm font-medium text-gray-700">Departamento</label>
-                                        <input type="text" id="estado_provincia" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                                     </div>
                                     <div class="mb-4">
                                         <label for="pais" class="block text-sm font-medium text-gray-700">País</label>
