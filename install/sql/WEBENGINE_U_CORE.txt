@@ -1,0 +1,23 @@
+DROP TABLE IF EXISTS webengine_u_core;
+
+CREATE TABLE webengine_u_core (
+    uid INT AUTO_INCREMENT PRIMARY KEY,
+    upwd VARCHAR(255) NOT NULL COMMENT 'Contraseña en hash seguro (ej. bcrypt)',
+    unom VARCHAR(100) NOT NULL COMMENT 'Nombre completo del usuario',
+    ueml VARCHAR(100) UNIQUE NOT NULL COMMENT 'Correo electrónico del usuario',
+
+    u2fa BOOLEAN DEFAULT FALSE COMMENT '¿Tiene 2FA activado?',
+    u2fa_code VARCHAR(10) DEFAULT NULL COMMENT 'Código de autenticación 2FA temporal',
+    u2fa_created_at DATETIME DEFAULT NULL COMMENT 'Fecha de creación del código 2FA',
+
+    uestado TINYINT NOT NULL DEFAULT 1 COMMENT 'Estado de la cuenta: 1=activo, 2=bloqueado temporal, 3=bloqueado permanente',
+    online BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Usuario en línea o no',
+    last_ip VARCHAR(45) DEFAULT NULL COMMENT 'Última IP usada',
+    last_login DATETIME DEFAULT NULL COMMENT 'Último inicio de sesión',
+
+    ureg TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha de registro del usuario',
+
+    INDEX idx_uemail (ueml),
+    INDEX idx_ustatus (uestado),
+    INDEX idx_online (online)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Usuarios del sistema';

@@ -1,0 +1,43 @@
+{
+    "metadata": {
+        "key": "session_0c4a6c65854d0e4fdde6286aca26acdfb44bb1fec9e7c7adfa0c6ded106d8b6f",
+        "created": "2025-09-30 21:07:51",
+        "expires": 1759288071,
+        "ttl": 3600,
+        "size": 822
+    },
+    "data": {
+        "session": {
+            "id_sesion": 19,
+            "id_proyecto": 2,
+            "tipo_cierre": "automatico",
+            "metadata_sesion": {
+                "fecha_inicio": "2025-09-30 21:07:51",
+                "fecha_finalizacion": "2025-09-30 21:37:51",
+                "duracion_segundos": 1800
+            },
+            "evaluadores": [
+                {
+                    "id_usuario": 4,
+                    "nombre": "Jorge Silva",
+                    "username": "jorsil567",
+                    "email": "jorge.silva.it@hotmail.com",
+                    "estado_evaluacion": "en progreso",
+                    "estadisticas_evaluacion": {
+                        "tiempo_dedicado_segundos": 0,
+                        "porcentaje_completado": 0
+                    }
+                }
+            ],
+            "analisis_general": {
+                "duracion_promedio_evaluacion": 0,
+                "total_errores_reportados": 0
+            }
+        },
+        "statistics": {
+            "evaluators_total": 1,
+            "evaluators_completed": 0,
+            "last_activity": "2025-09-30 21:07:51"
+        }
+    }
+}

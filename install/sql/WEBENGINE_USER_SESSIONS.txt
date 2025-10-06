@@ -1,0 +1,18 @@
+DROP TABLE IF EXISTS webengine_user_sessions;
+
+CREATE TABLE webengine_user_sessions (
+    session_id CHAR(64) PRIMARY KEY COMMENT 'ID único de sesión (token aleatorio)',
+    uid INT NOT NULL COMMENT 'ID del usuario',
+    login_method ENUM('normal', 'remember') DEFAULT 'normal' COMMENT 'Cómo se inició sesión',
+    ip_address VARCHAR(45) DEFAULT NULL COMMENT 'IP desde donde inició sesión',
+    user_agent VARCHAR(512) DEFAULT NULL COMMENT 'User-Agent del navegador o app',
+    started_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha y hora de inicio de sesión',
+    ended_at DATETIME DEFAULT NULL COMMENT 'Fecha y hora de cierre de sesión',
+    ended_reason ENUM('manual', 'token_expired', 'session_timeout', 'logout_cookie_deleted') DEFAULT NULL COMMENT 'Motivo del cierre',
+    
+    CONSTRAINT fk_session_user FOREIGN KEY (uid) REFERENCES webengine_u_core(uid) ON DELETE CASCADE,
+    
+    INDEX idx_sessions_uid (uid),
+    INDEX idx_sessions_start (started_at),
+    INDEX idx_sessions_end (ended_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Registro completo de sesiones de usuario';

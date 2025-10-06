@@ -1,0 +1,17 @@
+CREATE TABLE webengine_rating_summary (
+    rating_summary_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_token VARCHAR(64) NOT NULL COMMENT 'Identificador único de la sesión de evaluación',
+    project_id INT NOT NULL,
+    evaluador_uid INT NOT NULL,
+    comentario_general TEXT,
+    calificacion_total DECIMAL(4,1),
+    estado_evaluacion ENUM('completa', 'borrador', 'revision') DEFAULT 'borrador',
+    fecha_inicio TIMESTAMP NULL COMMENT 'Fecha de inicio de la evaluación',
+    fecha_fin TIMESTAMP NULL COMMENT 'Fecha de finalización de la evaluación',
+    tiempo_total INT COMMENT 'Tiempo total en segundos dedicado a la evaluación',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES webengine_projects(id) ON DELETE CASCADE,
+    FOREIGN KEY (evaluador_uid) REFERENCES webengine_u_core(uid) ON DELETE CASCADE,
+    INDEX (session_token) COMMENT 'Índice para búsquedas por sesión'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

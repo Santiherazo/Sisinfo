@@ -1,0 +1,7 @@
+CREATE TABLE webengine_gallery_album_images (
+    album_id INT NOT NULL,
+    image_id INT NOT NULL,
+    PRIMARY KEY (album_id, image_id),
+    FOREIGN KEY (album_id) REFERENCES gallery_albums(id) ON DELETE CASCADE,
+    FOREIGN KEY (image_id) REFERENCES gallery_images(id) ON DELETE CASCADE
+);

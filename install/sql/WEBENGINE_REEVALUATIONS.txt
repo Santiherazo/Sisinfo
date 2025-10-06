@@ -1,0 +1,24 @@
+CREATE TABLE webengine_reevaluations (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    project_id INT NOT NULL,
+    evaluador_uid INT NOT NULL,
+    ultima_evaluacion_id INT NOT NULL,
+    fecha_ultima_evaluacion DATETIME NOT NULL,
+    fecha_solicitud_reevaluacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+    fecha_limite_reevaluacion DATETIME NOT NULL,
+    estado ENUM('pendiente', 'aprobada', 'rechazada', 'completada') DEFAULT 'pendiente',
+    motivo_solicitud TEXT,
+    comentarios_administrador TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES webengine_projects(id) ON DELETE CASCADE,
+    FOREIGN KEY (evaluador_uid) REFERENCES webengine_u_core(uid) ON DELETE CASCADE,
+    FOREIGN KEY (ultima_evaluacion_id) REFERENCES webengine_rating_summary(rating_summary_id) ON DELETE CASCADE
+);
+
+-- Índices para mejor performance
+CREATE INDEX idx_reevaluations_project_id ON webengine_reevaluations(project_id);
+CREATE INDEX idx_reevaluations_evaluador_uid ON webengine_reevaluations(evaluador_uid);
+CREATE INDEX idx_reevaluations_ultima_evaluacion_id ON webengine_reevaluations(ultima_evaluacion_id);
+CREATE INDEX idx_reevaluations_estado ON webengine_reevaluations(estado);
+CREATE INDEX idx_reevaluations_fecha_limite ON webengine_reevaluations(fecha_limite_reevaluacion);

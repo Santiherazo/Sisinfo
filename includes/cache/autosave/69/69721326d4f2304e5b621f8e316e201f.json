@@ -1,0 +1,74 @@
+{
+    "metadata": {
+        "key": "autosave_4_2",
+        "created": "2025-10-05 19:16:16",
+        "expires": 1759796176,
+        "ttl": 86400,
+        "size": 2731
+    },
+    "data": {
+        "criterios": {
+            "titulo": {
+                "valor": 5,
+                "comentario": "test",
+                "justificacion": "El título es claro, descriptivo, no utiliza más de 20 palabras, y guarda relación con el objetivo general y la pregunta problema."
+            },
+            "introduccion": {
+                "valor": 3.2,
+                "comentario": "test",
+                "justificacion": "Sigue en su mayoría la estructura de la introducción, incluyendo los elementos necesarios, pero puede haber alguna falta de coherencia."
+            },
+            "planteamiento_problema": {
+                "valor": 2.8,
+                "comentario": "test",
+                "justificacion": "La descripción del problema no es clara, no enuncia causas, consecuencias ni cómo abordarlo, no cita datos y no formula el problema con una pregunta."
+            },
+            "justificacion": {
+                "valor": 3,
+                "comentario": "test",
+                "justificacion": "Justifica de manera clara and coherente el por qué and para qué se quiere estudiar e investigar ese problema, teniendo en cuenta algunos criterios como relevancia, importancia, viabilidad, e impacto social."
+            },
+            "objetivos": {
+                "valor": 3.1,
+                "comentario": "test",
+                "justificacion": "El objetivo general es medible, guarda relación con el título y la pregunta problema, y algunos objetivos específicos están bien formulados y son medibles, y permiten alcanzar el objetivo general."
+            },
+            "marco_teorico": {
+                "valor": 2.5,
+                "comentario": "test",
+                "justificacion": "No demuestra una comprensión profunda de los conceptos y teorías relevantes para el proyecto."
+            },
+            "metodologia": {
+                "valor": 3.5,
+                "comentario": "test",
+                "justificacion": "Hay una clara descripción del tipo de investigación, población, muestra, técnicas de recolección de datos y fases de ejecución. Hay que mejorar la congruencia entre el diseño metodológico y el planteamiento del problema."
+            },
+            "resultados": {
+                "valor": 3.6,
+                "comentario": "test",
+                "justificacion": "Los resultados esperados son algo realistas pero algunos no están claros. Especificación parcial de indicadores y métodos de verificación."
+            },
+            "sustentacion": {
+                "valor": 3.3,
+                "comentario": "test",
+                "justificacion": "La presentación comunica adecuadamente la propuesta pero podría mejorar en claridad y estructura."
+            }
+        },
+        "comentario_general": "test",
+        "active_states": {
+            "introduccion": true,
+            "justificacion": true,
+            "marco_teorico": true,
+            "metodologia": true,
+            "objetivos": true,
+            "planteamiento_problema": true,
+            "resultados": true,
+            "sustentacion": true,
+            "titulo": true
+        },
+        "estadisticas": {
+            "tiempo_transcurrido": "0",
+            "fecha_autoguardado": "2025-10-05 19:16:16"
+        }
+    }
+}

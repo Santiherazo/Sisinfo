@@ -1,0 +1,13 @@
+CREATE TABLE webengine_roles (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT,
+    estado BOOLEAN DEFAULT TRUE COMMENT 'Estado del rol: TRUE=Activo, FALSE=Inactivo'
+);
+
+INSERT INTO webengine_roles (name, description, estado) VALUES
+('administrador', 'Acceso total al sistema', TRUE),
+('coordinador', 'Gestiona procesos y usuarios', TRUE),
+('evaluador', 'Evalúa proyectos o trabajos', TRUE),
+('docente', 'Participa como tutor o guía académico', TRUE),
+('estudiante', 'Usuario que presenta trabajos o proyectos', TRUE);

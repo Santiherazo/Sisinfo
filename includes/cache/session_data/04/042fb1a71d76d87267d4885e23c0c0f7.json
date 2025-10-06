@@ -1,0 +1,54 @@
+{
+    "metadata": {
+        "key": "session_3d6b9664d4310064ad5ddb77334dd5a11a5d6177cce6463a91a0ac5ff69c27d2",
+        "created": "2025-10-03 06:23:47",
+        "expires": 1759494227,
+        "ttl": 3600,
+        "size": 1117
+    },
+    "data": {
+        "session": {
+            "id_sesion": 41,
+            "id_proyecto": 1,
+            "tipo_cierre": "automatico",
+            "metadata_sesion": {
+                "fecha_inicio": "2025-10-03 06:22:25",
+                "fecha_finalizacion": "2025-10-03 06:52:25",
+                "duracion_segundos": 1800
+            },
+            "evaluadores": [
+                {
+                    "id_usuario": 4,
+                    "nombre": "Jorge Silva",
+                    "username": "jorsil567",
+                    "email": "jorge.silva.it@hotmail.com",
+                    "estado_evaluacion": "completada",
+                    "estadisticas_evaluacion": {
+                        "tiempo_dedicado_segundos": 0,
+                        "porcentaje_completado": 0
+                    }
+                },
+                {
+                    "id_usuario": 5,
+                    "nombre": "Patricia Díaz",
+                    "username": "patdí456",
+                    "email": "patricia.diaz.tech@yahoo.com",
+                    "estado_evaluacion": "en progreso",
+                    "estadisticas_evaluacion": {
+                        "tiempo_dedicado_segundos": 0,
+                        "porcentaje_completado": 0
+                    }
+                }
+            ],
+            "analisis_general": {
+                "duracion_promedio_evaluacion": 0,
+                "total_errores_reportados": 0
+            }
+        },
+        "statistics": {
+            "evaluators_total": 2,
+            "evaluators_completed": 1,
+            "last_activity": "2025-10-03 06:23:47"
+        }
+    }
+}

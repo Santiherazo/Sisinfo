@@ -1,0 +1,684 @@
+{
+  "meta": {
+    "version": "2.0",
+    "tipo_evaluacion": "proyecto_investigacion",
+    "fecha_actualizacion": "2023-10-15"
+  },
+  "descripcion_general": "Plantilla de evaluación para proyectos de investigación que contempla tres fases: propuesta inicial, desarrollo del proyecto y aplicación de resultados.",
+  "puntuacion": {
+    "valor_minimo": 0,
+    "valor_maximo": 5,
+    "incremento": 0.1
+  },
+  "categorias_calificacion": {
+    "deficiente": {
+      "id": "deficiente",
+      "nombre": "Deficiente",
+      "minimo": 0,
+      "maximo": 2.9,
+      "color": "#ff4d4d"
+    },
+    "bueno": {
+      "id": "bueno",
+      "nombre": "Bueno",
+      "minimo": 3.0,
+      "maximo": 3.9,
+      "color": "#ffcc00"
+    },
+    "excelente": {
+      "id": "excelente",
+      "nombre": "Excelente",
+      "minimo": 4.0,
+      "maximo": 5.0,
+      "color": "#4caf50"
+    }
+  },
+  "fases": {
+    "propuesta": {
+      "id": "propuesta",
+      "nombre": "Propuesta Inicial",
+      "descripcion": "Evaluación inicial del planteamiento del proyecto",
+      "criterios": {
+        "titulo": {
+          "id": "titulo",
+          "nombre": "Título del Proyecto",
+          "descripcion": "Evaluación de la calidad y adecuación del título del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "titulo_propuesta_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "El título no es claro y descriptivo, utiliza más de 20 palabras, y no hay relación con el objetivo general y la pregunta problema."
+            },
+            "bueno": {
+              "id": "titulo_propuesta_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "El título es claro, descriptivo, no utiliza más de 20 palabras, aunque guarda poca relación con el objetivo general y la pregunta problema."
+            },
+            "excelente": {
+              "id": "titulo_propuesta_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "El título es claro, descriptivo, no utiliza más de 20 palabras, y guarda relación con el objetivo general y la pregunta problema."
+            }
+          }
+        },
+        "introduccion": {
+          "id": "introduccion",
+          "nombre": "Introducción",
+          "descripcion": "Evaluación de la estructura and contenido de la introducción",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "intro_propuesta_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "Sigue la estructura básica de la introducción, pero puede haber algunos elementos omitidos o desorganización."
+            },
+            "bueno": {
+              "id": "intro_propuesta_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Sigue en su mayoría la estructura de la introducción, incluyendo los elementos necesarios, pero puede haber alguna falta de coherencia."
+            },
+            "excelente": {
+              "id": "intro_propuesta_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Sigue claramente la estructura de la introducción, incluyendo los elementos necesarios y relacionándolos de manera coherente."
+            }
+          }
+        },
+        "planteamiento_problema": {
+          "id": "planteamiento_problema",
+          "nombre": "Planteamiento del Problema",
+          "descripcion": "Evaluación de la formulación y descripción del problema de investigación",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "problema_propuesta_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "La descripción del problema no es clara, no enuncia causas, consecuencias ni cómo abordarlo, no cita datos y no formula el problema con una pregunta."
+            },
+            "bueno": {
+              "id": "problema_propuesta_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Describe el problema claramente, mostrar causas, consecuencias y cómo abordarlo, pero no cita datos o cifras."
+            },
+            "excelente": {
+              "id": "problema_propuesta_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Describe el problema claramente, mostrar causas, consecuencias, cómo abordarlo, cita datos and formula el problema con una pregunta."
+            }
+          }
+        },
+        "justificacion": {
+          "id": "justificacion",
+          "nombre": "Justificación",
+          "descripcion": "Evaluación de la justificación del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "justificacion_propuesta_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No es clara la forma de justificar el por qué y para qué se quiere estudiar e investigar ese problema, y no tiene en cuenta criterios como relevancia, importancia, viabilidad, e impacto social."
+            },
+            "bueno": {
+              "id": "justificacion_propuesta_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Justifica de manera clara and coherente el por qué and para qué se quiere estudiar e investigar ese problema, teniendo en cuenta algunos criterios como relevancia, importancia, viabilidad, e impacto social."
+            },
+            "excelente": {
+              "id": "justificacion_propuesta_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Justifica de manera clara and coherente el por qué and para qué se quiere estudiar e investigar ese problema, teniendo en cuenta los criterios de relevancia, importancia, viabilidad, e impacto social."
+            }
+          }
+        },
+        "objetivos": {
+          "id": "objetivos",
+          "nombre": "Objetivos",
+          "descripcion": "Evaluación de la formulación de objetivos del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "objetivos_propuesta_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "El objetivo general no es medible, guarda poca relación con el título y la pregunta problema. Algunos objetivos específicos no están bien formulados, no son medibles, y no permiten alcanzar el objetivo general."
+            },
+            "bueno": {
+              "id": "objetivos_propuesta_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "El objetivo general es medible, guarda relación con el título y la pregunta problema, y algunos objetivos específicos están bien formulados y son medibles, y permiten alcanzar el objetivo general."
+            },
+            "excelente": {
+              "id": "objetivos_propuesta_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "El objetivo general es medible, guarda relación con el título y la pregunta problema, y todos los objetivos específicos están bien formulados y son medibles, y permiten alcanzar el objetivo general."
+            }
+          }
+        },
+        "marco_teorico": {
+          "id": "marco_teorico",
+          "nombre": "Marco Teórico",
+          "descripcion": "Evaluación del marco teórico del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "marco_propuesta_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No demuestra una comprensión profunda de los conceptos y teorías relevantes para el proyecto."
+            },
+            "bueno": {
+              "id": "marco_propuesta_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Integra adecuadamente las ideas y teorías en la construcción del marco teórico con base lo sustentado."
+            },
+            "excelente": {
+              "id": "marco_propuesta_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Explica claramente la relevancia y pertinencia del marco teórico para el proyecto de investigación que desarrolla."
+            }
+          }
+        },
+        "metodologia": {
+          "id": "metodologia",
+          "nombre": "Metodología",
+          "descripcion": "Evaluación de la metodología del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "metodologia_propuesta_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No es clara la descripción del diseño metodológico del proyecto. No se identifican elementos como tipo de investigación, población, muestra, técnicas de recolección de datos o fases de ejecución."
+            },
+            "bueno": {
+              "id": "metodologia_propuesta_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Hay una clara descripción del tipo de investigación, población, muestra, técnicas de recolección de datos y fases de ejecución. Hay que mejorar la congruencia entre el diseño metodológico y el planteamiento del problema."
+            },
+            "excelente": {
+              "id": "metodologia_propuesta_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Hay una clara y excelente descripción del diseño metodológico. Hay congruencia entre dicho diseño, el planteamiento del problema, y los conceptos a utilizar."
+            }
+          }
+        },
+        "resultados": {
+          "id": "resultados",
+          "nombre": "Resultados",
+          "descripcion": "Evaluación de los resultados del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "resultados_propuesta_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "Los resultados esperados no son realistas o no están claros. No se especifican indicadores de logro ni métodos de verificación."
+            },
+            "bueno": {
+              "id": "resultados_propuesta_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Los resultados esperados son algo realistas pero algunos no están claros. Especificación parcial de indicadores y métodos de verificación."
+            },
+            "excelente": {
+              "id": "resultados_propuesta_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Los resultados esperados are realistas y están claramente definidos. Especificación completa de indicadores de logro y métodos de verificación."
+            }
+          }
+        },
+        "sustentacion": {
+          "id": "sustentacion",
+          "nombre": "Sustentación",
+          "descripcion": "Evaluación de la sustentación del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "sustentacion_propuesta_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "La presentación inicial no comunica adecuadamente la propuesta. No se evidencia claridad en la exposición de ideas principales."
+            },
+            "bueno": {
+              "id": "sustentacion_propuesta_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "La presentación comunica adecuadamente la propuesta pero podría mejorar en claridad y estructura."
+            },
+            "excelente": {
+              "id": "sustentacion_propuesta_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "La presentación comunica excelentemente la propuesta con claridad y estructura coherente."
+            }
+          }
+        }
+      }
+    },
+    "desarrollo": {
+      "id": "desarrollo",
+      "nombre": "Desarrollo del Proyecto",
+      "descripcion": "Evaluación del progreso y avances del proyecto",
+      "criterios": {
+        "titulo": {
+          "id": "titulo",
+          "nombre": "Título del Proyecto",
+          "descripcion": "Evaluación de la calidad y adecuación del título del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "titulo_desarrollo_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "El título no refleja los avances del proyecto y no ha sido actualizado desde la fase inicial."
+            },
+            "bueno": {
+              "id": "titulo_desarrollo_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "El título refleja mínimamente los avances pero podría ser más específico sobre el progreso actual."
+            },
+            "excelente": {
+              "id": "titulo_desarrollo_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "El título refleja claramente los avances del proyecto y ha sido actualizado adecuadamente."
+            }
+          }
+        },
+        "introduccion": {
+          "id": "introduccion",
+          "nombre": "Introducción",
+          "descripcion": "Evaluación de la estructura and contenido de la introducción",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "intro_desarrollo_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No refleja los avances logrados en el proyecto. No se ha actualizado desde la propuesta inicial."
+            },
+            "bueno": {
+              "id": "intro_desarrollo_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Menciona algunos avances pero sin contextualizarlos adecuadamente."
+            },
+            "excelente": {
+              "id": "intro_desarrollo_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Integra coherentemente los avances del proyecto y su contextualización dentro del estudio."
+            }
+          }
+        },
+        "planteamiento_problema": {
+          "id": "planteamiento_problema",
+          "nombre": "Planteamiento del Problema",
+          "descripcion": "Evaluación de la formulación and descripción del problema de investigación",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "problema_desarrollo_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No refleja los ajustes realizados al problema inicial. No considers los hallazgos encontrados durante el desarrollo."
+            },
+            "bueno": {
+              "id": "problema_desarrollo_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Refleja algunos ajustes pero sin explicar su justificación."
+            },
+            "excelente": {
+              "id": "problema_desarrollo_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Refleja adecuadamente los ajustes realizados al problema inicial con una justificación clara."
+            }
+          }
+        },
+        "justificacion": {
+          "id": "justificacion",
+          "nombre": "Justificación",
+          "descripcion": "Evaluación de la justificación del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "justificacion_desarrollo_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No actualiza los argumentos con los avances del proyecto. No considera los hallazgos intermedios."
+            },
+            "bueno": {
+              "id": "justificacion_desarrollo_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Actualiza mínimamente los argumentos con algunos avances del proyecto. Considera parcialmente los hallazgos intermedios."
+            },
+            "excelente": {
+              "id": "justificacion_desarrollo_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Actualiza adecuadamente los argumentos con los avances del proyecto. Considera integralmente los hallazgos intermedios y su impacto en la justificación inicial."
+            }
+          }
+        },
+        "objetivos": {
+          "id": "objetivos",
+          "nombre": "Objetivos",
+          "descripcion": "Evaluación de la formulación de objetivos del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "objetivos_desarrollo_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "Los objetivos no reflejan los ajustes necesarios según los avances. No se han actualizado para alinearse con el progreso del proyecto."
+            },
+            "bueno": {
+              "id": "objetivos_desarrollo_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Los objetivos reflejan algunos ajustes pero sin mucha coherencia con los avances. Actualización parcial pero necesita mejor alineación."
+            },
+            "excelente": {
+              "id": "objetivos_desarrollo_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Los objetivos reflejan adecuadamente los ajustes necesarios según los avances. Están actualizados y alineados coherentemente con el progreso del proyecto."
+            }
+          }
+        },
+        "marco_teorico": {
+          "id": "marco_teorico",
+          "nombre": "Marco Teórico",
+          "descripcion": "Evaluación del marco teórico del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "marco_desarrollo_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No se ha actualizado con los avances. No incorpora nuevas teorías o conceptos relevantes encontrados durante el desarrollo."
+            },
+            "bueno": {
+              "id": "marco_desarrollo_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Se ha actualizado mínimamente con algunos avances. Incorpora parcialmente nuevas teorías o conceptos relevantes."
+            },
+            "excelente": {
+              "id": "marco_desarrollo_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Se ha actualizado adecuadamente con los avances. Incorpora integralmente nuevas teorías y conceptos relevantes encontrados durante el desarrollo."
+            }
+          }
+        },
+        "metodologia": {
+          "id": "metodologia",
+          "nombre": "Metodología",
+          "descripcion": "Evaluación de la metodología del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "metodologia_desarrollo_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No se describen los ajustes metodológicos realizados durante el desarrollo. No se explica cómo se adaptó la metodología a los hallazgos intermedios."
+            },
+            "bueno": {
+              "id": "metodologia_desarrollo_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Se describen algunos ajustes metodológicos pero sin mucha justificación o detalle."
+            },
+            "excelente": {
+              "id": "metodologia_desarrollo_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Se describen claramente los ajustes metodológicos realizados con una justificación detallada."
+            }
+          }
+        },
+        "resultados": {
+          "id": "resultados",
+          "nombre": "Resultados",
+          "descripcion": "Evaluación de los resultados del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "resultados_desarrollo_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "El avance de las actividades planteadas no son coherentes para alcanzar los objetivos específicos. No hay correspondencia entre actividades realizadas y resultados esperados."
+            },
+            "bueno": {
+              "id": "resultados_desarrollo_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "El avance de las actividades planteadas son coherentes para alcanzar los objetivos específicos, pero se debe fortalecer la calidad del instrumento utilizado."
+            },
+            "excelente": {
+              "id": "resultados_desarrollo_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "El avance de las actividades planteadas son coherentes para alcanzar los objetivos específicos. Alta correspondencia entre actividades realizadas y resultados esperados."
+            }
+          }
+        },
+        "sustentacion": {
+          "id": "sustentacion",
+          "nombre": "Sustentación",
+          "descripcion": "Evaluación de la sustentación del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "sustentacion_desarrollo_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "La presentación de avances no refleja adecuadamente el progreso. No se comunican claramente los hallazgos intermedios y dificultades encontradas."
+            },
+            "bueno": {
+              "id": "sustentacion_desarrollo_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "La presentación de avances refleja parcialmente el progreso. Comunicación aceptable de hallazgos intermedios pero necesita mayor profundidad."
+            },
+            "excelente": {
+              "id": "sustentacion_desarrollo_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "La presentación de avances refleja excelentemente el progreso. Comunicación clara y completa de hallazgos intermedios, dificultades y aprendizajes."
+            }
+          }
+        }
+      }
+    },
+    "aplicacion": {
+      "id": "aplicacion",
+      "nombre": "Aplicación y Resultados",
+      "descripcion": "Evaluación final de resultados y aplicabilidad",
+      "criterios": {
+        "titulo": {
+          "id": "titulo",
+          "nombre": "Título del Proyecto",
+          "descripcion": "Evaluación de la calidad y adecuación del título del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "titulo_aplicacion_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "El título no comunica los resultados o aplicaciones del proyecto."
+            },
+            "bueno": {
+              "id": "titulo_aplicacion_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "El título menciona vagamente los resultados pero no los comunica efectivamente."
+            },
+            "excelente": {
+              "id": "titulo_aplicacion_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "El título comunica claramente los resultados y aplicaciones del proyecto."
+            }
+          }
+        },
+        "introduccion": {
+          "id": "introduccion",
+          "nombre": "Introducción",
+          "descripcion": "Evaluación de la estructura and contenido de la introducción",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "intro_aplicacion_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No contextualiza los resultados obtenidos. No establece conexión entre los hallazgos y el problema inicial."
+            },
+            "bueno": {
+              "id": "intro_aplicacion_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Menciona los resultados pero sin relacionarlos claramente con el contexto inicial."
+            },
+            "excelente": {
+              "id": "intro_aplicacion_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Relaciona efectivamente los resultados con el contexto inicial."
+            }
+          }
+        },
+        "planteamiento_problema": {
+          "id": "planteamiento_problema",
+          "nombre": "Planteamiento del Problema",
+          "descripcion": "Evaluación de la formulación y descripción del problema de investigación",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "problema_aplicacion_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No relaciona los resultados con el problema inicial. No muestra cómo se resolvió la problemática."
+            },
+            "bueno": {
+              "id": "problema_aplicacion_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Relaciona vagamente los resultados con el problema inicial."
+            },
+            "excelente": {
+              "id": "problema_aplicacion_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Relaciona claramente los resultados con el problema inicial y muestra cómo se resolvió la problemática."
+            }
+          }
+        },
+        "justificacion": {
+          "id": "justificacion",
+          "nombre": "Justificación",
+          "descripcion": "Evaluación de la justificación del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "justificacion_aplicacion_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No relaciona los resultados con los beneficios esperados. No evalúa el cumplimiento de la justificación inicial."
+            },
+            "bueno": {
+              "id": "justificacion_aplicacion_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Menciona vagamente los beneficios de los resultados obtenidos. Evalúa parcialmente el cumplimiento de la justificación inicial."
+            },
+            "excelente": {
+              "id": "justificacion_aplicacion_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Relaciona claramente los resultados con los beneficios esperados. Evalúa completamente el cumplimiento de la justificación inicial y el impacto obtenido."
+            }
+          }
+        },
+        "objetivos": {
+          "id": "objetivos",
+          "nombre": "Objetivos",
+          "descripcion": "Evaluación de la formulación de objetivos del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "objetivos_aplicacion_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "Los objetivos no reflejan el nivel de cumplimiento alcanzado. No se evalúa el grado de consecución de los objetivos planteados."
+            },
+            "bueno": {
+              "id": "objetivos_aplicacion_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Los objetivos reflejan parcialmente el cumplimiento pero sin mucha claridad. Evaluación básica del grado de consecución."
+            },
+            "excelente": {
+              "id": "objetivos_aplicacion_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Los objetivos reflejan claramente el nivel de cumplimiento alcanzado. Evaluación detallada y crítica del grado de consecución de cada objetivo."
+            }
+          }
+        },
+        "marco_teorico": {
+          "id": "marco_teorico",
+          "nombre": "Marco Teórico",
+          "descripcion": "Evaluación del marco teórico del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "marco_aplicacion_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No relaciona los resultados con la teoría. No muestra cómo los hallazgos se conectan con el marco conceptual."
+            },
+            "bueno": {
+              "id": "marco_aplicacion_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Menciona vagamente la relación entre resultados y teoría. Conexión básica pero necesita mayor profundidad."
+            },
+            "excelente": {
+              "id": "marco_aplicacion_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Relaciona claramente los resultados con la teoría. Establece conexiones profundas y significativas entre hallazgos y marco conceptual."
+            }
+          }
+        },
+        "metodologia": {
+          "id": "metodologia",
+          "nombre": "Metodología",
+          "descripcion": "Evaluación de la metodología del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "metodologia_aplicacion_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No se evalúa la efectividad de la metodología empleada. No se analizan las fortalezas y debilidades del enfoque metodológico utilizado."
+            },
+            "bueno": {
+              "id": "metodologia_aplicacion_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Se evalúa mínimamente la efectividad de la metodología sin mucha profundidad."
+            },
+            "excelente": {
+              "id": "metodologia_aplicacion_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Se evalúa críticamente la efectividad de la metodología empleada. Análisis profundo de fortalezas, debilidades y lecciones aprendidas."
+            }
+          }
+        },
+        "resultados": {
+          "id": "resultados",
+          "nombre": "Resultados",
+          "descripcion": "Evaluación de los resultados del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "resultados_aplicacion_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "No se evalúa el impacto potencial de los resultados. No se analiza la relevancia ni la aplicabilidad de los hallazgos obtenidos."
+            },
+            "bueno": {
+              "id": "resultados_aplicacion_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Se evalúa vagamente el impacto potencial de los resultados sin mucha fundamentación."
+            },
+            "excelente": {
+              "id": "resultados_aplicacion_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Se evalúa críticamente el impacto potencial de los resultados. Análisis profundo de la relevancia, aplicabilidad y posibles usos de los hallazgos."
+            }
+          }
+        },
+        "sustentacion": {
+          "id": "sustentacion",
+          "nombre": "Sustentación",
+          "descripcion": "Evaluación de la sustentación del proyecto",
+          "ponderacion": 0,
+          "evaluaciones": {
+            "deficiente": {
+              "id": "sustentacion_aplicacion_deficiente",
+              "categoria_id": "deficiente",
+              "condiciones": "Se realiza una presentación con el recurso digital utilizado, aunque el recurso no contiene los lineamientos establecidos, y se evidencia poco dominio temático, y no se responden de forma adecuada las preguntas formuladas por los jurados."
+            },
+            "bueno": {
+              "id": "sustentacion_aplicacion_bueno",
+              "categoria_id": "bueno",
+              "condiciones": "Se realiza una buena presentación con el recurso digital utilizado, el cual contiene los lineamientos establecidos, se evidencia un buen dominio temático, aunque no se responden de forma adecuada en su totalidad las preguntas formuladas por los jurados."
+            },
+            "excelente": {
+              "id": "sustentacion_aplicacion_excelente",
+              "categoria_id": "excelente",
+              "condiciones": "Se realiza una excelente presentación con el recurso digital utilizado, el cual contiene los lineamientos establecidos, evidenciándose un excelente dominio temático, respondiendo de forma adecuada las preguntas formuladas por los jurados."
+            }
+          }
+        }
+      }
+    }
+  },
+  "comentarios_adicionales": {
+    "descripcion": "Espacio para observaciones generales sobre el proyecto que no encajen en los criterios específicos",
+    "max_caracteres": 1000
+  }
+}

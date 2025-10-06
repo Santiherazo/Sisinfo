@@ -1,0 +1,22 @@
+DROP TABLE IF EXISTS webengine_u_auth;
+
+CREATE TABLE webengine_u_auth (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    uid INT NOT NULL,
+    attempt_time DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Fecha y hora del intento',
+    ip_address VARCHAR(45) NOT NULL COMMENT 'Dirección IP del cliente',
+    country_code CHAR(2) DEFAULT NULL COMMENT 'Código del país ISO (opcional)',
+    user_agent VARCHAR(512) DEFAULT NULL COMMENT 'Información del navegador y sistema operativo',
+    auth_method VARCHAR(20) DEFAULT 'password' COMMENT 'Método de autenticación (password, google, etc.)',
+    success TINYINT(1) NOT NULL DEFAULT 0 COMMENT '1 = éxito, 0 = fallo',
+    status_code SMALLINT DEFAULT 0 COMMENT 'Código de estado similar a HTTP (200, 401, etc.)',
+    reason TEXT DEFAULT NULL COMMENT 'Descripción del error si aplica',
+    session_id VARCHAR(128) DEFAULT NULL COMMENT 'ID de sesión o token relacionado',
+
+    CONSTRAINT fk_auth_user FOREIGN KEY (uid) REFERENCES webengine_u_core(uid) ON DELETE CASCADE,
+
+    INDEX idx_auth_uid (uid),
+    INDEX idx_auth_ip (ip_address),
+    INDEX idx_auth_time (attempt_time),
+    INDEX idx_auth_success (success)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Registro de intentos de autenticación';

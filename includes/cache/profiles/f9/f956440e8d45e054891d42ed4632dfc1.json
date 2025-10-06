@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_4",
+        "created": "2025-10-05 19:09:58",
+        "expires": 1759709698,
+        "ttl": 300,
+        "size": 354
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Jorge Silva Ramírez",
+            "email": "jorge.silva.it@hotmail.com",
+            "initials": "JS",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 4,
+            "stored_at": "2025-10-05 19:09:58",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

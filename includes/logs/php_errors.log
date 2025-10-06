@@ -1,0 +1,76 @@
+[05-Oct-2025 19:09:58 America/Bogota] [Perfil Error] Non-static method Cache::get() cannot be called statically
+[2025-10-05 19:12:42] [INFO] Usuario 4 añadido a sesión 42 in C:\xampp\htdocs\includes\classes\class.EvaluationSessionManager.php on line 254
+IP: ::1 | URI: /app/ | Method: POST
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
+SESSION: {"valid":true,"timeout":1759709562,"userid":4,"username":"jorsil567","sid":"4ce1625e6de7b0b28f3cb72a0befe6b056dbdbf89ce8af7843dff391d2294b83"}
+GET: {}
+POST: {"action":"start_evaluation_session","project_id":"2"}
+------------------------------------------------------------------------------------------------------------------------
+[2025-10-05 19:12:42] [INFO] Sesión creada exitosamente: ID 42 para proyecto 2 in C:\xampp\htdocs\includes\classes\class.EvaluationSessionManager.php on line 42
+IP: ::1 | URI: /app/ | Method: POST
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
+SESSION: {"valid":true,"timeout":1759709562,"userid":4,"username":"jorsil567","sid":"4ce1625e6de7b0b28f3cb72a0befe6b056dbdbf89ce8af7843dff391d2294b83"}
+GET: {}
+POST: {"action":"start_evaluation_session","project_id":"2"}
+------------------------------------------------------------------------------------------------------------------------
+[2025-10-05 19:14:19] [INFO] Evaluación marcada como completada - Usuario 4, Sesión 42 in C:\xampp\htdocs\includes\classes\class.EvaluationSessionManager.php on line 376
+IP: ::1 | URI: /app/?module=evaluation&token=a1abd846acfb568947a9e7eda483eb4096f51dd4a73625bb01a94fbc285c4680&project_id=2 | Method: POST
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36
+SESSION: {"valid":true,"timeout":1759709659,"userid":4,"username":"jorsil567","sid":"4ce1625e6de7b0b28f3cb72a0befe6b056dbdbf89ce8af7843dff391d2294b83"}
+GET: {"module":"evaluation","token":"a1abd846acfb568947a9e7eda483eb4096f51dd4a73625bb01a94fbc285c4680","project_id":"2"}
+POST: {"action":"submit_evaluation","token":"a1abd846acfb568947a9e7eda483eb4096f51dd4a73625bb01a94fbc285c4680","project_id":"2","criterios":"{\"titulo\":{\"valor\":5,\"comentario\":\"test\",\"justificacion\":\"El título es claro, descriptivo, no utiliza más de 20 palabras, y guarda relación con el objetivo general y la pregunta problema.\"},\"introduccion\":{\"valor\":3.2,\"comentario\":\"test\",\"justificacion\":\"Sigue en su mayoría la estructura de la introducción, incluyendo los elementos necesarios, pero puede haber alguna falta de coherencia.\"},\"planteamiento_problema\":{\"valor\":2.8,\"comentario\":\"test\",\"justificacion\":\"La descripción del problema no es clara, no enuncia causas, consecuencias ni cómo abordarlo, no cita datos y no formula el problema con una pregunta.\"},\"justificacion\":{\"valor\":3,\"comentario\":\"test\",\"justificacion\":\"Justifica de manera clara and coherente el por qué and para qué se quiere estudiar e investigar ese problema, teniendo en cuenta algunos criterios como relevancia, importancia, viabilidad, e impacto social.\"},\"objetivos\":{\"valor\":3.1,\"comentario\":\"test\",\"justificacion\":\"El objetivo general es medible, guarda relación con el título y la pregunta problema, y algunos objetivos específicos están bien formulados y son medibles, y permiten alcanzar el objetivo general.\"},\"marco_teorico\":{\"valor\":2.5,\"comentario\":\"test\",\"justificacion\":\"No demuestra una comprensión profunda de los conceptos y teorías relevantes para el proyecto.\"},\"metodologia\":{\"valor\":3.5,\"comentario\":\"test\",\"justificacion\":\"Hay una clara descripción del tipo de investigación, población, muestra, técnicas de recolección de datos y fases de ejecución. Hay que mejorar la congruencia entre el diseño metodológico y el planteamiento del problema.\"},\"resultados\":{\"valor\":3.6,\"comentario\":\"test\",\"justificacion\":\"Los resultados esperados son algo realistas pero algunos no están claros. Especificación parcial de indicadores y métodos de verificación.\"},\"sustentacion\":{\"valor\":3.3,\"comentario\":\"test\",\"justificacion\":\"La presentación comunica adecuadamente la propuesta pero podría mejorar en claridad y estructura.\"}}","comentario_general":"test","active_states":"{\"introduccion\":true,\"justificacion\":true,\"marco_teorico\":true,\"metodologia\":true,\"objetivos\":true,\"planteamiento_problema\":true,\"resultados\":true,\"sustentacion\":true,\"titulo\":true}","elapsed_time":"96"}
+------------------------------------------------------------------------------------------------------------------------
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "evaluador_firstname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 55
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "evaluador_lastname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 56
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_id" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 66
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_comentario" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 67
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_calificacion_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 68
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_estado_evaluacion" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 69
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_tiempo_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 70
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_inicio" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 71
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_fin" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 72
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "evaluador_firstname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 55
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "evaluador_lastname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 56
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_id" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 66
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_comentario" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 67
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_calificacion_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 68
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_estado_evaluacion" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 69
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_tiempo_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 70
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_inicio" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 71
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_fin" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 72
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "evaluador_firstname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 55
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "evaluador_lastname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 56
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_id" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 66
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_comentario" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 67
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_calificacion_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 68
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_estado_evaluacion" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 69
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_tiempo_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 70
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_inicio" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 71
+[05-Oct-2025 19:17:10 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_fin" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 72
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "evaluador_firstname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 55
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "evaluador_lastname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 56
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_id" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 66
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_comentario" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 67
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_calificacion_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 68
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_estado_evaluacion" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 69
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_tiempo_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 70
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_inicio" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 71
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_fin" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 72
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "evaluador_firstname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 55
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "evaluador_lastname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 56
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_id" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 66
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_comentario" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 67
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_calificacion_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 68
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_estado_evaluacion" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 69
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_tiempo_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 70
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_inicio" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 71
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_fin" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 72
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "evaluador_firstname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 55
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "evaluador_lastname" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 56
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_id" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 66
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_comentario" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 67
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_calificacion_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 68
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_estado_evaluacion" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 69
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_tiempo_total" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 70
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_inicio" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 71
+[05-Oct-2025 19:18:07 America/Bogota] PHP Warning:  Undefined array key "summary_fecha_fin" in C:\xampp\htdocs\cpanel\modules\resultsManager.php on line 72

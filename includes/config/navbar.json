@@ -1,0 +1,65 @@
+{
+    "0": {
+        "active": true,
+        "type": "internal",
+        "phrase": "Inicio",
+        "link": "",
+        "visibility": "always",
+        "newtab": false,
+        "order": 10
+    },
+    "1": {
+        "active": true,
+        "type": "internal",
+        "phrase": "Proyectos",
+        "link": "proyectos",
+        "visibility": "always",
+        "newtab": false,
+        "order": 20
+    },
+    "2": {
+        "active": true,
+        "type": "internal",
+        "phrase": "Blog",
+        "link": "blog",
+        "visibility": "always",
+        "newtab": false,
+        "order": 30
+    },
+    "3": {
+        "active": true,
+        "type": "internal",
+        "phrase": "Equipo",
+        "link": "equipo",
+        "visibility": "always",
+        "newtab": false,
+        "order": 40
+    },
+    "4": {
+        "active": true,
+        "type": "internal",
+        "phrase": "Galer\u00eda",
+        "link": "galeria",
+        "visibility": "always",
+        "newtab": false,
+        "order": 50
+    },
+    "6": {
+        "active": true,
+        "type": "internal",
+        "phrase": "Nosotros",
+        "link": "nosotros",
+        "visibility": "always",
+        "newtab": false,
+        "order": 60
+    },
+    "7": {
+        "active": true,
+        "type": "internal",
+        "phrase": "Contacto",
+        "link": "contacto",
+        "visibility": "always",
+        "newtab": false,
+        "order": 70
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_5",
+        "created": "2025-10-03 06:23:35",
+        "expires": 1759490915,
+        "ttl": 300,
+        "size": 357
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Patricia Díaz Castro",
+            "email": "patricia.diaz.tech@yahoo.com",
+            "initials": "PD",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 5,
+            "stored_at": "2025-10-03 06:23:35",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

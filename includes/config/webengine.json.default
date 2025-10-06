@@ -1,0 +1,71 @@
+{
+  "system_active": true,
+  "maintenance_page": "",
+  "error_reporting": false,
+  "cron_api": true,
+  "cron_api_key": "",
+  "ip_block_system_enable": true,
+
+  "author": "Santiago Herazo",
+
+  "website_name": "",
+  "website_title": "",
+  "website_meta_description": "",
+  "website_meta_keywords": "",
+  "website_meta_author": "",
+  "website_meta_robots": "",
+  "website_meta_og_image": "",
+  "webengine_cms_installed": false,
+  "website_template": "default",
+  "server_files": "default",
+  "website_forum_link": "",
+
+  "website_language": "es",
+  "website_timezone": "America/Bogota",
+  "website_logo": "logo.png",
+  "website_favicon": "favicon.ico",
+  "website_slogan": "",
+  "website_copyright": "",
+
+  "SQL_DB_HOST": "",
+  "SQL_DB_NAME": "",
+  "SQL_DB_USER": "",
+  "SQL_DB_PASS": "",
+  "SQL_DB_PORT": "",
+
+  "username_min_len": 0,
+  "username_max_len": 0,
+  "password_min_len": 0,
+  "password_max_len": 0,
+
+  "social_link_facebook": "",
+  "social_link_instagram": "",
+  "social_link_discord": "",
+  "social_link_twitter": "",
+  "social_link_linkedin": "",
+  "social_link_youtube": "",
+
+  "about_us": "",
+  "mission": "",
+  "vision": "",
+  "values": "",
+  "objectives": "",
+  "history": "",
+  "team": "",
+  "partners": "",
+
+  "contact_email": "",
+  "contact_phone": "",
+  "contact_address": "",
+  "contact_hours": "",
+  "contact_support_email": "",
+  "contact_sales_email": "",
+
+  "legal_privacy_policy": "",
+  "legal_terms_conditions": "",
+  "legal_cookies_policy": "",
+
+  "branding_primary_color": "",
+  "branding_secondary_color": "",
+  "branding_font_family": ""
+}
