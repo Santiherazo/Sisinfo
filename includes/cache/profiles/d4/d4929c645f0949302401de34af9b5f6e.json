@@ -1,23 +1,23 @@
 {
     "metadata": {
-        "key": "user_profile_1",
-        "created": "2025-10-07 11:03:56",
-        "expires": 1759853336,
+        "key": "user_profile_6",
+        "created": "2025-10-07 11:13:02",
+        "expires": 1759853882,
         "ttl": 300,
-        "size": 354
+        "size": 352
     },
     "data": {
         "profile": {
             "profileImg": null,
-            "fullName": "Administrador Usuario",
-            "email": "herazopsantiago@gmail.com",
-            "initials": "AU",
+            "fullName": "David Torres Gómez",
+            "email": "david.torres.it@gmail.com",
+            "initials": "DT",
             "notifications": [],
             "unreadCount": 0
         },
         "metadata": {
-            "user_id": 1,
-            "stored_at": "2025-10-07 11:03:56",
+            "user_id": 6,
+            "stored_at": "2025-10-07 11:13:02",
             "access_levels": {
                 "admin": false,
                 "evaluator": false

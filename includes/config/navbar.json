@@ -12,7 +12,7 @@
         "active": true,
         "type": "internal",
         "phrase": "Proyectos",
-        "link": "proyectos",
+        "link": "projects",
         "visibility": "always",
         "newtab": false,
         "order": 20
@@ -30,7 +30,7 @@
         "active": true,
         "type": "internal",
         "phrase": "Equipo",
-        "link": "equipo",
+        "link": "team",
         "visibility": "always",
         "newtab": false,
         "order": 40
@@ -39,7 +39,7 @@
         "active": true,
         "type": "internal",
         "phrase": "Galer\u00eda",
-        "link": "galeria",
+        "link": "gallery",
         "visibility": "always",
         "newtab": false,
         "order": 50
@@ -48,7 +48,7 @@
         "active": true,
         "type": "internal",
         "phrase": "Nosotros",
-        "link": "nosotros",
+        "link": "us",
         "visibility": "always",
         "newtab": false,
         "order": 60
@@ -57,7 +57,7 @@
         "active": true,
         "type": "internal",
         "phrase": "Contacto",
-        "link": "contacto",
+        "link": "contact",
         "visibility": "always",
         "newtab": false,
         "order": 70

@@ -80,160 +80,158 @@ if (isLoggedIn()) {
 }
 ?>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const imgElement = document.getElementById('userProfileImage');
-    const baseImgUrl = '<?php echo $profileData['profileImg']; ?>';
-    
-    if (imgElement && baseImgUrl) {
-        imgElement.src = baseImgUrl;
-        
-        setInterval(() => {
-            const timestamp = new Date().getTime();
-            imgElement.src = `${baseImgUrl}?t=${timestamp}`;
-        }, 30000);
-    }
-});
-</script>
-
-<header id="navbar" class="fixed w-full z-50 top-0 px-4 md:px-16 py-3 bg-[var(--color-navbar-bg)] text-[var(--color-navbar-text)] shadow transition duration-300 ease-in-out">
-    <div class="max-w-[1440px] mx-auto flex items-center justify-between">
-        <div class="flex md:hidden">
-            <button id="mobileMenuBtn" class="focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                </svg>
-            </button>
-        </div>
-
-        <div class="absolute left-1/2 transform -translate-x-1/2 md:static md:transform-none md:left-0 flex items-center space-x-2">
-            <a href="<?php echo __BASE_URL__; ?>" class="flex items-center space-x-2">
-                <img src="<?php echo __PATH_TEMPLATE_IMG__ . (config('website_logo') ?? 'logo.png'); ?>" alt="Logo" class="w-6 h-6">
-                <span class="font-semibold text-lg"><?php config('website_name'); ?></span>
+<nav id="main-nav" class="fixed top-0 w-full z-50 bg-[var(--color-navbar-bg)] backdrop-blur-md border-b border-[var(--color-border)] transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <a href="<?php echo __BASE_URL__; ?>" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <img src="<?php echo __PATH_TEMPLATE_IMG__ . 'logo.png'; ?>" alt="Logo" class="w-12 h-12">
+                </div>
+                <div class="hidden sm:block">
+                    <span class="text-xl font-bold text-[var(--color-navbar-text)]"><?php config('website_name'); ?></span>
+                    <p class="text-xs text-[var(--color-text-muted)]"><?php config('website_slogan'); ?></p>
+                </div>
             </a>
-        </div>
 
-        <?php templateBuildNavbar(); ?>
+            <div class="hidden md:flex items-center space-x-8">
+                <?php templateBuildNavbar(); ?>
+            </div>
 
-        <div class="flex items-center space-x-4 relative">
-            <div class="fixed bottom-6 right-6 z-50">
-                <div class="flex items-center">
-                    <label for="themeToggle" class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="themeToggle" class="sr-only peer" onchange="toggleTheme()"/>
-                        <div class="w-14 h-7 bg-[var(--color-border-muted)] rounded-full transition-all duration-300 dark:bg-[var(--color-border)]">
-                            <div class="absolute flex justify-between items-center w-14 px-2 h-7 text-xs text-white select-none pointer-events-none">
-                                <span>🌞</span>
-                                <span>🌙</span>
+            <div class="flex items-center space-x-4">
+                <div class="hidden md:flex items-center space-x-2 mr-4">
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="themeToggle" class="sr-only peer">
+                        <div class="w-14 h-7 bg-[var(--color-border-muted)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[4px] after:bg-[var(--color-surface)] after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[var(--color-primary)] relative">
+                            <div class="absolute inset-0 flex items-center justify-between px-1.5">
+                                <svg class="w-4 h-4 text-[var(--color-warning)]" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+                                </svg>
+                                <svg class="w-4 h-4 text-[var(--color-accent)]" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                                </svg>
                             </div>
-                            <div class="absolute top-0.5 left-0.5 w-6 h-6 bg-[var(--color-accent)] rounded-full shadow transform transition-all duration-300 peer-checked:translate-x-7"></div>
                         </div>
                     </label>
-                    <span class="ml-3 text-sm text-[var(--color-text-muted)]">Modo oscuro</span>
                 </div>
-            </div>
-            
-            <?php if (isLoggedIn()) { ?>
-                <div class="relative group">
-                    <button id="notificationBtn" class="relative focus:outline-none">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-                        </svg>
-                        <?php if ($profileData['unreadCount'] > 0) { ?>
-                            <span class="absolute -top-1 -right-1 bg-[var(--color-danger)] text-white rounded-full text-xs px-1.5 py-0.5"><?php echo $profileData['unreadCount']; ?></span>
-                        <?php } ?>
-                    </button>
-                    <div class="absolute right-0 mt-2 w-60 sm:w-80 hidden group-hover:block bg-[var(--color-dropdown-bg)] text-[var(--color-text)] border border-[var(--color-border)] rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
-                        <div class="flex justify-between items-center p-4 border-b border-[var(--color-border)] font-semibold">
-                            <span>Notificaciones</span>
-                            <a href="<?php echo __BASE_URL__; ?>notificaciones" class="text-xs text-[var(--color-link)] hover:underline">Ver todas</a>
-                        </div>
-                        <?php if (!empty($profileData['notifications'])) { ?>
-                            <ul class="divide-y divide-[var(--color-border)]"> 
-                                <?php foreach ($profileData['notifications'] as $notif) { ?>
-                                    <li class="p-3 hover:bg-[var(--color-dropdown-hover)] text-sm flex justify-between items-start">
-                                        <div>
-                                            <?php echo htmlspecialchars($notif['message']); ?>
-                                            <div class="text-xs text-[var(--color-text-muted)] mt-1"><?php echo date('d M H:i', strtotime($notif['created_at'])); ?></div>
-                                        </div>
-                                        <button onclick="marcarComoLeida(<?php echo $notif['id']; ?>, this)"
-                                                class="text-xs text-[var(--color-link)] hover:underline ml-2">
-                                            Marcar
-                                        </button>
-                                    </li>
-                                <?php } ?>
-                            </ul>
-                        <?php } else { ?>
-                            <div class="p-4 text-sm text-[var(--color-text-muted)]">No tienes notificaciones nuevas.</div>
-                        <?php } ?>
-                    </div>
-                </div>
-            <?php } ?>
 
-            <div class="relative group">
-                <button id="userBtn" class="focus:outline-none">
-                    <?php if (isLoggedIn()): ?>
-                        <?php if (!empty($profileData['profileImg'])): ?>
-                            <img id="userProfileImage" src="<?php echo htmlspecialchars(__PATH_TEMPLATE_IMG__ . $profileData['profileImg']); ?>" alt="User" class="w-10 h-10 rounded-full border-2 border-[var(--color-border)] shadow object-cover">
-                        <?php else: ?>
-                            <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-600 text-white text-sm font-semibold border-2 border-[var(--color-border)] shadow">
-                                <?php echo htmlspecialchars($profileData['initials']); ?>
+                <?php if (isLoggedIn()) { ?>
+                    <div class="relative group">
+                        <button id="notificationBtn" class="relative p-2 rounded-lg hover:bg-[var(--color-dropdown-hover)] transition-colors">
+                            <svg class="w-5 h-5 text-[var(--color-navbar-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                            <?php if ($profileData['unreadCount'] > 0) { ?>
+                                <span class="absolute -top-1 -right-1 bg-[var(--color-badge)] text-white rounded-full text-xs px-1.5 py-0.5 min-w-[18px] text-center"><?php echo $profileData['unreadCount']; ?></span>
+                            <?php } ?>
+                        </button>
+                        
+                        <div id="notificationDropdown" class="absolute right-0 mt-2 w-80 hidden bg-[var(--color-dropdown-bg)] text-[var(--color-text)] border border-[var(--color-border)] rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+                            <div class="flex justify-between items-center p-4 border-b border-[var(--color-border)] font-semibold">
+                                <span class="text-[var(--color-heading)]">Notificaciones</span>
+                                <a href="<?php echo __BASE_URL__; ?>notificaciones" class="text-xs text-[var(--color-link)] hover:underline">Ver todas</a>
                             </div>
-                        <?php endif; ?>
-                    <?php else: ?>
-                        <img src="<?php echo __PATH_TEMPLATE_IMG__ . 'avatars/guest.png'; ?>" alt="Guest" class="w-10 h-10 rounded-full border-2 border-[var(--color-border)] shadow object-cover">
-                    <?php endif; ?>
-                </button>
+                            <?php if (!empty($profileData['notifications'])) { ?>
+                                <ul class="divide-y divide-[var(--color-border)]"> 
+                                    <?php foreach ($profileData['notifications'] as $notif) { ?>
+                                        <li class="p-3 hover:bg-[var(--color-dropdown-hover)] text-sm flex justify-between items-start transition-colors">
+                                            <div class="flex-1">
+                                                <?php echo htmlspecialchars($notif['message']); ?>
+                                                <div class="text-xs text-[var(--color-text-muted)] mt-1"><?php echo date('d M H:i', strtotime($notif['created_at'])); ?></div>
+                                            </div>
+                                            <button onclick="marcarComoLeida(<?php echo $notif['id']; ?>, this)"
+                                                    class="text-xs text-[var(--color-link)] hover:underline ml-2 whitespace-nowrap">
+                                                Marcar
+                                            </button>
+                                        </li>
+                                    <?php } ?>
+                                </ul>
+                            <?php } else { ?>
+                                <div class="p-4 text-sm text-[var(--color-text-muted)] text-center">No tienes notificaciones nuevas.</div>
+                            <?php } ?>
+                        </div>
+                    </div>
 
-                <div id="dropdownMenu" class="absolute right-0 mt-2 w-64 hidden group-hover:block bg-[var(--color-dropdown-bg)] text-[var(--color-text)] border border-[var(--color-border)] rounded-lg shadow-lg z-50">
-                    <?php if (isLoggedIn()) { ?>
-                        <div class="flex items-center px-4 py-3 mb-2 border-b border-[var(--color-border)]">
-                            <?php if ($profileData['profileImg']): ?>
-                                <img id="userProfileImage" src="<?php echo htmlspecialchars(__PATH_TEMPLATE_IMG__ . $profileData['profileImg']); ?>" alt="User" class="w-10 h-10 rounded-full border-2 border-[var(--color-border)] shadow object-cover">
+                    <div class="relative group">
+                        <button id="userBtn" class="focus:outline-none">
+                            <?php if (!empty($profileData['profileImg'])): ?>
+                                <img id="userProfileImage" src="<?php echo htmlspecialchars(__PATH_TEMPLATE_IMG__ . $profileData['profileImg']); ?>" alt="User" class="w-8 h-8 rounded-full border-2 border-[var(--color-border)] shadow object-cover hover:scale-110 transition-transform">
                             <?php else: ?>
-                                <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-600 text-white text-sm font-semibold border border-[var(--color-border)] mr-3">
-                                    <?php echo $profileData['initials']; ?>
+                                <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white text-sm font-semibold border-2 border-[var(--color-border)] shadow hover:scale-110 transition-transform">
+                                    <?php echo htmlspecialchars($profileData['initials']); ?>
                                 </div>
                             <?php endif; ?>
-                            <div>
-                                <div class="font-semibold text-[var(--color-text)]"><?php echo htmlspecialchars($profileData['fullName']); ?></div>
-                                <div class="text-xs text-[var(--color-text-muted)]"><?php echo htmlspecialchars($profileData['email']); ?></div>
+                        </button>
+
+                        <div id="dropdownMenu" class="absolute right-0 mt-2 w-64 hidden bg-[var(--color-dropdown-bg)] border border-[var(--color-border)] rounded-lg shadow-lg z-50">
+                            <div class="flex items-center px-4 py-3 mb-2 border-b border-[var(--color-border)]">
+                                <?php if ($profileData['profileImg']): ?>
+                                    <img id="userProfileImage" src="<?php echo htmlspecialchars(__PATH_TEMPLATE_IMG__ . $profileData['profileImg']); ?>" alt="User" class="w-10 h-10 rounded-full border-2 border-[var(--color-border)] shadow object-cover mr-3">
+                                <?php else: ?>
+                                    <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white text-sm font-semibold border border-[var(--color-border)] mr-3">
+                                        <?php echo $profileData['initials']; ?>
+                                    </div>
+                                <?php endif; ?>
+                                <div>
+                                    <div class="font-semibold text-[var(--color-heading)]"><?php echo htmlspecialchars($profileData['fullName']); ?></div>
+                                    <div class="text-xs text-[var(--color-text-muted)]"><?php echo htmlspecialchars($profileData['email']); ?></div>
+                                </div>
+                            </div>
+
+                            <?php if ($profileData['hasAdminAccess']): ?>
+                                <a href="<?php echo __PATH_ADMINCP_HOME__; ?>" target="_blank"
+                                    class="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text)] hover:bg-[var(--color-dropdown-hover)] hover:text-[var(--color-primary)] transition-all rounded-md mx-2 mb-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    Panel administrador
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if ($profileData['hasEvaluatorAccess']): ?>
+                                <a href="<?php echo __BASE_URL__.'/app' ?>" target="_blank"
+                                    class="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text)] hover:bg-[var(--color-dropdown-hover)] hover:text-[var(--color-primary)] transition-all rounded-md mx-2 mb-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    Panel evaluador
+                                </a>
+                            <?php endif; ?>
+
+                            <div class="border-t my-2 border-[var(--color-border)]"></div>
+                            <?php templateBuildUsercp(); ?>
+                            <div class="border-t my-2 border-[var(--color-border)]"></div>
+
+                            <div class="px-4 py-2 hover:bg-[var(--color-danger)]/10 cursor-pointer transition-colors rounded-md mx-2 mb-2">
+                                <a href="<?php echo __BASE_URL__; ?>logout/" class="block text-sm text-[var(--color-danger)] font-medium">Cerrar sesión</a>
                             </div>
                         </div>
+                    </div>
+                <?php } else { ?>
+                    <a href="<?php echo __BASE_URL__; ?>login/" 
+                       class="px-4 py-2 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-all text-sm font-medium shadow-md">
+                        Iniciar Sesión
+                    </a>
+                <?php } ?>
 
-                        <?php if ($profileData['hasAdminAccess']): ?>
-                            <a href="<?php echo __PATH_ADMINCP_HOME__; ?>" target="_blank"
-                                class="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-link)] hover:text-white hover:bg-[var(--color-accent)] transition rounded-md">
-                                <i class="fas fa-cogs"></i> Panel administrador
-                            </a>
-                        <?php endif; ?>
-
-                        <?php if ($profileData['hasEvaluatorAccess']): ?>
-                            <a href="<?php echo __BASE_URL__.'/app' ?>" target="_blank"
-                                class="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-link)] hover:text-white hover:bg-[var(--color-accent)] transition rounded-md">
-                                <i class="fas fa-clipboard-check"></i> Panel evaluador
-                            </a>
-                        <?php endif; ?>
-
-                        <div class="border-t my-2 border-[var(--color-border)]"></div>
-
-                        <?php templateBuildUsercp(); ?>
-
-                        <div class="border-t my-2 border-[var(--color-border)]"></div>
-
-                        <div class="px-4 py-2 hover:bg-[var(--color-dropdown-hover)] cursor-pointer">
-                            <a href="<?php echo __BASE_URL__; ?>logout/" class="block text-sm text-[var(--color-danger)]">Cerrar sesión</a>
-                        </div>
-                    <?php } else { ?>
-                        <div class="px-4 py-2 hover:bg-[var(--color-dropdown-hover)] cursor-pointer">
-                            <a href="<?php echo __BASE_URL__; ?>login/" class="block text-sm">Iniciar sesión</a>
-                        </div>
-                    <?php } ?>
-                </div>
+                <button id="mobileMenuButton" class="md:hidden p-2 rounded-lg hover:bg-[var(--color-dropdown-hover)] transition-colors">
+                    <svg id="menuIcon" class="w-5 h-5 text-[var(--color-navbar-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                    <svg id="closeIcon" class="w-5 h-5 text-[var(--color-navbar-text)] hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
-    <?php templateBuildNavbarMobile(); ?>
-</header>
+
+    <div id="mobileMenu" class="md:hidden hidden bg-[var(--color-navbar-bg)] backdrop-blur-md border-t border-[var(--color-border)]">
+        <div class="px-4 py-4 space-y-2">
+            <?php templateBuildNavbarMobile(); ?>
+        </div>
+    </div>
+</nav>
 
 <script>
 function marcarComoLeida(id, btn) {
@@ -263,51 +261,116 @@ function marcarComoLeida(id, btn) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const toggleHover = (trigger, dropdown) => {
-        let timeout;
-        trigger.addEventListener("mouseenter", () => {
-            clearTimeout(timeout);
-            dropdown.classList.remove("hidden");
+function toggleTheme() {
+    const root = document.documentElement;
+    const themeToggle = document.getElementById('themeToggle');
+    const isDark = !root.classList.contains('dark');
+    
+    if (isDark) {
+        root.classList.add('dark');
+        themeToggle.checked = true;
+        localStorage.setItem('theme', 'dark');
+    } else {
+        root.classList.remove('dark');
+        themeToggle.checked = false;
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const theme = localStorage.getItem('theme');
+    const themeToggle = document.getElementById('themeToggle');
+    
+    if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+        if (themeToggle) themeToggle.checked = true;
+    } else {
+        document.documentElement.classList.remove('dark');
+        if (themeToggle) themeToggle.checked = false;
+    }
+    
+    if (themeToggle) {
+        themeToggle.addEventListener('change', toggleTheme);
+    }
+
+    const mobileMenuButton = document.getElementById("mobileMenuButton");
+    const mobileMenu = document.getElementById("mobileMenu");
+    const menuIcon = document.getElementById("menuIcon");
+    const closeIcon = document.getElementById("closeIcon");
+    
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener("click", function(e) {
+            e.stopPropagation();
+            
+            mobileMenu.classList.toggle('hidden');
+            menuIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
         });
-        trigger.addEventListener("mouseleave", () => {
-            timeout = setTimeout(() => dropdown.classList.add("hidden"), 300);
-        });
-        dropdown.addEventListener("mouseenter", () => clearTimeout(timeout));
-        dropdown.addEventListener("mouseleave", () => {
-            timeout = setTimeout(() => dropdown.classList.add("hidden"), 300);
-        });
-    };
+    }
+
+    document.addEventListener('click', function(e) {
+        if (mobileMenu && !mobileMenu.classList.contains('hidden') && 
+            !mobileMenu.contains(e.target) && 
+            !mobileMenuButton.contains(e.target)) {
+            
+            mobileMenu.classList.add('hidden');
+            menuIcon.classList.remove('hidden');
+            closeIcon.classList.add('hidden');
+        }
+    });
 
     const userBtn = document.getElementById("userBtn");
     const dropdownMenu = document.getElementById("dropdownMenu");
     const notificationBtn = document.getElementById("notificationBtn");
-    const notificationDropdown = notificationBtn?.nextElementSibling;
+    const notificationDropdown = document.getElementById("notificationDropdown");
 
-    if (userBtn && dropdownMenu) toggleHover(userBtn, dropdownMenu);
-    if (notificationBtn && notificationDropdown) toggleHover(notificationBtn, notificationDropdown);
-
-    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-    const mobileMenu = document.getElementById("mobileMenu");
-    if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.addEventListener("click", () => {
-            mobileMenu.classList.toggle("hidden");
+    if (userBtn && dropdownMenu) {
+        userBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('hidden');
         });
     }
-});
 
-function toggleTheme() {
-    const root = document.documentElement;
-    const isDark = root.classList.toggle('dark');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    document.getElementById('themeToggle').checked = isDark;
-}
+    if (notificationBtn && notificationDropdown) {
+        notificationBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            notificationDropdown.classList.toggle('hidden');
+        });
+    }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const theme = localStorage.getItem('theme');
-    const isDark = theme === 'dark';
-    if (isDark) document.documentElement.classList.add('dark');
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) themeToggle.checked = isDark;
+    document.addEventListener('click', function() {
+        if (dropdownMenu && !dropdownMenu.classList.contains('hidden')) {
+            dropdownMenu.classList.add('hidden');
+        }
+        if (notificationDropdown && !notificationDropdown.classList.contains('hidden')) {
+            notificationDropdown.classList.add('hidden');
+        }
+    });
+
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('main-nav');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
 });
 </script>
+
+<style>
+#main-nav {
+    transition: all 0.3s ease;
+}
+
+#main-nav.scrolled {
+    background: var(--color-navbar-bg) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+#mobileMenu {
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+}
+</style>

@@ -32,16 +32,6 @@
     "4": {
         "active": true,
         "type": "internal",
-        "phrase": "Fotograf\u00eda",
-        "link": "usercp\/myphoto",
-        "icon": "usercp_default.png",
-        "visibility": "user",
-        "newtab": false,
-        "order": 40
-    },
-    "5": {
-        "active": true,
-        "type": "internal",
         "phrase": "Seguridad",
         "link": "usercp\/mysecurity",
         "icon": "usercp_default.png",

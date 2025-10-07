@@ -1,349 +1,767 @@
 <?php
 if (!mconfig('active')) throw new Exception('El módulo home está deshabilitado.');
 ?>
-<link rel="stylesheet" href="dashboard/css/carousel.css">
-<link rel="stylesheet" href="dashboard/css/custom.css">
-<link rel="stylesheet" href="dashboard/css/layer.css">
 
-
-<section class="relative overflow-hidden h-[500px] rounded-2xl shadow-lg mt-8">
-    <div class="absolute inset-0 z-0">
-      <div class="carousel relative w-full h-full overflow-hidden">
-        <div class="list relative w-full h-full">
-          <div class="item absolute inset-0 w-full h-full bg-center bg-cover opacity-100 transition-opacity duration-1000" style="background-image: url('dashboard/img/imgheader1.jpg');">
-            <div class="absolute inset-0 bg-black/40"></div>
-          </div>
-          <div class="item absolute inset-0 w-full h-full bg-center bg-cover opacity-0 transition-opacity duration-1000" style="background-image: url('dashboard/img/imgheader2.jpg');">
-            <div class="absolute inset-0 bg-black/40"></div>
-          </div>
-          <div class="item absolute inset-0 w-full h-full bg-center bg-cover opacity-0 transition-opacity duration-1000" style="background-image: url('dashboard/img/imgheader3.jpg');">
-            <div class="absolute inset-0 bg-black/40"></div>
-          </div>
-          <div class="item absolute inset-0 w-full h-full bg-center bg-cover opacity-0 transition-opacity duration-1000" style="background-image: url('dashboard/img/imgheader4.jpg');">
-            <div class="absolute inset-0 bg-black/40"></div>
-          </div>
-          <div class="item absolute inset-0 w-full h-full bg-center bg-cover opacity-0 transition-opacity duration-1000" style="background-image: url('dashboard/img/imgheader5.jpg');">
-            <div class="absolute inset-0 bg-black/40"></div>
-          </div>
+<!-- Hero Section con Slider -->
+<section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--color-bg)]">
+    <div class="hero-slider absolute inset-0">
+        <!-- Slide 1 -->
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-1000" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+            <div class="absolute inset-0 bg-[var(--color-navbar-bg)]/60"></div>
         </div>
-      </div>
+        
+        <!-- Slide 2 -->
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-0 transition-opacity duration-1000" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+            <div class="absolute inset-0 bg-[var(--color-navbar-bg)]/60"></div>
+        </div>
+        
+        <!-- Slide 3 -->
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-0 transition-opacity duration-1000" style="background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+            <div class="absolute inset-0 bg-[var(--color-navbar-bg)]/60"></div>
+        </div>
     </div>
-    <div class="absolute inset-0 z-10 flex flex-col justify-center items-start text-white px-10 md:px-20 h-full">
-      <div class="mb-10">
-        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">
-          Investigación Científica <br />
-          <span class="text-[#0A9396]">de Vanguardia</span>
-        </h1>
-        <div class="w-24 h-1 bg-[#E9D8A6] mb-6"></div>
-        <p class="text-lg md:text-xl max-w-lg">
-          Plataforma integrada para la gestión de proyectos de investigación
+
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-20 left-10 w-20 h-20 bg-[var(--color-primary)]/20 rounded-full blur-xl animate-float"></div>
+        <div class="absolute top-40 right-20 w-32 h-32 bg-[var(--color-secondary)]/20 rounded-full blur-xl animate-float" style="animation-delay: 2s;"></div>
+        <div class="absolute bottom-20 left-1/4 w-24 h-24 bg-[var(--color-accent)]/20 rounded-full blur-xl animate-float" style="animation-delay: 4s;"></div>
+    </div>
+
+    <div class="relative z-10 text-center text-white max-w-6xl mx-auto px-4">
+        <div class="animate-fadeIn">
+            <div class="flex items-center justify-center space-x-2 mb-6">
+                <div class="flex items-center space-x-1">
+                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
+                </div>
+                <span class="text-sm font-medium">Calificación 4.9/5 por usuarios</span>
+            </div>
+
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
+                <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+                    Transformamos la Evaluación Académica
+                </span>
+            </h1>
+
+            <p class="text-xl md:text-2xl mb-8 text-white/90 max-w-4xl mx-auto leading-relaxed">
+                Plataforma integral para gestionar, evaluar y promover proyectos de investigación universitarios con tecnología de vanguardia
+            </p>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+                <button class="text-lg px-8 py-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-all hover:scale-105 transform flex items-center">
+                    Explorar Plataforma
+                    <i data-lucide="arrow-right" class="ml-2 h-5 w-5"></i>
+                </button>
+                <button class="text-lg px-8 py-4 bg-white/10 backdrop-blur-md border border-white/30 hover:bg-white/20 rounded-lg flex items-center">
+                    <i data-lucide="play" class="mr-2 h-5 w-5"></i>
+                    Ver Demo
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
+                    <div class="flex items-center justify-center mb-3">
+                        <i data-lucide="users" class="w-8 h-8 text-[var(--color-primary)]"></i>
+                    </div>
+                    <div class="text-3xl font-bold mb-2">2,500+</div>
+                    <div class="text-sm text-white/80">Usuarios Activos</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
+                    <div class="flex items-center justify-center mb-3">
+                        <i data-lucide="award" class="w-8 h-8 text-[var(--color-secondary)]"></i>
+                    </div>
+                    <div class="text-3xl font-bold mb-2">850+</div>
+                    <div class="text-sm text-white/80">Proyectos Evaluados</div>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
+                    <div class="flex items-center justify-center mb-3">
+                        <i data-lucide="star" class="w-8 h-8 text-[var(--color-accent)]"></i>
+                    </div>
+                    <div class="text-3xl font-bold mb-2">98%</div>
+                    <div class="text-sm text-white/80">Satisfacción</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Controles del Slider -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+        <button class="slider-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition-colors" data-slide="0"></button>
+        <button class="slider-dot w-3 h-3 rounded-full bg-white/30 hover:bg-white transition-colors" data-slide="1"></button>
+        <button class="slider-dot w-3 h-3 rounded-full bg-white/30 hover:bg-white transition-colors" data-slide="2"></button>
+    </div>
+
+    <div class="absolute bottom-8 right-8 transform animate-bounce z-20">
+        <div class="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
+            <div class="w-1 h-3 bg-white/50 rounded-full mt-2 animate-pulse"></div>
+        </div>
+    </div>
+</section>
+
+<!-- Sección Nosotros -->
+<section id="about" class="py-16 lg:py-24 bg-[var(--color-surface-alt)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 animate-fadeIn">
+            <span class="inline-block px-4 py-2 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-sm mb-4">Sobre Nosotros</span>
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">Transformando la Educación Superior</h2>
+            <p class="text-xl text-[var(--color-text-muted)] max-w-3xl mx-auto leading-relaxed">
+                Plataforma integral para la evaluación y gestión de proyectos académicos universitarios. Nuestra plataforma conecta investigadores, evaluadores y administradores en un ecosistema digital diseñado para la excelencia académica.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+            <div class="bg-[var(--color-surface)] rounded-xl shadow-md p-8 text-center animate-slideUp hover:-translate-y-2 hover:shadow-xl transition-all duration-300">
+                <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-blue-100 flex items-center justify-center text-[var(--color-primary)]">
+                    <i data-lucide="target" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4 text-[var(--color-heading)]">Misión</h3>
+                <p class="text-[var(--color-text-muted)] leading-relaxed">Facilitar y optimizar los procesos de evaluación académica mediante tecnología innovadora</p>
+            </div>
+            <div class="bg-[var(--color-surface)] rounded-xl shadow-md p-8 text-center animate-slideUp hover:-translate-y-2 hover:shadow-xl transition-all duration-300" style="animation-delay: 0.2s;">
+                <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-100 flex items-center justify-center text-[var(--color-secondary)]">
+                    <i data-lucide="eye" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4 text-[var(--color-heading)]">Visión</h3>
+                <p class="text-[var(--color-text-muted)] leading-relaxed">Ser la plataforma líder en evaluación académica a nivel latinoamericano</p>
+            </div>
+            <div class="bg-[var(--color-surface)] rounded-xl shadow-md p-8 text-center animate-slideUp hover:-translate-y-2 hover:shadow-xl transition-all duration-300" style="animation-delay: 0.4s;">
+                <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-red-100 flex items-center justify-center text-[var(--color-accent)]">
+                    <i data-lucide="heart" class="w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-4 text-[var(--color-heading)]">Valores</h3>
+                <p class="text-[var(--color-text-muted)] leading-relaxed">Transparencia, excelencia académica, innovación y colaboración institucional</p>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <div class="flex items-center space-x-4 p-6 bg-[var(--color-surface)] rounded-xl shadow-sm hover:-translate-y-2 hover:shadow-md transition-all duration-300">
+                <div class="w-12 h-12 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="zap" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-1 text-[var(--color-heading)]">Eficiencia</h4>
+                    <p class="text-sm text-[var(--color-text-muted)]">Procesos automatizados y optimizados</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4 p-6 bg-[var(--color-surface)] rounded-xl shadow-sm hover:-translate-y-2 hover:shadow-md transition-all duration-300">
+                <div class="w-12 h-12 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="shield" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-1 text-[var(--color-heading)]">Seguridad</h4>
+                    <p class="text-sm text-[var(--color-text-muted)]">Datos protegidos con estándares internacionales</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4 p-6 bg-[var(--color-surface)] rounded-xl shadow-sm hover:-translate-y-2 hover:shadow-md transition-all duration-300">
+                <div class="w-12 h-12 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i data-lucide="globe" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-1 text-[var(--color-heading)]">Accesibilidad</h4>
+                    <p class="text-sm text-[var(--color-text-muted)]">Plataforma disponible 24/7 desde cualquier lugar</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sección Proyectos -->
+<section id="proyectos" class="py-16 lg:py-24 bg-[var(--color-bg)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 animate-fadeIn">
+            <span class="inline-block px-4 py-2 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-sm mb-4">Proyectos de Investigación</span>
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">Proyectos Destacados</h2>
+            <p class="text-xl text-[var(--color-text-muted)] max-w-3xl mx-auto">
+                Investigaciones multidisciplinarias trabajando en proyectos de vanguardia que transforman el conocimiento en soluciones reales.
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <div class="group hover:-translate-y-2 hover:shadow-xl transition-all duration-300 bg-[var(--color-surface)] rounded-xl shadow-md overflow-hidden animate-slideUp">
+                <div class="relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80" alt="Inteligencia Artificial" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-4 right-4">
+                        <span class="inline-flex items-center px-2 py-1 bg-white/90 text-black rounded text-sm">
+                            <i data-lucide="star" class="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400"></i>
+                            4.9
+                        </span>
+                    </div>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="px-2 py-1 bg-blue-100 text-[var(--color-primary)] rounded text-sm">En progreso</span>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors text-[var(--color-heading)]">Sistema de IA para Diagnóstico Médico</h3>
+                    <p class="text-[var(--color-text-muted)] mb-4 line-clamp-2">Desarrollo de algoritmos de machine learning para el diagnóstico temprano de enfermedades</p>
+
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 bg-[var(--color-primary)] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                            CM
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-[var(--color-heading)]">Dr. Carlos Mendoza</p>
+                            <p class="text-xs text-[var(--color-text-muted)]">Director del Proyecto</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-1 mb-4">
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-xs">Machine Learning</span>
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-xs">Salud</span>
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-xs">Python</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-2 mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="users" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-sm text-[var(--color-text)]">8 investigadores</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="calendar" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-sm text-[var(--color-text)]">12 meses</span>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 px-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
+                        Ver detalles
+                        <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="group hover:-translate-y-2 hover:shadow-xl transition-all duration-300 bg-[var(--color-surface)] rounded-xl shadow-md overflow-hidden animate-slideUp" style="animation-delay: 0.2s;">
+                <div class="relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80" alt="Biotecnología" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-4 right-4">
+                        <span class="inline-flex items-center px-2 py-1 bg-white/90 text-black rounded text-sm">
+                            <i data-lucide="star" class="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400"></i>
+                            4.8
+                        </span>
+                    </div>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="px-2 py-1 bg-green-100 text-[var(--color-success)] rounded text-sm">Completado</span>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors text-[var(--color-heading)]">Bioplásticos a partir de Desechos Agrícolas</h3>
+                    <p class="text-[var(--color-text-muted)] mb-4 line-clamp-2">Desarrollo de materiales biodegradables a partir de residuos de cosecha para reducir la contaminación</p>
+
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 bg-[var(--color-success)] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                            AR
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-[var(--color-heading)]">Dra. Ana Rodríguez</p>
+                            <p class="text-xs text-[var(--color-text-muted)]">Directora del Proyecto</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-1 mb-4">
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-xs">Sostenibilidad</span>
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-xs">Materiales</span>
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-xs">Química</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-2 mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="users" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-sm text-[var(--color-text)]">6 investigadores</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="calendar" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-sm text-[var(--color-text)]">18 meses</span>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 px-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
+                        Ver detalles
+                        <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="group hover:-translate-y-2 hover:shadow-xl transition-all duration-300 bg-[var(--color-surface)] rounded-xl shadow-md overflow-hidden animate-slideUp" style="animation-delay: 0.4s;">
+                <div class="relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80" alt="Energías Renovables" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-4 right-4">
+                        <span class="inline-flex items-center px-2 py-1 bg-white/90 text-black rounded text-sm">
+                            <i data-lucide="star" class="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400"></i>
+                            4.7
+                        </span>
+                    </div>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="px-2 py-1 bg-yellow-100 text-[var(--color-warning)] rounded text-sm">Fase inicial</span>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors text-[var(--color-heading)]">Optimización de Paneles Solares con Nanotecnología</h3>
+                    <p class="text-[var(--color-text-muted)] mb-4 line-clamp-2">Investigación en materiales nanoestructurados para mejorar la eficiencia de captación solar</p>
+
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 bg-[var(--color-warning)] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                            PS
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-[var(--color-heading)]">Ing. Pedro Silva</p>
+                            <p class="text-xs text-[var(--color-text-muted)]">Director del Proyecto</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-1 mb-4">
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-xs">Energía</span>
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-xs">Nanotecnología</span>
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-xs">Física</span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 pt-2 mb-4">
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="users" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-sm text-[var(--color-text)]">5 investigadores</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i data-lucide="calendar" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-sm text-[var(--color-text)]">24 meses</span>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 px-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
+                        Ver detalles
+                        <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-12">
+            <button class="px-6 py-3 border border-[var(--color-primary)] text-[var(--color-primary)] bg-transparent rounded-lg hover:bg-[var(--color-primary)]/10 transition-colors flex items-center mx-auto">
+                Ver todos los proyectos
+                <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Nueva Sección de Equipos -->
+<section id="equipos" class="py-16 lg:py-24 bg-[var(--color-surface-alt)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 animate-fadeIn">
+            <span class="inline-block px-4 py-2 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-sm mb-4">Nuestros Equipos</span>
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">Conoce Nuestros Equipos</h2>
+            <p class="text-xl text-[var(--color-text-muted)] max-w-3xl mx-auto">
+                Profesionales multidisciplinarios comprometidos con la excelencia académica y la innovación en investigación.
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center bg-[var(--color-surface)] rounded-xl shadow-md p-6 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 animate-slideUp">
+                <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center overflow-hidden">
+                    <img src="<?php echo __PATH_IMG__ . "Chaparro.jpg"?>" alt="Carlos Mendoza" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-xl font-bold mb-2 text-[var(--color-heading)]">Daniel Chaparro Martinez</h3>
+                <p class="text-[var(--color-primary)] mb-2">Estudiante Principal</p>
+                <p class="text-[var(--color-text-muted)] text-sm mb-4">Descripción</p>
+                <div class="flex justify-center space-x-3">
+                    <a href="#" class="text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">
+                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="text-center bg-[var(--color-surface)] rounded-xl shadow-md p-6 hover:-translate-y-2 hover:shadow-xl transition-all duration-300 animate-slideUp" style="animation-delay: 0.2s;">
+                <div class="w-32 h-32 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-100 to-teal-100 flex items-center justify-center overflow-hidden">
+                    <img src="<?php echo __PATH_IMG__ . "lopez.jpg"?>" alt="Cipriano López Vides" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-xl font-bold mb-2 text-[var(--color-heading)]">Cipriano López Vides</h3>
+                <p class="text-[var(--color-primary)] mb-2">Docente Acompañante</p>
+                <p class="text-[var(--color-text-muted)] text-sm mb-4">Descripción</p>
+                <div class="flex justify-center space-x-3">
+                    <a href="#" class="text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">
+                        <i data-lucide="linkedin" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">
+                        <i data-lucide="mail" class="w-5 h-5"></i>
+                    </a>
+                    <a href="#" class="text-[var(--color-text-muted)] hover:text-[var(--color-primary)] transition-colors">
+                        <i data-lucide="file-text" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-12">
+            <button class="px-6 py-3 border border-[var(--color-primary)] text-[var(--color-primary)] bg-transparent rounded-lg hover:bg-[var(--color-primary)]/10 transition-colors flex items-center mx-auto">
+                Conoce todo el equipo
+                <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Sección Eventos -->
+<section id="eventos" class="py-16 lg:py-24 bg-[var(--color-bg)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 animate-fadeIn">
+            <span class="inline-block px-4 py-2 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-sm mb-4">Eventos y Convocatorias</span>
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">Próximos Eventos Académicos</h2>
+            <p class="text-xl text-[var(--color-text-muted)] max-w-3xl mx-auto">
+                Participa en conferencias, talleres y eventos que enriquecen tu experiencia académica y profesional en el mundo de la investigación.
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <div class="group hover:-translate-y-2 hover:shadow-xl transition-all duration-300 bg-[var(--color-surface)] rounded-xl shadow-md overflow-hidden animate-slideUp">
+                <div class="relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80" alt="Simposio IA" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-4 right-4">
+                        <span class="px-2 py-1 bg-green-100 text-[var(--color-success)] rounded text-sm">Inscripciones Abiertas</span>
+                    </div>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-sm">Conferencia</span>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2 text-[var(--color-heading)]">
+                        Simposio Internacional de IA
+                    </h3>
+                    <p class="text-[var(--color-text-muted)] mb-4 line-clamp-2">Conferencia magistral sobre los últimos avances en inteligencia artificial y sus aplicaciones</p>
+
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="calendar" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">lunes, 15 de abril de 2024</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="clock" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">09:00 AM</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="map-pin" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">Auditorio Principal</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="users" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">250 participantes esperados</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-[var(--color-border)] mb-4">
+                        <p class="text-sm text-[var(--color-text-muted)]">Presentador:</p>
+                        <p class="font-medium text-[var(--color-heading)]">Dr. Elena Vásquez</p>
+                    </div>
+
+                    <div class="flex space-x-2 pt-2">
+                        <button class="flex-1 py-2 px-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
+                            Inscribirse
+                            <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+                        </button>
+                        <button class="p-2 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface-alt)] transition-colors">
+                            <i data-lucide="bell" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group hover:-translate-y-2 hover:shadow-xl transition-all duration-300 bg-[var(--color-surface)] rounded-xl shadow-md overflow-hidden animate-slideUp" style="animation-delay: 0.2s;">
+                <div class="relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80" alt="Workshop" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-4 right-4">
+                        <span class="px-2 py-1 bg-yellow-100 text-[var(--color-warning)] rounded text-sm">Últimos Cupos</span>
+                    </div>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-sm">Taller</span>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2 text-[var(--color-heading)]">
+                        Workshop: Metodologías de Investigación
+                    </h3>
+                    <p class="text-[var(--color-text-muted)] mb-4 line-clamp-2">Taller práctico sobre metodologías avanzadas para proyectos de investigación académica</p>
+
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="calendar" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">lunes, 22 de abril de 2024</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="clock" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">02:00 PM</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="map-pin" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">Laboratorio 301</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="users" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">50 participantes esperados</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-[var(--color-border)] mb-4">
+                        <p class="text-sm text-[var(--color-text-muted)]">Presentador:</p>
+                        <p class="font-medium text-[var(--color-heading)]">Dr. Miguel Torres</p>
+                    </div>
+
+                    <div class="flex space-x-2 pt-2">
+                        <button class="flex-1 py-2 px-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
+                            Inscribirse
+                            <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+                        </button>
+                        <button class="p-2 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface-alt)] transition-colors">
+                            <i data-lucide="bell" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="group hover:-translate-y-2 hover:shadow-xl transition-all duration-300 bg-[var(--color-surface)] rounded-xl shadow-md overflow-hidden animate-slideUp" style="animation-delay: 0.4s;">
+                <div class="relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1559223607-a43c990c692c?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=300&q=80" alt="Feria" class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-4 right-4">
+                        <span class="px-2 py-1 bg-blue-100 text-[var(--color-primary)] rounded text-sm">Próximamente</span>
+                    </div>
+                    <div class="absolute bottom-4 left-4">
+                        <span class="px-2 py-1 bg-[var(--color-surface-alt)] text-[var(--color-text)] rounded text-sm">Feria</span>
+                    </div>
+                </div>
+
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2 text-[var(--color-heading)]">
+                        Feria de Proyectos Estudiantiles
+                    </h3>
+                    <p class="text-[var(--color-text-muted)] mb-4 line-clamp-2">Exposición de los mejores proyectos desarrollados por estudiantes de pregrado y posgrado</p>
+
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="calendar" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">viernes, 10 de mayo de 2024</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="clock" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">10:00 AM</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="map-pin" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">Plaza Central</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <i data-lucide="users" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                            <span class="text-[var(--color-text)]">500 participantes esperados</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-2 border-t border-[var(--color-border)] mb-4">
+                        <p class="text-sm text-[var(--color-text-muted)]">Presentador:</p>
+                        <p class="font-medium text-[var(--color-heading)]">Múltiples Presentadores</p>
+                    </div>
+
+                    <div class="flex space-x-2 pt-2">
+                        <button class="flex-1 py-2 px-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
+                            Inscribirse
+                            <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+                        </button>
+                        <button class="p-2 border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-surface-alt)] transition-colors">
+                            <i data-lucide="bell" class="h-4 w-4 text-[var(--color-text-muted)]"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-12">
+            <button class="px-6 py-3 border border-[var(--color-primary)] text-[var(--color-primary)] bg-transparent rounded-lg hover:bg-[var(--color-primary)]/10 transition-colors flex items-center mx-auto">
+                Ver calendario completo
+                <i data-lucide="calendar" class="ml-2 h-4 w-4"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Sección Noticias -->
+<section id="noticias" class="py-16 lg:py-24 bg-[var(--color-surface-alt)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16 animate-fadeIn">
+            <span class="inline-block px-4 py-2 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-full text-sm mb-4">Noticias y Novedades</span>
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">Últimas Noticias</h2>
+            <p class="text-xl text-[var(--color-text-muted)] max-w-3xl mx-auto">
+                Mantente informado sobre los últimos desarrollos, logros y novedades de nuestra comunidad académica y científica.
+            </p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 group hover:-translate-y-2 hover:shadow-xl transition-all duration-300 bg-[var(--color-surface)] rounded-xl shadow-md overflow-hidden animate-slideUp">
+                <div class="relative overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=400&q=80" alt="Nueva metodología" class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute top-4 left-4">
+                        <span class="px-2 py-1 bg-blue-100 text-[var(--color-primary)] rounded text-sm">Innovación</span>
+                    </div>
+                    <div class="absolute top-4 right-4">
+                        <span class="px-2 py-1 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded text-sm">Destacada</span>
+                    </div>
+                </div>
+
+                <div class="p-4">
+                    <h3 class="text-2xl font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2 text-[var(--color-heading)]">
+                        Nueva metodología de evaluación implementada con éxito
+                    </h3>
+                    <p class="text-[var(--color-text-muted)] mb-4 line-clamp-3">
+                        La universidad ha implementado un sistema innovador de evaluación que mejora la transparencia y eficiencia en los procesos académicos...
+                    </p>
+
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-8 h-8 bg-[var(--color-primary)] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                            MG
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-[var(--color-heading)]">Dr. María González</p>
+                            <div class="flex items-center space-x-2 text-xs text-[var(--color-text-muted)]">
+                                <i data-lucide="calendar" class="h-3 w-3"></i>
+                                <span>10/03/2024</span>
+                                <i data-lucide="clock" class="h-3 w-3 ml-2"></i>
+                                <span>5 min</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between text-sm text-[var(--color-text-muted)] mb-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-1">
+                                <i data-lucide="eye" class="h-4 w-4"></i>
+                                <span>1250</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <i data-lucide="message-circle" class="h-4 w-4"></i>
+                                <span>23</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="w-full py-2 px-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
+                        Leer más
+                        <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div class="group hover:-translate-y-2 hover:shadow-xl transition-all duration-300 bg-[var(--color-surface)] rounded-xl shadow-md overflow-hidden animate-slideUp" style="animation-delay: 0.2s;">
+                    <div class="relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200&q=80" alt="Resultados convocatoria" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-4 left-4">
+                            <span class="px-2 py-1 bg-green-100 text-[var(--color-success)] rounded text-sm">Logros</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2 text-[var(--color-heading)]">
+                            Resultados destacados en la convocatoria nacional 2024
+                        </h3>
+                        <p class="text-[var(--color-text-muted)] mb-4 line-clamp-2">
+                            Nuestros investigadores obtuvieron financiamiento para 15 proyectos en la convocatoria nacional de ciencia y tecnología...
+                        </p>
+
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-[var(--color-success)] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                                CR
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-[var(--color-heading)]">Ing. Carlos Ruiz</p>
+                                <div class="flex items-center space-x-2 text-xs text-[var(--color-text-muted)]">
+                                    <i data-lucide="calendar" class="h-3 w-3"></i>
+                                    <span>08/03/2024</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="group hover:-translate-y-2 hover:shadow-xl transition-all duration-300 bg-[var(--color-surface)] rounded-xl shadow-md overflow-hidden animate-slideUp" style="animation-delay: 0.4s;">
+                    <div class="relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=200&q=80" alt="Alianza internacional" class="w-full h-40 object-cover group-hover:scale-110 transition-transform duration-500">
+                        <div class="absolute top-4 left-4">
+                            <span class="px-2 py-1 bg-purple-100 text-[var(--color-secondary)] rounded text-sm">Alianzas</span>
+                        </div>
+                    </div>
+
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2 text-[var(--color-heading)]">
+                            Alianza estratégica con universidades internacionales
+                        </h3>
+                        <p class="text-[var(--color-text-muted)] mb-4 line-clamp-2">
+                            Se firmó un convenio de cooperación académica con prestigiosas universidades de Europa y América para intercambio de conocimiento...
+                        </p>
+
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-[var(--color-secondary)] rounded-full flex items-center justify-center text-white text-sm font-bold">
+                                AL
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-[var(--color-heading)]">Dra. Ana López</p>
+                                <div class="flex items-center space-x-2 text-xs text-[var(--color-text-muted)]">
+                                    <i data-lucide="calendar" class="h-3 w-3"></i>
+                                    <span>05/03/2024</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-12">
+            <button class="px-6 py-3 border border-[var(--color-primary)] text-[var(--color-primary)] bg-transparent rounded-lg hover:bg-[var(--color-primary)]/10 transition-colors flex items-center mx-auto">
+                Ver todas las noticias
+                <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Banner Inferior -->
+<div class="bg-gradient-to-r from-[var(--color-success)] to-[var(--color-secondary)] text-white py-3 px-4">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3 flex-1">
+                <i data-lucide="trophy" class="w-5 h-5 flex-shrink-0"></i>
+                <p class="text-sm md:text-base font-medium">🏆 Únete a nuestra comunidad de investigadores - Más de 50 proyectos activos</p>
+            </div>
+            <div class="flex items-center space-x-2 ml-4">
+                <button class="hidden sm:inline-flex px-3 py-1 bg-white text-[var(--color-success)] rounded text-sm font-medium">Explorar</button>
+                <button id="close-bottom-banner" class="text-white hover:bg-white/20 p-1 rounded">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="py-16 lg:py-24 bg-gradient-to-r from-[var(--color-bg)] to-[var(--color-surface-alt)]">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h3 class="text-3xl font-bold mb-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">Mantente Actualizado</h3>
+        <p class="text-[var(--color-text-muted)] mb-8 text-lg">
+            Recibe las últimas noticias, actualizaciones de la plataforma y oportunidades de investigación directamente en tu correo electrónico.
         </p>
-      </div>
-      <div class="w-full flex justify-end">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div class="bg-[#005F73] p-6 rounded-xl text-center text-white shadow-lg">
-            <div class="text-3xl font-bold">15+</div>
-            <div class="text-sm mt-1">Proyectos activos</div>
-          </div>
-          <div class="bg-[#0A9396] p-6 rounded-xl text-center text-white shadow-lg">
-            <div class="text-3xl font-bold">50+</div>
-            <div class="text-sm mt-1">Investigadores</div>
-          </div>
-          <div class="bg-[#94D2BD] p-6 rounded-xl text-center text-gray-800 shadow-lg">
-            <div class="text-3xl font-bold">200+</div>
-            <div class="text-sm mt-1">Publicaciones</div>
-          </div>
-          <div class="bg-[#E9D8A6] p-6 rounded-xl text-center text-gray-800 shadow-lg">
-            <div class="text-3xl font-bold">1M+</div>
-            <div class="text-sm mt-1">Datos analizados</div>
-          </div>
+        <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <input type="email" placeholder="tu@email.com" class="flex-1 px-4 py-3 bg-[var(--color-input-bg)] border border-[var(--color-primary)]/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] text-[var(--color-input-text)]">
+            <button class="px-6 py-3 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
+                Suscribirse
+                <i data-lucide="arrow-right" class="ml-2 h-4 w-4"></i>
+            </button>
         </div>
-      </div>
+        <p class="text-xs text-[var(--color-text-muted)] mt-4">
+            No spam. Puedes cancelar tu suscripción en cualquier momento.
+        </p>
     </div>
-  <div class="absolute top-1/2 left-4 transform -translate-y-1/2 z-20">
-  <button class="prev bg-white/80 text-gray-800 rounded-full p-2 shadow-md hover:bg-white">❮</button>
 </div>
-<div class="absolute top-1/2 right-4 transform -translate-y-1/2 z-20">
-  <button class="next bg-white/80 text-gray-800 rounded-full p-2 shadow-md hover:bg-white">❯</button>
-</div>
-  <script src="dashboard/js/carousel.js"></script>
-</section>
-
-
-<section class="text-gray-600 body-font bg-white rounded-2xl shadow-lg mt-8">
-  <div class="container px-5 py-24 mx-auto">
-    <div class="flex flex-col text-center w-full mb-20">
-      <h2 class="text-xs text-[#32A6D5] tracking-widest font-medium title-font mb-1">LABORATORIO</h2>
-      <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-[#003049]">Áreas de Investigación</h1>
-      <p class="lg:w-2/3 mx-auto leading-relaxed text-base text-gray-500">Conoce nuestras principales líneas de trabajo e innovación en neurociencia, inteligencia artificial y modelado biomédico.</p>
-    </div>
-    <div class="flex flex-wrap">
-      <div class="xl:w-1/4 lg:w-1/2 md:w-full px-8 py-6 border-l-4 border-[#FC5C04]">
-        <h2 class="text-lg sm:text-xl text-[#003049] font-medium title-font mb-2">Neurociencia Computacional</h2>
-        <p class="leading-relaxed text-base mb-4">Modelado y simulación de redes neuronales para estudiar su comportamiento y funcionamiento.</p>
-        <a class="text-[#32A6D5] inline-flex items-center hover:text-[#007F82] cursor-pointer">Conoce más
-          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-            <path d="M5 12h14M12 5l7 7-7 7"></path>
-          </svg>
-        </a>
-      </div>
-      <div class="xl:w-1/4 lg:w-1/2 md:w-full px-8 py-6 border-l-4 border-[#32A6D5]">
-        <h2 class="text-lg sm:text-xl text-[#003049] font-medium title-font mb-2">IA Aplicada en Salud</h2>
-        <p class="leading-relaxed text-base mb-4">Desarrollo de algoritmos de inteligencia artificial para diagnóstico y predicción de enfermedades.</p>
-        <a class="text-[#32A6D5] inline-flex items-center hover:text-[#007F82] cursor-pointer">Conoce más
-          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-            <path d="M5 12h14M12 5l7 7-7 7"></path>
-          </svg>
-        </a>
-      </div>
-      <div class="xl:w-1/4 lg:w-1/2 md:w-full px-8 py-6 border-l-4 border-[#FBA363]">
-        <h2 class="text-lg sm:text-xl text-[#003049] font-medium title-font mb-2">Big Data Biomédico</h2>
-        <p class="leading-relaxed text-base mb-4">Análisis de grandes volúmenes de datos clínicos para obtener nuevos conocimientos aplicables.</p>
-        <a class="text-[#32A6D5] inline-flex items-center hover:text-[#007F82] cursor-pointer">Conoce más
-          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-            <path d="M5 12h14M12 5l7 7-7 7"></path>
-          </svg>
-        </a>
-      </div>
-      <div class="xl:w-1/4 lg:w-1/2 md:w-full px-8 py-6 border-l-4 border-[#32A6D5]">
-        <h2 class="text-lg sm:text-xl text-[#003049] font-medium title-font mb-2">Innovación en Salud Digital</h2>
-        <p class="leading-relaxed text-base mb-4">Implementación de tecnologías digitales para el seguimiento y mejora de la salud pública.</p>
-        <a class="text-[#32A6D5] inline-flex items-center hover:text-[#007F82] cursor-pointer">Conoce más
-          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            class="w-4 h-4 ml-2" viewBox="0 0 24 24">
-            <path d="M5 12h14M12 5l7 7-7 7"></path>
-          </svg>
-        </a>
-      </div>
-    </div>
-    <button class="flex mx-auto mt-16 text-white bg-[#32A6D5] border-0 py-2 px-8 focus:outline-none hover:bg-[#007F82] rounded text-lg">Ver todos los proyectos</button>
-  </div>
-</section>
-
-
-
-
-<section class="py-20 bg-[#004060] bg-[url('https://www.transparenttextures.com/patterns/hexellence.png')] bg-repeat text-white rounded-2xl shadow-lg mt-8">
-  <div class="max-w-7xl mx-auto px-6">
-    <h2 class="text-4xl font-bold text-[#94D2BD] mb-12 text-center">Últimas Publicaciones</h2>
-    <div class="grid gap-8 lg:grid-cols-3 sm:max-w-sm sm:mx-auto lg:max-w-full">
-      <article class="relative overflow-hidden rounded-2xl border-4 border-transparent bg-white shadow-md hover:shadow-2xl hover:-translate-y-2 hover:border-[#94D2BD] transition duration-500">
-      
-        <span class="absolute top-4 left-4 bg-[#0A9396] text-white text-xs font-bold px-3 py-1 rounded-full shadow">Neurociencia</span>
-        
-        <img src="https://images.unsplash.com/photo-1581591524425-c7e0978865fc" alt="Avances en mapeo neuronal" class="object-cover w-full h-56 rounded-t-xl">
-        
-        <div class="p-6">
-          <div class="flex items-center gap-2 mb-3 text-gray-500 text-sm">
-            <span>15 Mayo 2024</span>
-          </div>
-          <h3 class="text-xl font-bold mb-2 text-[#003049]">Avances en mapeo neuronal</h3>
-          <p class="mb-4 text-gray-600">Nuevas técnicas de imagenología para estudio de redes neuronales...</p>
-          <a href="#" class="inline-block bg-[#0A9396] text-white px-4 py-2 rounded-full font-semibold text-sm hover:bg-[#007F82] transition duration-300">Leer más</a>
-        </div>
-      </article>
-      <article class="relative overflow-hidden rounded-2xl border-4 border-transparent bg-white shadow-md hover:shadow-2xl hover:-translate-y-2 hover:border-[#94D2BD] transition duration-500">
-        <span class="absolute top-4 left-4 bg-[#E9D8A6] text-[#003049] text-xs font-bold px-3 py-1 rounded-full shadow">IA Aplicada</span>
-        <img src="https://images.unsplash.com/photo-1581591524425-c7e0978865fc" alt="IA y predicción de enfermedades" class="object-cover w-full h-56 rounded-t-xl">
-        <div class="p-6">
-          <div class="flex items-center gap-2 mb-3 text-gray-500 text-sm">
-            <span>20 Abril 2024</span>
-          </div>
-          <h3 class="text-xl font-bold mb-2 text-[#003049]">IA y predicción de enfermedades</h3>
-          <p class="mb-4 text-gray-600">Implementación de modelos de machine learning en diagnóstico precoz...</p>
-          <a href="#" class="inline-block bg-[#0A9396] text-white px-4 py-2 rounded-full font-semibold text-sm hover:bg-[#007F82] transition duration-300">Leer más</a>
-        </div>
-      </article>
-      <article class="relative overflow-hidden rounded-2xl border-4 border-transparent bg-white shadow-md hover:shadow-2xl hover:-translate-y-2 hover:border-[#94D2BD] transition duration-500">
-        <span class="absolute top-4 left-4 bg-[#005F73] text-white text-xs font-bold px-3 py-1 rounded-full shadow">Big Data</span>
-        <img src="https://images.unsplash.com/photo-1581591524425-c7e0978865fc" alt="Big Data en salud pública" class="object-cover w-full h-56 rounded-t-xl">
-        <div class="p-6">
-          <div class="flex items-center gap-2 mb-3 text-gray-500 text-sm">
-            <span>10 Marzo 2024</span>
-          </div>
-          <h3 class="text-xl font-bold mb-2 text-[#003049]">Big Data en salud pública</h3>
-          <p class="mb-4 text-gray-600">Análisis de grandes volúmenes de datos para mejorar políticas sanitarias...</p>
-          <a href="#" class="inline-block bg-[#0A9396] text-white px-4 py-2 rounded-full font-semibold text-sm hover:bg-[#007F82] transition duration-300">Leer más</a>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-
-
-<section class="py-20 bg-[#004060] bg-[url('https://www.transparenttextures.com/patterns/hexellence.png')] bg-repeat text-white rounded-2xl shadow-lg mt-8">  <div class="max-w-8xl mx-auto px-6">
-    <h2 class="text-4xl font-bold text-center text-[#94D2BD] mb-12">Top 5 Investigaciones</h2>
-    <div class="grid gap-6 lg:grid-cols-2">
-      <div class="lg:py-6 lg:pr-16">
-        <div class="flex">
-          <div class="flex flex-col items-center mr-4">
-            <div class="flex items-center justify-center w-10 h-10 bg-[#0A9396] rounded-full">
-              <span class="text-white font-bold">1</span>
-            </div>
-            <div class="w-px h-full bg-gray-500"></div>
-          </div>
-          <div class="pt-1 pb-8">
-            <h3 class="mb-2 text-lg font-bold text-white">Modelado de Redes Neuronales</h3>
-            <p class="text-[#E9D8A6]">Departamento de Computación</p>
-          </div>
-        </div>
-
-        <div class="flex">
-          <div class="flex flex-col items-center mr-4">
-            <div class="flex items-center justify-center w-10 h-10 bg-[#94D2BD] rounded-full">
-              <span class="text-[#003049] font-bold">2</span>
-            </div>
-            <div class="w-px h-full bg-gray-500"></div>
-          </div>
-          <div class="pt-1 pb-8">
-            <h3 class="mb-2 text-lg font-bold text-white">Big Data en Epidemiología</h3>
-            <p class="text-[#E9D8A6]">Departamento de Salud Pública</p>
-          </div>
-        </div>
-
-        <div class="flex">
-          <div class="flex flex-col items-center mr-4">
-            <div class="flex items-center justify-center w-10 h-10 bg-[#E9D8A6] rounded-full">
-              <span class="text-[#003049] font-bold">3</span>
-            </div>
-            <div class="w-px h-full bg-gray-500"></div>
-          </div>
-          <div class="pt-1 pb-8">
-            <h3 class="mb-2 text-lg font-bold text-white">Robótica Biomédica</h3>
-            <p class="text-[#E9D8A6]">Departamento de Ingeniería</p>
-          </div>
-        </div>
-
-        <div class="flex">
-          <div class="flex flex-col items-center mr-4">
-            <div class="flex items-center justify-center w-10 h-10 bg-[#0A9396] rounded-full">
-              <span class="text-white font-bold">4</span>
-            </div>
-            <div class="w-px h-full bg-gray-500"></div>
-          </div>
-          <div class="pt-1 pb-8">
-            <h3 class="mb-2 text-lg font-bold text-white">Bioinformática Genómica</h3>
-            <p class="text-[#E9D8A6]">Departamento de Biología</p>
-          </div>
-        </div>
-
-        <div class="flex">
-          <div class="flex flex-col items-center mr-4">
-            <div class="flex items-center justify-center w-10 h-10 bg-[#94D2BD] rounded-full">
-              <span class="text-[#003049] font-bold">5</span>
-            </div>
-          </div>
-          <div class="pt-1">
-            <h3 class="mb-2 text-lg font-bold text-white">Inteligencia Artificial Clínica</h3>
-            <p class="text-[#E9D8A6]">Departamento de IA Médica</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="relative">
-        <img
-          class="inset-0 object-cover object-center w-full rounded shadow-lg h-96 lg:absolute lg:h-full"
-          src="https://images.pexels.com/photos/2923156/pexels-photo-2923156.jpeg?_gl=1*1djcjr5*_ga*ODYxNDIzMjI4LjE3NTI2MDkwMTE.*_ga_8JE65Q40S6*czE3NTI2MDkwMTAkbzEkZzEkdDE3NTI2MDkwNzQkajU5JGwwJGgw"
-          alt="Investigaciones"
-        />
-      </div>
-    </div>
-  </div>
-</section>
-
-
-
-<section class="py-20 bg-[#004060] bg-[url('https://www.transparenttextures.com/patterns/hexellence.png')] bg-repeat text-white rounded-2xl shadow-lg mt-8">  <div class="px-4 mx-auto sm:max-w-xl md:max-w-full lg:max-w-7xl md:px-24 lg:px-8">
-    <div class="mx-auto mb-10 lg:max-w-xl sm:text-center">
-      <p class="inline-block px-3 py-px mb-4 text-xs font-semibold tracking-wider text-[#003049] uppercase rounded-full bg-[#94D2BD]">
-        Equipo de Investigación
-      </p>
-      <p class="text-base text-white md:text-lg">
-        Conformado por investigadores de diversas disciplinas comprometidos con la innovación y el impacto social.
-      </p>
-    </div>
-    <div class="grid gap-10 mx-auto lg:grid-cols-2 lg:max-w-screen-lg">
-      <div class="grid sm:grid-cols-3 bg-[#0A9396] rounded-xl shadow hover:shadow-lg transition p-4">
-        <div class="relative w-full h-48 max-h-full rounded sm:h-auto">
-          <img class="absolute object-cover w-full h-full rounded" src="https://i.pravatar.cc/300?img=1" alt="Dr. Carlos Pérez" />
-        </div>
-        <div class="flex flex-col justify-center mt-5 sm:mt-0 sm:p-5 sm:col-span-2">
-          <p class="text-lg font-bold text-[#E9D8A6]">Dr. Carlos Pérez</p>
-          <p class="mb-2 text-xs text-[#003049]">Director de Neurociencia</p>
-          <p class="mb-4 text-sm tracking-wide text-white">
-            Investigador principal en neurociencia computacional y análisis de datos biomédicos.
-          </p>
-          <div class="flex items-center space-x-3">
-            <a href="#" class="text-[#E9D8A6] hover:text-[#004953]">
-              <span class="material-icons">article</span>
-            </a>
-            <a href="#" class="text-[#E9D8A6] hover:text-[#004953]">
-              <span class="material-icons">link</span>
-            </a>
-          </div>
-        </div>
-      </div>
-      <div class="grid sm:grid-cols-3 bg-[#005F73] rounded-xl shadow hover:shadow-lg transition p-4">
-        <div class="relative w-full h-48 max-h-full rounded sm:h-auto">
-          <img class="absolute object-cover w-full h-full rounded" src="https://images.pexels.com/photos/28356849/pexels-photo-28356849.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Dra. Laura Gómez" />
-        </div>
-        <div class="flex flex-col justify-center mt-5 sm:mt-0 sm:p-5 sm:col-span-2">
-          <p class="text-lg font-bold text-[#E9D8A6]">Dra. Laura Gómez</p>
-          <p class="mb-2 text-xs text-[#94D2BD]">Inteligencia Artificial Médica</p>
-          <p class="mb-4 text-sm tracking-wide text-white">
-            Experta en machine learning aplicado a la salud y desarrollo de algoritmos clínicos.
-          </p>
-          <div class="flex items-center space-x-3">
-            <a href="#" class="text-[#E9D8A6] hover:text-[#004953]">
-              <span class="material-icons">article</span>
-            </a>
-            <a href="#" class="text-[#E9D8A6] hover:text-[#004953]">
-              <span class="material-icons">link</span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="py-20 bg-[#004060] bg-[url('https://www.transparenttextures.com/patterns/hexellence.png')] bg-repeat text-white rounded-2xl shadow-lg mt-8">
-    <div class="flex justify-center mb-12">
-      <div class="relative inline-block">
-        <div class="flex items-center justify-center w-32 h-32 rounded-full bg-[#0A9396] animate-bounce shadow-lg">
-          <h2 class="text-xl font-bold text-white text-center leading-tight">Galería<br>Científica</h2>
-        </div>
-      </div>
-    </div>
-    <div class="grid gap-8 grid-cols-1 md:grid-cols-3">
-      <div class="group relative overflow-hidden rounded-xl shadow-lg">
-        <img src="https://images.unsplash.com/photo-1575503802870-45de6a6217c8"
-            alt="Laboratorio"
-            class="object-cover w-full h-80 transform group-hover:scale-110 transition duration-500" />
-        <div class="absolute inset-0 bg-[#0A9396]/60 opacity-0 group-hover:opacity-100 transition duration-500 flex items-center justify-center">
-          <p class="text-white font-semibold text-lg">Laboratorio</p>
-        </div>
-      </div>
-      <div class="group relative overflow-hidden rounded-xl shadow-lg">
-        <img src="https://images.unsplash.com/photo-1581591524425-c7e0978865fc"
-            alt="Microscopio"
-            class="object-cover w-full h-80 transform group-hover:scale-110 transition duration-500" />
-        <div class="absolute inset-0 bg-[#005F73]/60 opacity-0 group-hover:opacity-100 transition duration-500 flex items-center justify-center">
-          <p class="text-white font-semibold text-lg">Microscopio</p>
-        </div>
-      </div>
-      <div class="group relative overflow-hidden rounded-xl shadow-lg">
-        <img src="https://images.unsplash.com/photo-1581591524425-c7e0978865fc"
-            alt="Investigación"
-            class="object-cover w-full h-80 transform group-hover:scale-110 transition duration-500" />
-        <div class="absolute inset-0 bg-[#003049]/60 opacity-0 group-hover:opacity-100 transition duration-500 flex items-center justify-center">
-          <p class="text-white font-semibold text-lg">Investigación</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>

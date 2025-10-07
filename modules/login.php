@@ -1,17 +1,110 @@
 <?php
 if (isLoggedIn()) redirect();
-
 $logger = new ErrorLogger();
-
 if (!mconfig('active')) throw new Exception('El módulo de inicio de sesión está deshabilitado.');
-
 if (!isset($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
+?>
 
-echo '<div class="max-w-md mx-auto mt-12 p-6 bg-[var(--color-surface)] shadow-lg rounded-xl border border-[var(--color-border)]">';
-echo '<h2 class="text-2xl font-semibold text-center text-[var(--color-heading)] mb-6">Iniciar Sesión</h2>';
+<section class="min-h-screen bg-[var(--color-bg)] pt-24 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 animate-fadeIn">
+        <div class="text-center">
+            <h2 class="text-3xl font-bold text-[var(--color-heading)] mb-2">Iniciar Sesión</h2>
+            <p class="text-[var(--color-text-muted)]">Accede a tu cuenta para gestionar tus proyectos académicos</p>
+        </div>
 
+        <form class="bg-[var(--color-surface)] rounded-2xl shadow-lg p-8 border border-[var(--color-border)] space-y-6" method="post" action="">
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token'], ENT_QUOTES, 'UTF-8'); ?>">
+            
+            <div>
+                <label for="webengineLogin_user" class="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Usuario o Correo Electrónico
+                </label>
+                <div class="relative">
+                    <i data-lucide="user" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[var(--color-text-muted)]"></i>
+                    <input type="text" 
+                           id="webengineLogin_user" 
+                           name="webengineLogin_user" 
+                           required 
+                           class="w-full pl-10 pr-4 py-3 bg-[var(--color-input-bg)] text-[var(--color-input-text)] border border-[var(--color-input-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-colors"
+                           placeholder="usuario@ejemplo.com"
+                           value="<?php echo isset($_POST['webengineLogin_user']) ? htmlspecialchars($_POST['webengineLogin_user']) : ''; ?>">
+                </div>
+            </div>
+
+            <div>
+                <label for="webengineLogin_pwd" class="block text-sm font-medium text-[var(--color-text)] mb-2">
+                    Contraseña
+                </label>
+                <div class="relative">
+                    <i data-lucide="lock" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[var(--color-text-muted)]"></i>
+                    <input type="password" 
+                           id="webengineLogin_pwd" 
+                           name="webengineLogin_pwd" 
+                           required 
+                           class="w-full pl-10 pr-10 py-3 bg-[var(--color-input-bg)] text-[var(--color-input-text)] border border-[var(--color-input-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-colors"
+                           placeholder="••••••••">
+                    <button type="button" 
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+                            onclick="togglePassword('webengineLogin_pwd')">
+                        <i data-lucide="eye" class="w-5 h-5" id="webengineLogin_pwd-eye"></i>
+                    </button>
+                </div>
+                <p class="text-sm text-[var(--color-link)] mt-1">
+                    <a href="<?php echo __BASE_URL__; ?>forgotpassword/" class="hover:underline">¿Olvidaste tu contraseña?</a>
+                </p>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input type="checkbox" 
+                           id="remember_me" 
+                           name="remember_me" 
+                           class="w-4 h-4 text-[var(--color-primary)] border-[var(--color-border)] rounded focus:ring-[var(--color-primary)]"
+                           <?php echo isset($_POST['remember_me']) ? 'checked' : ''; ?>>
+                    <label for="remember_me" class="ml-2 block text-sm text-[var(--color-text)]">
+                        Recuérdame por 30 días
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" 
+                    name="webengineLogin_submit"
+                    value="submit"
+                    class="w-full py-3 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg font-semibold hover:opacity-90 transition-opacity flex items-center justify-center space-x-2">
+                <i data-lucide="log-in" class="w-5 h-5"></i>
+                <span>Iniciar Sesión</span>
+            </button>
+
+            <div class="text-center">
+                <p class="text-sm text-[var(--color-text-muted)]">
+                    ¿No tienes una cuenta? 
+                    <a href="#register" class="text-[var(--color-link)] hover:text-[var(--color-primary)] font-medium transition-colors">
+                        Regístrate aquí
+                    </a>
+                </p>
+            </div>
+        </form>
+    </div>
+</section>
+
+<script>
+    function togglePassword(fieldId) {
+        const passwordField = document.getElementById(fieldId);
+        const eyeIcon = document.getElementById(fieldId + '-eye');
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            eyeIcon.setAttribute('data-lucide', 'eye-off');
+        } else {
+            passwordField.type = 'password';
+            eyeIcon.setAttribute('data-lucide', 'eye');
+        }
+        lucide.createIcons();
+    }
+</script>
+
+<?php
 try {
     $submittedToken = $_POST['csrf_token'] ?? '';
     $savedToken = $_SESSION['csrf_token'] ?? '';
@@ -38,7 +131,7 @@ try {
                 new UserCredentialsValidator($pdo),
                 new AuthLogger($pdo),
                 new SessionManager($pdo),
-                new RememberMeService($pdo, $logger), // ← aquí el cambio
+                new RememberMeService($pdo, $logger),
                 $ipBlockManager,
                 $loginPolicy
             );
@@ -88,40 +181,6 @@ try {
             }
         </script>';
     }
-
-    echo '<form class="space-y-4" method="post" action="" class="bg-[var(--color-surface)] text-[var(--color-text)]">';
-    
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    $csrfToken = $_SESSION['csrf_token'];
-
-    echo '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrfToken, ENT_QUOTES, 'UTF-8') . '">';
-
-    echo '<div class="space-y-4">';
-        echo '<div>';
-            echo '<label for="webengineLogin_user" class="block text-sm font-medium text-[var(--color-text)]">Usuario o Correo</label>';
-            echo '<input type="text" name="webengineLogin_user" id="webengineLogin_user" required class="mt-1 w-full px-3 py-2 bg-[var(--color-input-bg)] text-[var(--color-input-text)] border border-[var(--color-input-border)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition">';
-        echo '</div>';
-
-        echo '<div>';
-            echo '<label for="webengineLogin_pwd" class="block text-sm font-medium text-[var(--color-text)]">Contraseña</label>';
-            echo '<input type="password" name="webengineLogin_pwd" id="webengineLogin_pwd" required class="mt-1 w-full px-3 py-2 bg-[var(--color-input-bg)] text-[var(--color-input-text)] border border-[var(--color-input-border)] rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition">';
-            echo '<p class="text-sm text-[var(--color-link)] mt-1"><a href="' . __BASE_URL__ . 'forgotpassword/" class="hover:underline">¿Olvidaste tu contraseña?</a></p>';
-        echo '</div>';
-
-        echo '<div class="flex items-center">';
-            echo '<input type="checkbox" id="remember_me" name="remember_me" class="h-4 w-4 text-[var(--color-primary)] focus:ring-[var(--color-primary)] border-[var(--color-border)] rounded">';
-            echo '<label for="remember_me" class="ml-2 block text-sm text-[var(--color-text)]">Recuérdame por 30 días</label>';
-        echo '</div>';
-
-        echo '<div>';
-            echo '<button type="submit" name="webengineLogin_submit" value="submit" class="w-full py-2 px-4 bg-[var(--color-primary)] text-white font-semibold rounded-md hover:bg-[var(--color-navbar-hover)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)] transition">Iniciar Sesión</button>';
-        echo '</div>';
-    echo '</div>';
-
-    echo '</form>';
-    echo '</div>';
 } catch (Throwable $ex) {
     $logger->logException($ex, 'PHP');
     message('error', 'No se pudo cargar el formulario de inicio de sesión.');
@@ -137,3 +196,4 @@ try {
         }
     </script>';
 }
+?>
