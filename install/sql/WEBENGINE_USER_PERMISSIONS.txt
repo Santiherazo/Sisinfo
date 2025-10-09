@@ -1,0 +1,8 @@
+CREATE TABLE webengine_user_permissions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    permission_id INT NOT NULL,
+    UNIQUE (user_id, permission_id),
+    FOREIGN KEY (user_id) REFERENCES webengine_u_core(uid) ON DELETE CASCADE,
+    FOREIGN KEY (permission_id) REFERENCES webengine_permissions(id) ON DELETE CASCADE
+);

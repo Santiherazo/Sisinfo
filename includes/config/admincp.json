@@ -1,0 +1,80 @@
+[
+    {
+        "title": "Usuarios",
+        "icon": "group",
+        "items": {
+            "addaccount": "Crear Cuenta",
+            "manageaccount": "Gestionar Usuarios",
+            "importaccount": "Importar Usuarios",
+            "exportaccount": "Exportar Usuarios"
+        },
+        "id": 1
+    },
+    {
+        "title": "Proyectos",
+        "items": {
+            "addproject": "Crear proyecto",
+            "manageproject": "Gestionar proyectos",
+            "importproject": "Importar Proyectos",
+            "exportproject": "Exportar Proyectos"
+        },
+        "icon": "folder",
+        "id": 2
+    },
+    {
+        "title": "Estad\u00edsticas",
+        "items": {
+            "results": "Reportes",
+            "resultsgraphic": "Gr\u00e1ficas",
+            "exportresult": "Exportar"
+        },
+        "icon": "bar_chart",
+        "id": 3
+    },
+    {
+        "title": "Roles y permisos",
+        "icon": "build",
+        "items": {
+            "rolesaccount": "Roles",
+            "permissionaccount": "Permisos"
+        },
+        "id": 4
+    },
+    {
+        "title": "Evaluaciones",
+        "icon": "",
+        "items": {
+            "manageesquema": "Plantilla",
+            "manageevaluations": "Gestionar Evaluaciones",
+            "Results": "Resultados"
+        },
+        "id": 5
+    },
+    {
+        "title": "Configuraci\u00f3n",
+        "items": {
+            "admincp_access": "Acceso AdminCP",
+            "rolesaccount": "Roles",
+            "connection_settings": "Configuraci\u00f3n BD",
+            "website_settings": "Configuraci\u00f3n del Sitio",
+            "template_settings": "Plantillas",
+            "modules_manager": "M\u00f3dulos",
+            "navbar": "Men\u00fa Principal",
+            "usercp": "Men\u00fa de Usuario",
+            "admincp": "Men\u00fa del panel"
+        },
+        "icon": "settings",
+        "id": 6
+    },
+    {
+        "title": "Herramientas",
+        "items": {
+            "heromanager": "Creador de H\u00e9roes",
+            "galerymanager": "Galer\u00eda",
+            "blogmanager": "Blog",
+            "filemanager":"Files"
+        },
+        "icon": "build",
+        "id": 7
+    }
+]

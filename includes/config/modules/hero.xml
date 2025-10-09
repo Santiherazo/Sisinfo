@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<settings>
+    <active>1</active>
+    <hero_type>image</hero_type>
+    <title_char_limit>60</title_char_limit>
+    <subtitle_char_limit>120</subtitle_char_limit>
+    <autoplay_video>1</autoplay_video>
+    <slider_interval>5000</slider_interval>
+    <external_feed>0</external_feed>
+    <feed_url/></feed_url>
+    <cache_enabled>1</cache_enabled>
+    <cache_time>3600</cache_time>
+    <meta_override>0</meta_override>
+</settings>

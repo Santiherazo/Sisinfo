@@ -1,0 +1,105 @@
+<!DOCTYPE HTML>
+<html lang="es">
+
+<head>
+    <title>Error 404 - Página no encontrada</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="WebEngine 1.2.4 - Error 404">
+    <meta name="author" content="Santiago Herazo">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glassmorphism rounded-2xl p-8 shadow-2xl w-full max-w-2xl fade-in mx-4">
+        <div class="text-center">
+            <div class="mx-auto w-24 h-24 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-lg mb-6">
+                <i data-lucide="alert-triangle" class="w-12 h-12 text-white"></i>
+            </div>
+            
+            <h1 class="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 bg-clip-text text-transparent mb-4">
+                Error 404
+            </h1>
+            <h2 class="text-2xl font-semibold text-slate-800 mb-4">{ERROR_MESSAGE}</h2>
+            <p class="text-slate-600 mb-8">
+                Lo sentimos, la página que estás buscando no existe o ha sido movida a otra ubicación.
+            </p>
+            
+            <div class="glassmorphism rounded-xl p-6 mb-8 text-left">
+                <div class="flex items-center gap-2 mb-4">
+                    <i data-lucide="info" class="w-5 h-5 text-blue-600"></i>
+                    <h3 class="text-lg font-semibold text-slate-900">¿Qué puedes hacer?</h3>
+                </div>
+                <ul class="space-y-3 text-slate-600">
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mt-0.5"></i>
+                        <span>Verificar que la URL sea correcta</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mt-0.5"></i>
+                        <span>Navegar usando el menú principal</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i data-lucide="check-circle" class="w-5 h-5 text-green-500 mt-0.5"></i>
+                        <span>Reportar el problema al administrador</span>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/" class="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg">
+                    <i data-lucide="home" class="w-5 h-5"></i>
+                    Volver al Inicio
+                </a>
+                <a href="#" onclick="window.history.back(); return false;" class="flex items-center justify-center gap-2 px-6 py-3 glassmorphism text-slate-700 rounded-xl hover:bg-white/80 transition-all">
+                    <i data-lucide="arrow-left" class="w-5 h-5"></i>
+                    Regresar
+                </a>
+            </div>
+            
+            <div class="mt-8 pt-6 border-t border-white/20">
+                <p class="text-sm text-slate-600 mb-2">¿Necesitas ayuda?</p>
+                <a href="mailto:soporte@sisinfo.com" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 transition-colors">
+                    <i data-lucide="headphones" class="w-4 h-4"></i>
+                    Contactar al soporte técnico
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
