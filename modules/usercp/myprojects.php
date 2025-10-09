@@ -43,8 +43,8 @@ try {
             $formData = [
                 'titulo' => isset($_POST['titulo']) ? trim($_POST['titulo']) : $project['titulo'],
                 'linea_investigacion_id' => isset($_POST['linea_investigacion_id']) ? intval($_POST['linea_investigacion_id']) : $project['linea_investigacion_id'],
-                'fase' => isset($_POST['fase']) ? trim($_POST['fase']) : $project['fase'],
-                'version' => isset($_POST['version']) ? trim($_POST['version']) : $project['version'],
+                'fase' => $project['fase'],
+                'version' => $project['version'],
                 'timer_segundos' => $project['timer_segundos'],
                 'docentes' => [],
                 'evaluadores' => [],
@@ -97,28 +97,11 @@ try {
                     $result = $projectManager->updateProject($projectId, $formData);
                     
                     if ($result) {
-                        echo json_encode(['success' => true, 'projectId' => $projectId]);
+                        http_response_code(200);
+                        exit;
                     } else {
                         throw new Exception("Error al actualizar el proyecto");
                     }
-                    exit;
-                    
-                case 'delete':
-                    $result = $projectManager->deleteProject($projectId);
-                    if ($result) {
-                        $project = $projectManager->getProject($projectId);
-                        if ($project && !empty($project['directorio'])) {
-                            $projectDir = __PATH_UPLOADS__ . 'docs/projects/' . $project['directorio'];
-                            if (is_dir($projectDir)) {
-                                $uploadManager->deleteDirectory($projectDir);
-                            }
-                        }
-                        
-                        echo json_encode(['success' => true]);
-                    } else {
-                        throw new Exception("Error al eliminar el proyecto");
-                    }
-                    exit;
                     
                 case 'deleteDocument':
                     $documentPath = $_POST['document_path'] ?? '';
@@ -128,11 +111,11 @@ try {
                     
                     $result = $uploadManager->delete($documentPath);
                     if ($result) {
-                        echo json_encode(['success' => true]);
+                        http_response_code(200);
+                        exit;
                     } else {
                         throw new Exception("Error al eliminar el documento");
                     }
-                    exit;
 
                 case 'updateDocument':
                     $projectId = $_POST['id'] ?? '';
@@ -193,11 +176,11 @@ try {
                     $result = $projectManager->updateProject($projectId, $updateData);
 
                     if ($result) {
-                        echo json_encode(['success' => true, 'documentPath' => $newDocumentPath]);
+                        http_response_code(200);
+                        exit;
                     } else {
                         throw new Exception("Error al actualizar el documento en la base de datos");
                     }
-                    exit;
 
                 case 'addDocument':
                     $project = $projectManager->getProject($projectId);
@@ -256,19 +239,18 @@ try {
                         $result = $projectManager->updateProject($projectId, $updateData);
                         
                         if ($result) {
-                            echo json_encode(['success' => true, 'documentPath' => $documentPath]);
+                            http_response_code(200);
+                            exit;
                         } else {
                             throw new Exception("Error al actualizar el documento en la base de datos");
                         }
                     } else {
                         throw new Exception("No se proporcionó ningún documento");
                     }
-                    exit;
             }
             
         } catch (Exception $e) {
             http_response_code(400);
-            echo json_encode(['success' => false, 'error' => $e->getMessage()]);
             exit;
         }
     }
@@ -494,11 +476,160 @@ try {
     </div>
 </div>
 
+<div id="project-edit-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+    <div class="bg-[var(--color-surface)] rounded-2xl shadow-xl overflow-hidden w-full max-w-4xl mx-4 max-h-[90vh] overflow-y-auto border border-[var(--color-border)]">
+        <div class="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-white">Editar Proyecto</h2>
+                    <p class="text-sm text-white/80">Complete todos los campos obligatorios (*)</p>
+                </div>
+                <button onclick="closeModal('project-edit-modal')" class="p-2 text-white/80 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <form id="projectEditForm" method="POST" class="space-y-8">            
+                <input type="hidden" name="id" id="edit-project-id">
+                <input type="hidden" name="action" value="update">
+                
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3 border-b border-[var(--color-border)] pb-2">
+                        <div class="w-8 h-8 bg-[var(--color-primary)]/10 rounded-full flex items-center justify-center">
+                            <i data-lucide="file-text" class="w-4 h-4 text-[var(--color-primary)]"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-[var(--color-heading)]">Información Básica</h3>
+                    </div>
+                    
+                    <div class="grid gap-6">
+                        <div class="space-y-1">
+                            <label class="block text-sm font-medium text-[var(--color-text)]">Título del Proyecto *</label>
+                            <input type="text" name="titulo" id="edit-titulo" class="w-full px-4 py-2.5 bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-[var(--color-input-text)]" placeholder="Ingrese el título del proyecto" required>
+                        </div>
+                        
+                        <div class="space-y-1">
+                            <label class="block text-sm font-medium text-[var(--color-text)]">Línea de Investigación *</label>
+                            <select name="linea_investigacion_id" id="edit-linea-investigacion" class="w-full px-4 py-2.5 bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-[var(--color-input-text)]" required>
+                                <option value="">Seleccionar línea</option>
+                                <?php foreach ($filterCategory as $line): ?>
+                                    <option value="<?= $line['id'] ?>"><?= htmlspecialchars($line['nombre']) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3 border-b border-[var(--color-border)] pb-2">
+                        <div class="w-8 h-8 bg-[var(--color-secondary)]/10 rounded-full flex items-center justify-center">
+                            <i data-lucide="align-left" class="w-4 h-4 text-[var(--color-secondary)]"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-[var(--color-heading)]">Información Adicional</h3>
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <label class="block text-sm font-medium text-[var(--color-text)]">Descripción *</label>
+                        <textarea rows="4" name="descripcion" id="edit-descripcion" class="w-full px-4 py-2.5 bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-[var(--color-input-text)]" placeholder="Descripción detallada del proyecto..." required></textarea>
+                    </div>
+                    
+                    <div class="space-y-1">
+                        <label class="block text-sm font-medium text-[var(--color-text)]">Palabras Clave</label>
+                        <input type="text" name="palabras_clave" id="edit-palabras-clave" class="w-full px-4 py-2.5 bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-[var(--color-input-text)]" placeholder="Separadas por comas: IA, Machine Learning, Educación">
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3 border-b border-[var(--color-border)] pb-2">
+                        <div class="w-8 h-8 bg-[var(--color-success)]/10 rounded-full flex items-center justify-center">
+                            <i data-lucide="user-check" class="w-4 h-4 text-[var(--color-success)]"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-[var(--color-heading)]">Investigadores</h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-medium text-[var(--color-text)]">Investigadores *</h4>
+                            <button type="button" onclick="addResearcher('edit')" class="flex items-center gap-1 text-xs text-[var(--color-primary)] hover:text-[var(--color-primary)]/80 transition-colors duration-200">
+                                <i data-lucide="plus" class="w-3 h-3"></i> Añadir investigador
+                            </button>
+                        </div>
+                        
+                        <div id="edit-researchersContainer" class="space-y-3">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3 border-b border-[var(--color-border)] pb-2">
+                        <div class="w-8 h-8 bg-[var(--color-warning)]/10 rounded-full flex items-center justify-center">
+                            <i data-lucide="graduation-cap" class="w-4 h-4 text-[var(--color-warning)]"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-[var(--color-heading)]">Docentes</h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-medium text-[var(--color-text)]">Docentes *</h4>
+                            <button type="button" onclick="addTeacher('edit')" class="flex items-center gap-1 text-xs text-[var(--color-primary)] hover:text-[var(--color-primary)]/80 transition-colors duration-200">
+                                <i data-lucide="plus" class="w-3 h-3"></i> Añadir docente
+                            </button>
+                        </div>
+                        
+                        <div id="edit-teachersContainer" class="space-y-3">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="flex items-center gap-3 border-b border-[var(--color-border)] pb-2">
+                        <div class="w-8 h-8 bg-[var(--color-danger)]/10 rounded-full flex items-center justify-center">
+                            <i data-lucide="clipboard-check" class="w-4 h-4 text-[var(--color-danger)]"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-[var(--color-heading)]">Evaluadores</h3>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h4 class="text-sm font-medium text-[var(--color-text)]">Evaluadores</h4>
+                            <button type="button" onclick="addReviewer('edit')" class="flex items-center gap-1 text-xs text-[var(--color-primary)] hover:text-[var(--color-primary)]/80 transition-colors duration-200">
+                                <i data-lucide="plus" class="w-3 h-3"></i> Añadir evaluador
+                            </button>
+                        </div>
+                        
+                        <div id="edit-reviewersContainer" class="space-y-3">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col sm:flex-row justify-between gap-4 pt-6 border-t border-[var(--color-border)]">
+                    <button type="button" onclick="closeModal('project-edit-modal')" class="order-2 sm:order-1 px-6 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text)] rounded-lg hover:bg-[var(--color-dropdown-hover)] transition-all duration-200 font-medium flex items-center justify-center gap-2 shadow-sm">
+                        <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                        Cancelar
+                    </button>
+                    
+                    <button type="submit" class="order-1 sm:order-2 px-6 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:from-[var(--color-primary)]/90 hover:to-[var(--color-secondary)]/90 transition-all duration-200 font-medium flex items-center justify-center gap-2 shadow-lg">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="notification-container" class="fixed bottom-4 right-4 z-50 space-y-2"></div>
+
 <script>
 const allProjects = <?= $projectsJson ?>;
 const lineasMap = <?= $lineasJson ?>;
+const allResearchers = <?= json_encode($allResearchers) ?>;
+const allTeachers = <?= json_encode($allTeachers) ?>;
+const allReviewers = <?= json_encode($allReviewers) ?>;
 let currentPage = 1;
 const projectsPerPage = 6;
+let currentEditingProject = null;
 
 function escapeHtml(text) {
     if (!text) return '';
@@ -521,24 +652,17 @@ function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('es-ES');
 }
 
-function formatSeconds(seconds) {
-    if (!seconds) return 'No definido';
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    return `${hours}h ${minutes}m`;
-}
-
 function getFileIcon(filename) {
     const ext = filename.split('.').pop().toLowerCase();
     const icons = {
-        pdf: { icon: 'file-text', color: 'bg-[var(--color-danger)]' },
-        doc: { icon: 'file-text', color: 'bg-[var(--color-primary)]' },
-        docx: { icon: 'file-text', color: 'bg-[var(--color-primary)]' },
-        xls: { icon: 'file-spreadsheet', color: 'bg-[var(--color-success)]' },
-        xlsx: { icon: 'file-spreadsheet', color: 'bg-[var(--color-success)]' },
-        ppt: { icon: 'file-presentation', color: 'bg-[var(--color-warning)]' },
-        pptx: { icon: 'file-presentation', color: 'bg-[var(--color-warning)]' },
-        default: { icon: 'file', color: 'bg-[var(--color-secondary)]' }
+        pdf: { icon: 'file-text', color: 'bg-red-500' },
+        doc: { icon: 'file-text', color: 'bg-blue-500' },
+        docx: { icon: 'file-text', color: 'bg-blue-500' },
+        xls: { icon: 'file-spreadsheet', color: 'bg-green-500' },
+        xlsx: { icon: 'file-spreadsheet', color: 'bg-green-500' },
+        ppt: { icon: 'file-presentation', color: 'bg-orange-500' },
+        pptx: { icon: 'file-presentation', color: 'bg-orange-500' },
+        default: { icon: 'file', color: 'bg-purple-500' }
     };
     return icons[ext] || icons.default;
 }
@@ -568,7 +692,7 @@ function getUserStatus(user) {
 
 function getUserStatusClass(user) {
     const status = getUserStatus(user);
-    return status === 'activo' ? 'text-[var(--color-success)]' : 'text-[var(--color-danger)]';
+    return status === 'activo' ? 'text-green-600' : 'text-red-600';
 }
 
 function getUserStatusIcon(user) {
@@ -581,24 +705,38 @@ function getUserInitials(user) {
     return fullName.charAt(0) || 'U';
 }
 
-function getPhaseColorClass(phase) {
-    switch (phase) {
-        case 'propuesta': return 'bg-amber-100 text-amber-800 border-amber-200';
-        case 'desarrollo': return 'bg-blue-100 text-blue-800 border-blue-200';
-        case 'aplicacion': return 'bg-emerald-100 text-emerald-800 border-emerald-200';
-        default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
+function showNotification(message, type = 'success') {
+    const notification = document.createElement("div");
+    notification.className = `px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-fade-in ${
+        type === 'success' ? 'bg-green-500 text-white' : 
+        type === 'error' ? 'bg-red-500 text-white' : 
+        'bg-yellow-500 text-white'
+    }`;
+    
+    notification.innerHTML = `
+        <i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="w-4 h-4"></i>
+        <span>${message}</span>
+    `;
+    
+    document.getElementById('notification-container').appendChild(notification);
+    lucide.createIcons();
+    
+    setTimeout(() => {
+        notification.classList.remove("animate-fade-in");
+        notification.classList.add("animate-fade-out");
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
 }
 
-function getStatusColorClass(status) {
-    switch (status) {
-        case 'nuevo': return 'bg-blue-100 text-blue-800';
-        case 'en_progreso': return 'bg-amber-100 text-amber-800';
-        case 'completado': return 'bg-emerald-100 text-emerald-800';
-        case 'evaluado': return 'bg-purple-100 text-purple-800';
-        case 'en_evaluacion': return 'bg-indigo-100 text-indigo-800';
-        default: return 'bg-gray-100 text-gray-800';
-    }
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+function showModal(modalId) {
+    document.getElementById(modalId).classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    lucide.createIcons();
 }
 
 function renderProjects() {
@@ -628,14 +766,14 @@ function renderProjects() {
     const currentProjects = filteredProjects.slice(startIndex, endIndex);
     
     grid.innerHTML = currentProjects.map(project => `
-        <div class="bg-[var(--color-surface)] rounded-xl shadow-md p-6 border border-[var(--color-border)] hover:shadow-lg transition-all duration-300 project-card">
+        <div class="bg-[var(--color-surface)] rounded-xl shadow-md p-6 border border-[var(--color-border)] hover:shadow-lg transition-all duration-300 project-card" data-id="${project.id}">
             <div class="flex justify-between items-start mb-4">
                 <div class="flex items-center space-x-3">
                     <div class="relative">
                         <div class="w-10 h-10 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] rounded-full flex items-center justify-center shadow">
                             <span class="text-white font-bold text-sm">${project.titulo?.charAt(0) || 'P'}</span>
                         </div>
-                        <div class="absolute -bottom-1 -right-1 w-3 h-3 ${project.activo ? 'bg-[var(--color-success)]' : 'bg-[var(--color-text-muted)]'} rounded-full border-2 border-white"></div>
+                        <div class="absolute -bottom-1 -right-1 w-3 h-3 ${project.activo ? 'bg-green-500' : 'bg-gray-400'} rounded-full border-2 border-white"></div>
                     </div>
                     <div>
                         <h3 class="font-semibold text-[var(--color-text)] text-lg">${escapeHtml(project.titulo)}</h3>
@@ -650,7 +788,7 @@ function renderProjects() {
                     
                     ${window.isTeacher ? `
                     <button onclick="editProject(${project.id})" class="p-2 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg hover:bg-[var(--color-dropdown-hover)] transition-all duration-200" title="Editar proyecto">
-                        <i data-lucide="edit" class="w-4 h-4 text-[var(--color-success)]"></i>
+                        <i data-lucide="edit" class="w-4 h-4 text-green-500"></i>
                     </button>
                     ` : ''}
                 </div>
@@ -661,19 +799,19 @@ function renderProjects() {
                     <span class="px-3 py-1 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-md text-xs font-medium">
                         ${escapeHtml(project.fase ? project.fase.charAt(0).toUpperCase() + project.fase.slice(1) : 'Propuesta')}
                     </span>
-                    <span class="px-3 py-1 ${project.activo ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-text-muted)]/10 text-[var(--color-text-muted)]'} rounded-md text-xs font-medium">
+                    <span class="px-3 py-1 ${project.activo ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'} rounded-md text-xs font-medium">
                         ${project.activo ? 'Activo' : 'Inactivo'}
                     </span>
                     <span class="px-3 py-1 bg-[var(--color-secondary)]/10 text-[var(--color-secondary)] rounded-md text-xs font-medium">
                         ${escapeHtml(project.linea_nombre)}
                     </span>
                     ${project.timer_segundos > 0 ? `
-                    <span class="px-3 py-1 bg-[var(--color-warning)]/10 text-[var(--color-warning)] rounded-md text-xs font-medium">
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-md text-xs font-medium">
                         ${Math.floor(project.timer_segundos / 60)} min
                     </span>
                     ` : ''}
                     ${project.puntuacion ? `
-                    <span class="px-3 py-1 bg-[var(--color-accent)]/10 text-[var(--color-accent)] rounded-md text-xs font-medium">
+                    <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-md text-xs font-medium">
                         ${project.puntuacion} pts
                     </span>
                     ` : ''}
@@ -694,7 +832,7 @@ function renderProjects() {
                 ${project.documentos?.length > 0 ? `
                 <div class="flex flex-wrap gap-2 mt-3">
                     ${project.documentos.slice(0, 2).map(doc => `
-                        <span class="px-3 py-1 bg-[var(--color-accent)]/10 text-[var(--color-accent)] rounded-md text-xs font-medium flex items-center space-x-1">
+                        <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-md text-xs font-medium flex items-center space-x-1">
                             <i data-lucide="file-text" class="w-3 h-3"></i>
                             <span>${escapeHtml(doc.name)}</span>
                         </span>
@@ -796,7 +934,7 @@ function changePage(page) {
 function showProjectDetails(projectId) {
     const project = allProjects.find(p => p.id == projectId);
     if (!project) {
-        alert('Proyecto no encontrado');
+        showNotification('Proyecto no encontrado', 'error');
         return;
     }
     
@@ -809,16 +947,16 @@ function showProjectDetails(projectId) {
                 <div class="w-20 h-20 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] rounded-full flex items-center justify-center shadow-lg">
                     <span class="text-white text-2xl font-bold">${project.titulo?.charAt(0) || 'P'}</span>
                 </div>
-                <div class="absolute -bottom-2 -right-2 w-6 h-6 ${project.activo ? 'bg-[var(--color-success)]' : 'bg-[var(--color-text-muted)]'} rounded-full border-4 border-white"></div>
+                <div class="absolute -bottom-2 -right-2 w-6 h-6 ${project.activo ? 'bg-green-500' : 'bg-gray-400'} rounded-full border-4 border-white"></div>
             </div>
             <div class="flex-1">
                 <h3 class="text-2xl font-bold text-[var(--color-heading)]">${escapeHtml(project.titulo)}</h3>
                 <p class="text-[var(--color-text-muted)] mb-2">Versión ${project.version || '1'}</p>
                 <div class="flex flex-wrap gap-2">
                     <span class="px-3 py-1 bg-[var(--color-primary)]/10 text-[var(--color-primary)] rounded-full text-sm font-semibold">${capitalizeFirstLetter(project.fase)}</span>
-                    <span class="px-3 py-1 ${project.activo ? 'bg-[var(--color-success)]/10 text-[var(--color-success)]' : 'bg-[var(--color-text-muted)]/10 text-[var(--color-text-muted)]'} rounded-full text-sm font-semibold">${project.activo ? 'Activo' : 'Inactivo'}</span>
+                    <span class="px-3 py-1 ${project.activo ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'} rounded-full text-sm font-semibold">${project.activo ? 'Activo' : 'Inactivo'}</span>
                     ${project.calificado ? `
-                    <span class="px-3 py-1 bg-[var(--color-accent)]/10 text-[var(--color-accent)] rounded-full text-sm font-semibold">Calificado</span>
+                    <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-semibold">Calificado</span>
                     ` : ''}
                 </div>
             </div>
@@ -959,7 +1097,7 @@ function showProjectDetails(projectId) {
                 ${project.evaluadores.map(reviewer => `
                     <div class="border border-[var(--color-border)] rounded-lg p-4">
                         <div class="flex items-center space-x-3 mb-2">
-                            <div class="w-10 h-10 bg-gradient-to-r from-[var(--color-danger)] to-[var(--color-warning)] rounded-full flex items-center justify-center text-white font-medium text-sm">
+                            <div class="w-10 h-10 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center text-white font-medium text-sm">
                                 ${getUserInitials(reviewer)}
                             </div>
                             <div>
@@ -985,7 +1123,7 @@ function showProjectDetails(projectId) {
             ${isTeacher ? `
             <div class="mb-4">
                 <button onclick="addDocument(${project.id})" 
-                        class="flex items-center space-x-2 px-4 py-2 bg-[var(--color-success)] text-white rounded-lg hover:bg-[var(--color-success)]/90 transition-all duration-200">
+                        class="flex items-center space-x-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-200">
                     <i data-lucide="upload" class="w-4 h-4"></i>
                     <span>Agregar Documento</span>
                 </button>
@@ -1017,12 +1155,12 @@ function showProjectDetails(projectId) {
                             </a>
                             ${isTeacher ? `
                             <button onclick="updateDocument('${escapeSingleQuote(doc.full_path)}', ${project.id}, '${escapeSingleQuote(doc.name)}')" 
-                                    class="flex-1 py-2 flex items-center justify-center space-x-1 text-sm text-[var(--color-success)] hover:bg-[var(--color-success)]/10 transition-colors duration-200">
+                                    class="flex-1 py-2 flex items-center justify-center space-x-1 text-sm text-green-600 hover:bg-green-50 transition-colors duration-200">
                                 <i data-lucide="refresh-cw" class="w-4 h-4"></i>
                                 <span>Actualizar</span>
                             </button>
                             <button onclick="deleteDocument('${escapeSingleQuote(doc.full_path)}', ${project.id}, '${escapeSingleQuote(doc.name)}')" 
-                                    class="flex-1 py-2 flex items-center justify-center space-x-1 text-sm text-[var(--color-danger)] hover:bg-[var(--color-danger)]/10 transition-colors duration-200">
+                                    class="flex-1 py-2 flex items-center justify-center space-x-1 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                                 <span>Eliminar</span>
                             </button>
@@ -1056,38 +1194,363 @@ function showProjectDetails(projectId) {
     showModal('project-details-modal');
 }
 
-function closeModal(modalId) {
-    document.getElementById(modalId).classList.add('hidden');
-    document.body.style.overflow = 'auto';
+function editProject(projectId) {
+    const project = allProjects.find(p => p.id == projectId);
+    if (!project) {
+        showNotification('Proyecto no encontrado', 'error');
+        return;
+    }
+    
+    currentEditingProject = project;
+    
+    document.getElementById('edit-project-id').value = project.id;
+    document.getElementById('edit-titulo').value = project.titulo || '';
+    document.getElementById('edit-linea-investigacion').value = project.linea_investigacion_id || '';
+    document.getElementById('edit-descripcion').value = project.descripcion || '';
+    document.getElementById('edit-palabras-clave').value = project.palabras_clave || '';
+    
+    const researchersContainer = document.getElementById('edit-researchersContainer');
+    researchersContainer.innerHTML = '';
+    
+    if (project.investigadores?.length > 0) {
+        project.investigadores.forEach((researcher, index) => {
+            addResearcherField('edit', index, researcher);
+        });
+    } else {
+        addResearcher('edit');
+    }
+    
+    const teachersContainer = document.getElementById('edit-teachersContainer');
+    teachersContainer.innerHTML = '';
+    
+    if (project.docentes?.length > 0) {
+        project.docentes.forEach((teacher, index) => {
+            addTeacherField('edit', index, teacher);
+        });
+    } else {
+        addTeacher('edit');
+    }
+    
+    const reviewersContainer = document.getElementById('edit-reviewersContainer');
+    reviewersContainer.innerHTML = '';
+    
+    if (project.evaluadores?.length > 0) {
+        project.evaluadores.forEach((reviewer, index) => {
+            addReviewerField('edit', index, reviewer);
+        });
+    }
+    
+    showModal('project-edit-modal');
 }
 
-function showModal(modalId) {
-    document.getElementById(modalId).classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
+function addResearcher(prefix = '') {
+    const container = document.getElementById(`${prefix}-researchersContainer`);
+    const index = container.querySelectorAll('.participant-field[data-type="researcher"]').length;
+    addResearcherField(prefix, index);
+}
+
+function addResearcherField(prefix, index, researcher = null) {
+    const container = document.getElementById(`${prefix}-researchersContainer`);
+    
+    const researcherField = document.createElement('div');
+    researcherField.className = 'participant-field flex gap-3 items-end bg-[var(--color-surface-alt)] p-3 rounded-lg border border-[var(--color-border)]';
+    researcherField.dataset.type = 'researcher';
+    
+    researcherField.innerHTML = `
+        <div class="flex-1 grid md:grid-cols-2 gap-3">
+            <div class="space-y-1">
+                <select name="investigadores[${index}][usuario_uid]" class="researcher-select w-full px-3 py-2 bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-[var(--color-input-text)]" required>
+                    <option value="">Seleccionar investigador</option>
+                    ${allResearchers.map(user => `
+                        <option value="${user.user_id}" ${researcher && user.user_id == researcher.usuario_uid ? 'selected' : ''}>
+                            ${escapeHtml(user.first_name + ' ' + user.last_name)} (${user.username})
+                        </option>
+                    `).join('')}
+                </select>
+            </div>
+            <div class="space-y-1">
+                <select name="investigadores[${index}][rol]" class="w-full px-3 py-2 bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-[var(--color-input-text)]" required>
+                    <option value="principal" ${researcher && researcher.rol === 'principal' ? 'selected' : ''}>Principal</option>
+                    <option value="colaborador" ${researcher && researcher.rol === 'colaborador' ? 'selected' : ''}>Colaborador</option>
+                </select>
+            </div>
+        </div>
+        <button type="button" onclick="removeParticipant(this, 'researcher')" class="p-2 text-[var(--color-text-muted)] hover:text-red-500 transition-colors duration-200 mb-1">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+    `;
+    
+    container.appendChild(researcherField);
     lucide.createIcons();
 }
 
-function editProject(projectId) {
-    alert('Funcionalidad de edición no implementada en este ejemplo');
+function addTeacher(prefix = '') {
+    const container = document.getElementById(`${prefix}-teachersContainer`);
+    const index = container.querySelectorAll('.participant-field[data-type="teacher"]').length;
+    addTeacherField(prefix, index);
 }
 
-function previewDocument(fileUrl, fileName) {
-    window.open(fileUrl, '_blank');
+function addTeacherField(prefix, index, teacher = null) {
+    const container = document.getElementById(`${prefix}-teachersContainer`);
+    
+    const teacherField = document.createElement('div');
+    teacherField.className = 'participant-field flex gap-3 items-end bg-[var(--color-surface-alt)] p-3 rounded-lg border border-[var(--color-border)]';
+    teacherField.dataset.type = 'teacher';
+    
+    teacherField.innerHTML = `
+        <div class="flex-1 grid md:grid-cols-2 gap-3">
+            <div class="space-y-1">
+                <select name="docentes[${index}][usuario_uid]" class="teacher-select w-full px-3 py-2 bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-[var(--color-input-text)]" required>
+                    <option value="">Seleccionar docente</option>
+                    ${allTeachers.map(user => `
+                        <option value="${user.user_id}" ${teacher && user.user_id == teacher.usuario_uid ? 'selected' : ''}>
+                            ${escapeHtml(user.first_name + ' ' + user.last_name)} (${user.username})
+                        </option>
+                    `).join('')}
+                </select>
+            </div>
+            <div class="space-y-1">
+                <select name="docentes[${index}][rol]" class="w-full px-3 py-2 bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-[var(--color-input-text)]" required>
+                    <option value="asesor" ${teacher && teacher.rol === 'asesor' ? 'selected' : ''}>Asesor</option>    
+                    <option value="director" ${teacher && teacher.rol === 'director' ? 'selected' : ''}>Director</option>
+                    <option value="jurado" ${teacher && teacher.rol === 'jurado' ? 'selected' : ''}>Jurado</option>
+                </select>
+            </div>
+        </div>
+        <button type="button" onclick="removeParticipant(this, 'teacher')" class="p-2 text-[var(--color-text-muted)] hover:text-red-500 transition-colors duration-200 mb-1">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+    `;
+    
+    container.appendChild(teacherField);
+    lucide.createIcons();
+}
+
+function addReviewer(prefix = '') {
+    const container = document.getElementById(`${prefix}-reviewersContainer`);
+    const index = container.querySelectorAll('.participant-field[data-type="reviewer"]').length;
+    addReviewerField(prefix, index);
+}
+
+function addReviewerField(prefix, index, reviewer = null) {
+    const container = document.getElementById(`${prefix}-reviewersContainer`);
+    
+    const reviewerField = document.createElement('div');
+    reviewerField.className = 'participant-field flex gap-3 items-end bg-[var(--color-surface-alt)] p-3 rounded-lg border border-[var(--color-border)]';
+    reviewerField.dataset.type = 'reviewer';
+    
+    reviewerField.innerHTML = `
+        <div class="flex-1 space-y-1">
+            <select name="revisores[]" class="reviewer-select w-full px-3 py-2 bg-[var(--color-input-bg)] border border-[var(--color-input-border)] rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 text-[var(--color-input-text)]">
+                <option value="">Seleccionar evaluador</option>
+                ${allReviewers.map(user => `
+                    <option value="${user.user_id}" ${reviewer && user.user_id == reviewer.usuario_uid ? 'selected' : ''}>
+                        ${escapeHtml(user.first_name + ' ' + user.last_name)} (${user.username})
+                    </option>
+                `).join('')}
+            </select>
+        </div>
+        <button type="button" onclick="removeParticipant(this, 'reviewer')" class="p-2 text-[var(--color-text-muted)] hover:text-red-500 transition-colors duration-200 mb-1">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+    `;
+    
+    container.appendChild(reviewerField);
+    lucide.createIcons();
+}
+
+function removeParticipant(button, type) {
+    const container = button.closest('.participant-field[data-type="' + type + '"]');
+    if (container) {
+        container.remove();
+        reindexParticipantFields(type);
+    }
+}
+
+function reindexParticipantFields(type) {
+    const container = document.getElementById(`edit-${type}sContainer`);
+    const fields = container.querySelectorAll('.participant-field[data-type="' + type + '"]');
+    
+    fields.forEach((field, index) => {
+        const selects = field.querySelectorAll('select');
+        selects.forEach(select => {
+            const name = select.getAttribute('name');
+            if (name.includes('[')) {
+                const newName = name.replace(/\[\d+\]/, `[${index}]`);
+                select.setAttribute('name', newName);
+            }
+        });
+    });
+}
+
+function saveProjectChanges() {
+    const form = document.getElementById('projectEditForm');
+    const formData = new FormData(form);
+    
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Guardando...';
+    submitBtn.disabled = true;
+    
+    fetch('', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error en la respuesta del servidor');
+        }
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error al guardar los cambios', 'error');
+    })
+    .finally(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+        lucide.createIcons();
+    });
 }
 
 function addDocument(projectId) {
-    alert('Funcionalidad de agregar documento no implementada');
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx';
+    fileInput.style.display = 'none';
+    
+    fileInput.addEventListener('change', function(e) {
+        if (this.files.length === 0) return;
+        
+        const file = this.files[0];
+        const maxSize = 20 * 1024 * 1024;
+        
+        if (file.size > maxSize) {
+            showNotification('El archivo excede el tamaño máximo de 20MB', 'error');
+            return;
+        }
+        
+        const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+        
+        if (!allowedExtensions.includes(fileExtension)) {
+            showNotification('Tipo de archivo no permitido', 'error');
+            return;
+        }
+        
+        if (!confirm(`¿Estás seguro de que deseas agregar el documento "${file.name}"?`)) {
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('action', 'addDocument');
+        formData.append('id', projectId);
+        formData.append('documento', file);
+
+        fetch('', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al agregar documento');
+            }
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error al agregar documento', 'error');
+        });
+    });
+    
+    document.body.appendChild(fileInput);
+    fileInput.click();
+    document.body.removeChild(fileInput);
 }
 
 function updateDocument(documentPath, projectId, documentName) {
-    alert('Funcionalidad de actualizar documento no implementada');
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx';
+    fileInput.style.display = 'none';
+    
+    fileInput.addEventListener('change', function(e) {
+        if (!this.files.length) return;
+        
+        const file = this.files[0];
+        const maxSize = 20 * 1024 * 1024;
+        
+        if (file.size > maxSize) {
+            showNotification('El archivo excede el tamaño máximo de 20MB', 'error');
+            return;
+        }
+        
+        const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+        
+        if (!allowedExtensions.includes(fileExtension)) {
+            showNotification('Tipo de archivo no permitido', 'error');
+            return;
+        }
+        
+        if (!confirm(`¿Estás seguro de reemplazar "${documentName}" por "${file.name}"?`)) return;
+        
+        const formData = new FormData();
+        formData.append('action', 'updateDocument');
+        formData.append('id', projectId);
+        formData.append('document_path', documentPath);
+        formData.append('document_name', documentName);
+        formData.append('documento', file);
+
+        fetch('', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al actualizar documento');
+            }
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error al actualizar documento', 'error');
+        });
+    });
+    
+    document.body.appendChild(fileInput);
+    fileInput.click();
+    document.body.removeChild(fileInput);
 }
 
 function deleteDocument(documentPath, projectId, documentName) {
     if (!confirm(`¿Estás seguro de que deseas eliminar el documento "${documentName}"?`)) {
         return;
     }
-    alert('Funcionalidad de eliminar documento no implementada');
+
+    const formData = new FormData();
+    formData.append('action', 'deleteDocument');
+    formData.append('id', projectId);
+    formData.append('document_path', documentPath);
+
+    fetch('', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Error al eliminar documento');
+        }
+        location.reload();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Error al eliminar documento', 'error');
+    });
+}
+
+function previewDocument(fileUrl, fileName) {
+    window.open(fileUrl, '_blank');
 }
 
 function initializeApp() {
@@ -1103,6 +1566,14 @@ function initializeApp() {
         currentPage = 1;
         renderProjects();
     });
+    
+    const editForm = document.getElementById('projectEditForm');
+    if (editForm) {
+        editForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveProjectChanges();
+        });
+    }
     
     setupModalCloseEvents();
     
@@ -1166,5 +1637,43 @@ document.head.appendChild(lucideScript);
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-fade-out {
+    animation: fadeOut 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+}
+
+.participant-field {
+    transition: all 0.3s ease;
+}
+
+.participant-field:hover {
+    border-color: var(--color-primary);
 }
 </style>
