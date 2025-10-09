@@ -7,38 +7,21 @@ CREATE TABLE IF NOT EXISTS webengine_role_permissions (
     FOREIGN KEY (permission_id) REFERENCES webengine_permissions(id) ON DELETE CASCADE
 );
 
--- Asignar TODOS los permisos al administrador (role_id = 1)
-INSERT INTO webengine_role_permissions (role_id, permission_id)
-SELECT 1, p.id
-FROM webengine_permissions p
-WHERE NOT EXISTS (
-    SELECT 1 FROM webengine_role_permissions rp
-    WHERE rp.role_id = 1 AND rp.permission_id = p.id
-);
+INSERT IGNORE INTO webengine_role_permissions (role_id, permission_id)
+SELECT 1, id FROM webengine_permissions;
 
--- Activar permisos usercp:projects y usercp:results para el rol DOCENTE (id = 4)
-INSERT INTO webengine_role_permissions (role_id, permission_id)
-SELECT 4, p.id
-FROM webengine_permissions p
-WHERE (p.module = 'usercp' AND p.action = 'projects') 
-   OR (p.module = 'usercp' AND p.action = 'results')
-AND NOT EXISTS (
-    SELECT 1 FROM webengine_role_permissions rp
-    WHERE rp.role_id = 4 AND rp.permission_id = p.id
-);
+INSERT IGNORE INTO webengine_role_permissions (role_id, permission_id)
+SELECT 4, id 
+FROM webengine_permissions 
+WHERE (module = 'usercp' AND action = 'projects') 
+   OR (module = 'usercp' AND action = 'results');
 
--- Activar permisos usercp:projects y usercp:results para el rol ESTUDIANTE (id = 5)
-INSERT INTO webengine_role_permissions (role_id, permission_id)
-SELECT 5, p.id
-FROM webengine_permissions p
-WHERE (p.module = 'usercp' AND p.action = 'projects') 
-   OR (p.module = 'usercp' AND p.action = 'results')
-AND NOT EXISTS (
-    SELECT 1 FROM webengine_role_permissions rp
-    WHERE rp.role_id = 5 AND rp.permission_id = p.id
-);
+INSERT IGNORE INTO webengine_role_permissions (role_id, permission_id)
+SELECT 5, id 
+FROM webengine_permissions 
+WHERE (module = 'usercp' AND action = 'projects') 
+   OR (module = 'usercp' AND action = 'results');
 
--- Verificar que los permisos se asignaron correctamente
 SELECT r.name as rol, p.module, p.action, p.description
 FROM webengine_role_permissions rp
 JOIN webengine_roles r ON rp.role_id = r.id

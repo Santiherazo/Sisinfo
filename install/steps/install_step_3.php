@@ -46,6 +46,32 @@ echo '<div class="space-y-3 mb-8">';
 $db->query("SET FOREIGN_KEY_CHECKS = 0");
 $error = false;
 
+// ELIMINAR TODAS LAS TABLAS EXISTENTES ANTES DE CREARLAS NUEVAS
+if ($_GET['force'] ?? null === '1') {
+    echo '<div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 mb-4 rounded text-sm">
+            <strong>Modo forzado:</strong> Eliminando todas las tablas existentes...
+          </div>';
+    
+    // Obtener todas las tablas del sistema
+    $tables = $db->query_fetch("SHOW TABLES");
+    $droppedTables = 0;
+    
+    foreach ($tables as $table) {
+        $tableName = current($table); // Obtener el nombre de la tabla
+        if ($db->query("DROP TABLE IF EXISTS `$tableName`")) {
+            $droppedTables++;
+            echo panel('info', $tableName, 'Tabla eliminada');
+        } else {
+            echo panel('error', $tableName, 'Error al eliminar tabla');
+            $error = true;
+        }
+    }
+    
+    echo '<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 mb-4 rounded text-sm">
+            <strong>Limpieza completada:</strong> ' . $droppedTables . ' tablas eliminadas.
+          </div>';
+}
+
 foreach ($install['sql_list'] as $sqlFileName => $sqlTableName) {
     $filename = basename($sqlFileName) . '.txt';
     $sqlFilePath = realpath(__DIR__ . '/../sql/' . $filename);
@@ -74,10 +100,7 @@ foreach ($install['sql_list'] as $sqlFileName => $sqlTableName) {
 
     $query = str_replace('{TABLE_NAME}', $sqlTableName, $sqlContent);
 
-    if ($_GET['force'] ?? null === '1') {
-        $db->query("DROP TABLE IF EXISTS `$sqlTableName`");
-    }
-
+    // Verificar si la tabla existe (en caso de no usar modo forzado)
     $tableExists = $db->query_fetch_single(
         "SELECT COUNT(*) AS count FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name = ?",
         [$sqlTableName]
@@ -87,7 +110,7 @@ foreach ($install['sql_list'] as $sqlFileName => $sqlTableName) {
         $queries = array_filter(array_map('trim', explode(';', $query)));
         $success = true;
         foreach ($queries as $q) {
-            if (!$db->query($q)) {
+            if (!empty($q) && !$db->query($q)) {
                 echo panel('error', $displayName, 'Error al crear la tabla.');
                 $logger->logDatabaseError("Error ejecutando consulta para '$sqlTableName'.");
                 $success = false;
