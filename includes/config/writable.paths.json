@@ -1,7 +1,0 @@
-[
-    "config\/navbar.json",
-    "config\/usercp.json",
-    "config\/webengine.json",
-    "logs\/database_errors.log",
-    "logs\/php_errors.log"
-]

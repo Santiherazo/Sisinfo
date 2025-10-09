@@ -1,7 +1,0 @@
-CREATE TABLE webengine_blog_post_categories (
-    post_id INT NOT NULL,
-    category_id INT NOT NULL,
-    PRIMARY KEY(post_id, category_id),
-    FOREIGN KEY (post_id) REFERENCES webengine_blog_posts(id) ON DELETE CASCADE,
-    FOREIGN KEY (category_id) REFERENCES webengine_blog_categories(id) ON DELETE CASCADE
-);

@@ -1,8 +1,0 @@
-CREATE TABLE IF NOT EXISTS `webengine_block_log` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `uid` INT NOT NULL,
-  `block_type` ENUM('temp', 'perm') NOT NULL,
-  `reason` TEXT,
-  `timestamp` DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (`uid`) REFERENCES `webengine_u_core`(`uid`) ON DELETE CASCADE
-);
