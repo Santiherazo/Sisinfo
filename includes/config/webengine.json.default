@@ -15,7 +15,7 @@
   "website_meta_robots": "index, follow",
   "website_meta_og_image": "logo.png",
 
-  "webengine_cms_installed": true,
+  "webengine_cms_installed": false,
   "website_template": "default",
   "server_files": "default",
   "website_forum_link": "",
