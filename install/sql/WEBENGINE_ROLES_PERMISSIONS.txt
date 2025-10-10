@@ -16,7 +16,9 @@ WHERE (module = 'Cpuser' AND action IN ('create', 'manage', 'manager'))
    OR (module = 'Cpproject' AND action IN ('create', 'manage', 'manager'))
    OR (module = 'lineManager' AND action = 'manage')
    OR (module = 'Estadisticas' AND action = 'ver')
-   OR (module = 'usercp' AND action = 'results');
+   OR (module = 'usercp' AND action = 'results')
+   OR (module = 'Cpanel' AND action = 'access')
+   OR (module = 'Cpeval' AND action = 'manager');
 
 INSERT IGNORE INTO webengine_role_permissions (role_id, permission_id)
 SELECT 3, id FROM webengine_permissions 
