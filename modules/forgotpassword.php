@@ -3,7 +3,8 @@ if (isLoggedIn()) redirect();
 
 try {
     if (!mconfig('active')) {
-        throw new Exception('Este módulo no está habilitado actualmente. Intenta más tarde.');
+        echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="alert-circle" class="w-5 h-5"></i><span>Este módulo no está habilitado actualmente. Intenta más tarde.</span></div></div>';
+        throw new Exception();
     }
 
     $db = Connection::Database('sisinfo')->getConnection();
@@ -15,32 +16,41 @@ try {
         $token = $_GET['token'];
         $resetData = $resetService->validateToken($token);
 
-        if (!$resetData) throw new Exception('El enlace de recuperación ha expirado o es inválido.');
+        if (!$resetData) {
+            echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="alert-circle" class="w-5 h-5"></i><span>El enlace de recuperación ha expirado o es inválido.</span></div></div>';
+            throw new Exception();
+        }
 
         if (isset($_POST['resetPassword_submit'])) {
             $resetData = $resetService->validateToken($token);
 
-            if (!$resetData) throw new Exception('El enlace ha expirado o ya fue usado.');
+            if (!$resetData) {
+                echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="alert-circle" class="w-5 h-5"></i><span>El enlace ha expirado o ya fue usado.</span></div></div>';
+                throw new Exception();
+            }
 
             $newPassword = $_POST['new_password'] ?? '';
             $repeatPassword = $_POST['repeat_password'] ?? '';
 
-            if (!check_value($newPassword) || strlen($newPassword) < 6) {
-                throw new Exception('La nueva contraseña debe tener al menos 6 caracteres.');
+            if (!check_value($newPassword) || strlen($newPassword) < 8) {
+                echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="alert-circle" class="w-5 h-5"></i><span>La nueva contraseña debe tener al menos 8 caracteres.</span></div></div>';
+                throw new Exception();
             }
 
             if ($newPassword !== $repeatPassword) {
-                throw new Exception('Las contraseñas no coinciden.');
+                echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="alert-circle" class="w-5 h-5"></i><span>Las contraseñas no coinciden.</span></div></div>';
+                throw new Exception();
             }
 
             if (!$userManager->updatePasswordByEmail($resetData['email'], $newPassword)) {
-                throw new Exception('Error al actualizar la contraseña.');
+                echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="alert-circle" class="w-5 h-5"></i><span>Error al actualizar la contraseña.</span></div></div>';
+                throw new Exception();
             }
 
             $resetService->deleteToken($token);
             
-            message('success', 'Tu contraseña ha sido restablecida correctamente. Ahora puedes iniciar sesión.');
-            echo '<div class="text-center mt-6"><a href="' . htmlspecialchars(__BASE_URL__ . 'login', ENT_QUOTES, 'UTF-8') . '" class="inline-block px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-navbar-hover)]">Ir al inicio de sesión</a></div>';
+            echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="check-circle" class="w-5 h-5"></i><span>Tu contraseña ha sido restablecida correctamente. Ahora puedes iniciar sesión.</span></div></div>';
+            echo '<div class="text-center my-24"><a href="' . htmlspecialchars(__BASE_URL__ . 'login', ENT_QUOTES, 'UTF-8') . '" class="inline-block px-6 py-3 bg-[var(--color-primary)] text-white rounded-lg font-semibold hover:bg-[var(--color-navbar-hover)] transition-colors">Ir al inicio de sesión</a></div>';
             return;
         }
 
@@ -89,27 +99,31 @@ try {
         $email = trim($_POST['webengineEmail_current'] ?? '');
 
         if (!Validator::Email($email)) {
-            throw new Exception('Por favor ingresa un correo electrónico válido.');
+            echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="alert-circle" class="w-5 h-5"></i><span>Por favor ingresa un correo electrónico válido.</span></div></div>';
+            throw new Exception();
         }
 
         if (!$userManager->emailExists($email)) {
-            throw new Exception('No se encontró una cuenta asociada a ese correo.');
+            echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="alert-circle" class="w-5 h-5"></i><span>No se encontró una cuenta asociada a ese correo.</span></div></div>';
+            throw new Exception();
         }
 
         $token = $resetService->createRequest($email);
-        if (!$token) throw new Exception('Error al generar el enlace de recuperación.');
+        if (!$token) {
+            echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="alert-circle" class="w-5 h-5"></i><span>Error al generar el enlace de recuperación.</span></div></div>';
+            throw new Exception();
+        }
 
         $link = __BASE_URL__ . 'forgotpassword/?token=' . urlencode($token);
 
-        message('success', 'Se ha enviado un enlace de recuperación a tu correo electrónico.');
-        echo '<div class="text-center m-24">';
+        echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="check-circle" class="w-5 h-5"></i><span>Se ha enviado un enlace de recuperación a tu correo electrónico.</span></div></div>';
+        echo '<div class="text-center my-24">';
         echo '  <a href="' . $link . '" class="inline-block px-6 py-3 bg-[var(--color-primary)] text-white rounded-lg font-semibold hover:bg-[var(--color-navbar-hover)] transition-colors">Recuperar contraseña</a>';
         echo '</div>';
         return;
     }
 
 } catch (Exception $ex) {
-    message('error', $ex->getMessage());
 }
 ?>
 <section class="min-h-screen bg-[var(--color-bg)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -171,3 +185,11 @@ try {
         </div>
     </div>
 </section>
+<script>
+setTimeout(function() {
+    const popup = document.getElementById('popup-message');
+    if (popup) {
+        popup.remove();
+    }
+}, 5000);
+</script>
