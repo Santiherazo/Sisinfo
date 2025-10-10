@@ -105,7 +105,6 @@ function val(array $arr, string $key) {
     <form method="POST">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Columna Izquierda: Datos Personales + Contacto -->
             <div class="lg:col-span-2 space-y-6">
                 
                 <div class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] p-6 animate-slideUp">
@@ -121,8 +120,8 @@ function val(array $arr, string $key) {
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Primer Nombre *</label>
-                            <input type="text" name="first_name" required
+                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Primer Nombre</label>
+                            <input type="text" name="first_name"
                                    class="w-full px-3 py-2 border border-[var(--color-input-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 bg-[var(--color-input-bg)] text-[var(--color-input-text)]"
                                    placeholder="María"
                                    value="<?php echo val($info, 'first_name'); ?>">
@@ -137,8 +136,8 @@ function val(array $arr, string $key) {
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Primer Apellido *</label>
-                            <input type="text" name="last_name" required
+                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Primer Apellido</label>
+                            <input type="text" name="last_name"
                                    class="w-full px-3 py-2 border border-[var(--color-input-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 bg-[var(--color-input-bg)] text-[var(--color-input-text)]"
                                    placeholder="González"
                                    value="<?php echo val($info, 'last_name'); ?>">
@@ -171,7 +170,6 @@ function val(array $arr, string $key) {
                     </div>
                 </div>
 
-                <!-- CONTACTO EN COLUMNA IZQUIERDA -->
                 <div class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] p-6 animate-slideUp" style="animation-delay: 0.2s">
                     <div class="flex items-center space-x-3 mb-6">
                         <div class="w-8 h-8 bg-[var(--color-success)]/10 rounded-lg flex items-center justify-center">
@@ -217,8 +215,8 @@ function val(array $arr, string $key) {
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Email Institucional *</label>
-                            <input type="email" name="institutional_email" required
+                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Email Institucional</label>
+                            <input type="email" name="institutional_email"
                                    class="w-full px-3 py-2 border border-[var(--color-input-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-success)] focus:border-[var(--color-success)] transition-all duration-200 bg-[var(--color-input-bg)] text-[var(--color-input-text)]"
                                    placeholder="usuario@universidad.edu"
                                    value="<?php echo val($info, 'institutional_email'); ?>">
@@ -227,10 +225,8 @@ function val(array $arr, string $key) {
                 </div>
             </div>
 
-            <!-- Columna Derecha: Documentación + Académica -->
             <div class="space-y-6">
                 
-                <!-- DOCUMENTACIÓN EN COLUMNA DERECHA -->
                 <div class="bg-[var(--color-surface)] rounded-lg border border-[var(--color-border)] p-6 animate-slideUp" style="animation-delay: 0.1s">
                     <div class="flex items-center space-x-3 mb-6">
                         <div class="w-8 h-8 bg-[var(--color-primary)]/10 rounded-lg flex items-center justify-center">
@@ -255,8 +251,8 @@ function val(array $arr, string $key) {
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Número de Documento *</label>
-                            <input type="text" name="id_number" required
+                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Número de Documento</label>
+                            <input type="text" name="id_number"
                                    class="w-full px-3 py-2 border border-[var(--color-input-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)] transition-all duration-200 bg-[var(--color-input-bg)] text-[var(--color-input-text)]"
                                    placeholder="123456789"
                                    value="<?php echo val($info, 'id_number'); ?>">
@@ -277,16 +273,16 @@ function val(array $arr, string $key) {
 
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Universidad *</label>
-                            <input type="text" name="university" required
+                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Universidad</label>
+                            <input type="text" name="university"
                                    class="w-full px-3 py-2 border border-[var(--color-input-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-all duration-200 bg-[var(--color-input-bg)] text-[var(--color-input-text)]"
                                    placeholder="Universidad Nacional"
                                    value="<?php echo val($info, 'university'); ?>">
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Programa Académico *</label>
-                            <input type="text" name="program" required
+                            <label class="block text-sm font-medium text-[var(--color-text)] mb-2">Programa Académico</label>
+                            <input type="text" name="program"
                                    class="w-full px-3 py-2 border border-[var(--color-input-border)] rounded-lg focus:ring-2 focus:ring-[var(--color-secondary)] focus:border-[var(--color-secondary)] transition-all duration-200 bg-[var(--color-input-bg)] text-[var(--color-input-text)]"
                                    placeholder="Ingeniería de Sistemas"
                                    value="<?php echo val($info, 'program'); ?>">
