@@ -13,64 +13,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formAction = $_POST['action'] ?? '';
     $id = $_POST['id'] ?? null;
 
-if ($formAction === 'create_permission') {
-    $module = trim($_POST['module'] ?? '');
-    $actionName = trim($_POST['action_name'] ?? '');
-    $description = trim($_POST['description'] ?? '');
-    
-    if (empty($module) || empty($actionName)) {
-        http_response_code(400);
-        exit;
-    }
-    
-    if ($permissionManager->permissionExists($module, $actionName)) {
-        http_response_code(409);
-        exit;
-    }
-
-    $result = $permissionManager->createPermission($module, $actionName, $description);
-    
-    if ($result) {
-        http_response_code(200);
-    } else {
-        http_response_code(500);
-    }
-    exit;
-}
-    
-    elseif ($formAction === 'update_permission' && $id) {
+    if ($formAction === 'create_permission') {
         $module = trim($_POST['module'] ?? '');
         $actionName = trim($_POST['action_name'] ?? '');
         $description = trim($_POST['description'] ?? '');
         
         if (empty($module) || empty($actionName)) {
-            $_SESSION['notification'] = ['type' => 'error', 'message' => 'Faltan campos obligatorios'];
-        } elseif ($permissionManager->permissionExists($module, $actionName, $id)) {
-            $_SESSION['notification'] = ['type' => 'error', 'message' => 'Este permiso ya existe'];
-        } else {
-            $result = $permissionManager->updatePermission($id, $module, $actionName, $description);
-            if ($result) {
-                $_SESSION['notification'] = ['type' => 'success', 'message' => 'Permiso actualizado correctamente'];
-            } else {
-                $_SESSION['notification'] = ['type' => 'error', 'message' => 'Error al actualizar el permiso'];
-            }
+            echo json_encode(['success' => false]);
+            exit;
         }
         
-        header("Location: " . $_SERVER['REQUEST_URI']);
-        exit;
-    } 
-    
-    elseif ($formAction === 'delete_permission' && $id) {
-        $result = $permissionManager->deletePermission($id);
-        if ($result) {
-            $_SESSION['notification'] = ['type' => 'success', 'message' => 'Permiso eliminado correctamente'];
-        } else {
-            $_SESSION['notification'] = ['type' => 'error', 'message' => 'Error al eliminar el permiso'];
+        if ($permissionManager->permissionExists($module, $actionName)) {
+            echo json_encode(['success' => false]);
+            exit;
         }
-        
-        header("Location: " . $_SERVER['REQUEST_URI']);
+
+        $result = $permissionManager->createPermission($module, $actionName, $description);
+        echo json_encode(['success' => $result]);
         exit;
-    } 
+    }
     
     elseif ($formAction === 'toggle_permission_status' && $id) {
         $estado = intval($_POST['estado'] ?? 0);
@@ -80,102 +41,53 @@ if ($formAction === 'create_permission') {
         } else {
             $result = $permissionManager->deactivatePermission($id);
         }
-        
-        if ($result) {
-            $statusText = $estado ? 'activado' : 'desactivado';
-            $_SESSION['notification'] = ['type' => 'success', 'message' => "Permiso $statusText correctamente"];
-        } else {
-            $_SESSION['notification'] = ['type' => 'error', 'message' => 'Error al cambiar el estado del permiso'];
-        }
-        
-        header("Location: " . $_SERVER['REQUEST_URI']);
+        echo json_encode(['success' => $result]);
         exit;
-    } 
+    }
+    
+    elseif ($formAction === 'delete_permission' && $id) {
+        $result = $permissionManager->deletePermission($id);
+        echo json_encode(['success' => $result]);
+        exit;
+    }
     
     elseif ($formAction === 'assign_permission_to_role' && $id) {
         $permissionId = intval($_POST['permission_id'] ?? 0);
-        if ($permissionId) {
-            $result = $permissionManager->assignPermissionToRole($id, $permissionId);
-            if ($result) {
-                $_SESSION['notification'] = ['type' => 'success', 'message' => 'Permiso asignado al rol correctamente'];
-            } else {
-                $_SESSION['notification'] = ['type' => 'error', 'message' => 'Error al asignar el permiso'];
-            }
-        } else {
-            $_SESSION['notification'] = ['type' => 'error', 'message' => 'ID de permiso no válido'];
-        }
-        
-        header("Location: " . $_SERVER['REQUEST_URI']);
+        $result = $permissionManager->assignPermissionToRole($id, $permissionId);
+        echo json_encode(['success' => $result]);
         exit;
-    } 
+    }
     
     elseif ($formAction === 'remove_permission_from_role' && $id) {
         $permissionId = intval($_POST['permission_id'] ?? 0);
-        if ($permissionId) {
-            $result = $permissionManager->removePermissionFromRole($id, $permissionId);
-            if ($result) {
-                $_SESSION['notification'] = ['type' => 'success', 'message' => 'Permiso removido del rol correctamente'];
-            } else {
-                $_SESSION['notification'] = ['type' => 'error', 'message' => 'Error al remover el permiso'];
-            }
-        } else {
-            $_SESSION['notification'] = ['type' => 'error', 'message' => 'ID de permiso no válido'];
-        }
-        
-        header("Location: " . $_SERVER['REQUEST_URI']);
+        $result = $permissionManager->removePermissionFromRole($id, $permissionId);
+        echo json_encode(['success' => $result]);
         exit;
-    } 
+    }
     
     elseif ($formAction === 'remove_all_permissions_from_role' && $id) {
         $result = $permissionManager->removeAllPermissionsFromRole($id);
-        if ($result) {
-            $_SESSION['notification'] = ['type' => 'success', 'message' => 'Todos los permisos han sido removidos del rol'];
-        } else {
-            $_SESSION['notification'] = ['type' => 'error', 'message' => 'Error al remover los permisos'];
-        }
-        
-        header("Location: " . $_SERVER['REQUEST_URI']);
+        echo json_encode(['success' => $result]);
         exit;
-    } 
+    }
     
     elseif ($formAction === 'assign_permission_to_user' && $id) {
         $permissionId = intval($_POST['permission_id'] ?? 0);
-        if ($permissionId) {
-            $result = $permissionManager->assignPermissionToUser($id, $permissionId);
-            if ($result) {
-                $_SESSION['notification'] = ['type' => 'success', 'message' => 'Permiso asignado al usuario correctamente'];
-            } else {
-                $_SESSION['notification'] = ['type' => 'error', 'message' => 'Error al asignar el permiso'];
-            }
-        } else {
-            $_SESSION['notification'] = ['type' => 'error', 'message' => 'ID de permiso no válido'];
-        }
-        
-        header("Location: " . $_SERVER['REQUEST_URI']);
+        $result = $permissionManager->assignPermissionToUser($id, $permissionId);
+        echo json_encode(['success' => $result]);
         exit;
-    } 
+    }
     
     elseif ($formAction === 'remove_permission_from_user' && $id) {
         $permissionId = intval($_POST['permission_id'] ?? 0);
-        if ($permissionId) {
-            $result = $permissionManager->removePermissionFromUser($id, $permissionId);
-            if ($result) {
-                $_SESSION['notification'] = ['type' => 'success', 'message' => 'Permiso removido del usuario correctamente'];
-            } else {
-                $_SESSION['notification'] = ['type' => 'error', 'message' => 'Error al remover el permiso'];
-            }
-        } else {
-            $_SESSION['notification'] = ['type' => 'error', 'message' => 'ID de permiso no válido'];
-        }
-        
-        header("Location: " . $_SERVER['REQUEST_URI']);
+        $result = $permissionManager->removePermissionFromUser($id, $permissionId);
+        echo json_encode(['success' => $result]);
         exit;
-    } 
+    }
     
-    else {
-        $_SESSION['notification'] = ['type' => 'error', 'message' => 'Acción no válida'];
-        
-        header("Location: " . $_SERVER['REQUEST_URI']);
+    elseif ($formAction === 'remove_all_permissions_from_user' && $id) {
+        $result = $permissionManager->removeAllPermissionsFromUser($id);
+        echo json_encode(['success' => $result]);
         exit;
     }
 }
@@ -186,6 +98,14 @@ $resultadoFinal = [
     'users' => $permissionManager->getAllUsersWithPermissions()
 ];
 
+$permissions = $resultadoFinal['permissions'];
+$roles = $resultadoFinal['roles'];
+$users = $resultadoFinal['users'];
+
+$uniqueModules = array_unique(array_column($permissions, 'module'));
+$uniqueActions = array_unique(array_column($permissions, 'action'));
+sort($uniqueModules);
+sort($uniqueActions);
 ?>
 
 <div id="permissions-module" class="bg-white rounded-lg shadow-sm p-6">
@@ -218,15 +138,15 @@ $resultadoFinal = [
   <div id="permissions-tab" class="tab-content">
     <div class="bg-gray-50 rounded-lg p-5 mb-8 border border-gray-100">
       <h3 class="text-lg font-semibold text-gray-700 mb-4">Nuevo Permiso</h3>
-      <form method="POST" id="permissionForm" onsubmit="return validatePermissionForm()">
+      <form method="POST" id="permissionForm">
         <input type="hidden" name="action" value="create_permission">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">Módulo <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Módulo *</label>
             <input type="text" name="module" required class="w-full px-3 py-2 border bg-white border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-600 mb-1">Acción <span class="text-red-500">*</span></label>
+            <label class="block text-sm font-medium text-gray-600 mb-1">Acción *</label>
             <input type="text" name="action_name" required class="w-full px-3 py-2 border bg-white border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent">
           </div>
           <div class="md:col-span-2">
@@ -308,7 +228,7 @@ $resultadoFinal = [
                 <form method="POST" class="inline-block">
                   <input type="hidden" name="action" value="delete_permission">
                   <input type="hidden" name="id" value="<?= $permission['id'] ?>">
-                  <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este permiso?')" class="text-gray-500 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-all">
+                  <button type="submit" onclick="return confirm('¿Estás seguro de eliminar este permiso?')" class="text-gray-500 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-all">
                     <i data-lucide="trash-2" class="w-5 h-5"></i>
                   </button>
                 </form>
@@ -384,13 +304,9 @@ $resultadoFinal = [
           <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
             <span id="assigned-count">0</span> permisos asignados
           </span>
-          <form method="POST" id="remove-all-form" class="inline-block">
-            <input type="hidden" name="action" value="remove_all_permissions_from_role">
-            <input type="hidden" name="id" id="remove-all-role-id">
-            <button type="submit" onclick="return confirm('¿Estás seguro de que deseas remover todos los permisos de este rol?')" class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium hover:bg-red-200">
-              Remover todos
-            </button>
-          </form>
+          <button onclick="removeAllRolePermissions()" class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium hover:bg-red-200">
+            Remover todos
+          </button>
         </div>
       </div>
 
@@ -519,45 +435,6 @@ $resultadoFinal = [
   </div>
 </div>
 
-<div id="edit-permission-modal" class="fixed z-50 inset-0 overflow-y-auto hidden">
-  <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-    <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-      <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-    </div>
-    <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-      <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Editar Permiso</h3>
-        <form id="edit-permission-form" method="POST" onsubmit="return validateEditPermissionForm()">
-          <input type="hidden" name="action" value="update_permission">
-          <input type="hidden" name="id" id="edit-permission-id">
-          <div class="grid grid-cols-1 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-600 mb-1">Módulo <span class="text-red-500">*</span></label>
-              <input type="text" name="module" id="edit-permission-module" required class="w-full px-3 py-2 border bg-white border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-600 mb-1">Acción <span class="text-red-500">*</span></label>
-              <input type="text" name="action_name" id="edit-permission-action" required class="w-full px-3 py-2 border bg-white border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent">
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-600 mb-1">Descripción</label>
-              <input type="text" name="description" id="edit-permission-description" class="w-full px-3 py-2 border bg-white border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent">
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-        <button type="button" onclick="document.getElementById('edit-permission-form').submit()" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
-          Guardar
-        </button>
-        <button type="button" onclick="closeModal('edit-permission-modal')" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:w-auto sm:text-sm">
-          Cancelar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div id="user-permissions-modal" class="fixed z-50 inset-0 overflow-y-auto hidden">
   <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
     <div class="fixed inset-0 transition-opacity" aria-hidden="true">
@@ -569,27 +446,19 @@ $resultadoFinal = [
         <div class="mt-4">
           <div class="mb-6">
             <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
-              <div id="user-avatar" class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold">
-              </div>
+              <div id="user-avatar" class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg text-white font-bold"></div>
               <div>
                 <p class="font-bold text-gray-900" id="user-full-name"></p>
                 <p class="text-sm text-gray-600" id="user-role-name"></p>
               </div>
-            </div>
-          </div>
-          
-          <div class="mb-6">
-            <h4 class="text-md font-medium text-gray-899 mb-2">Permisos del Rol</h4>
-            <div class="flex flex-wrap gap-2" id="user-role-permissions-list">
+              <button onclick="removeAllUserPermissions()" class="ml-auto px-3 py-1 bg-red-100 text-red-800 rounded-full text-sm font-medium hover:bg-red-200">
+                Remover todos
+              </button>
             </div>
           </div>
           
           <div>
-            <h4 class="text-md font-medium text-gray-899 mb-2">Permisos Adicionales</h4>
-            <div class="relative mb-4">
-              <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-              <input type="text" id="search-user-permissions" placeholder="Buscar permisos..." class="w-full pl-10 pr-4 py-2 border bg-white border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:border-transparent">
-            </div>
+            <h4 class="text-md font-medium text-gray-900 mb-2">Permisos Disponibles</h4>
             <div class="overflow-y-auto max-h-64">
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
@@ -598,15 +467,14 @@ $resultadoFinal = [
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Asignado</th>
                   </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200" id="user-additional-permissions-list">
-                </tbody>
+                <tbody class="bg-white divide-y divide-gray-200" id="user-additional-permissions-list"></tbody>
               </table>
             </div>
           </div>
         </div>
       </div>
       <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-        <button type="button" onclick="closeModal('user-permissions-modal')" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm">
+        <button type="button" onclick="closeModal('user-permissions-modal')" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 sm:ml-3 sm:w-auto sm:text-sm">
           Cerrar
         </button>
       </div>
@@ -615,11 +483,14 @@ $resultadoFinal = [
 </div>
 
 <script>
+let appData = <?= json_encode($resultadoFinal) ?>;
 let currentRoleId = null;
 let currentUserId = null;
-let allPermissions = <?= json_encode($permissions ?? []) ?>;
-let allRoles = <?= json_encode($roles ?? []) ?>;
-let allUsers = <?= json_encode($users ?? []) ?>;
+
+let allPermissions = appData.permissions;
+let allRoles = appData.roles;
+let allUsers = appData.users;
+
 let filteredPermissions = [...allPermissions];
 let filteredUsers = [...allUsers];
 
@@ -657,6 +528,27 @@ function setupEventListeners() {
   document.getElementById('next-page')?.addEventListener('click', () => changePage(currentPage + 1));
   document.getElementById('prev-page-mobile')?.addEventListener('click', () => changePage(currentPage - 1));
   document.getElementById('next-page-mobile')?.addEventListener('click', () => changePage(currentPage + 1));
+  
+  document.getElementById('permissionForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    validatePermissionForm();
+  });
+  
+  document.querySelectorAll('.toggle-permission-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      togglePermissionStatus(this);
+    });
+  });
+  
+  document.querySelectorAll('.toggle-role-permission-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      formData.set('id', currentRoleId);
+      toggleRolePermission(formData);
+    });
+  });
 }
 
 function setupPagination() {
@@ -710,7 +602,7 @@ function renderPermissionsPage() {
   
   const startIndex = (currentPage - 1) * perPage;
   const endIndex = Math.min(startIndex + perPage, totalPermissions);
-  const currentPermissions = allPermissions.slice(startIndex, endIndex);
+  const currentPermissions = filteredPermissions.slice(startIndex, endIndex);
   
   permissionsList.innerHTML = '';
   
@@ -753,7 +645,7 @@ function renderPermissionsPage() {
           <form method="POST" class="inline-block">
             <input type="hidden" name="action" value="delete_permission">
             <input type="hidden" name="id" value="${permission.id}">
-            <button type="submit" onclick="return confirm('¿Estás seguro de que deseas eliminar este permiso?')" class="text-gray-500 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-all">
+            <button type="submit" onclick="return confirm('¿Estás seguro de eliminar este permiso?')" class="text-gray-500 hover:text-red-600 p-1.5 rounded-lg hover:bg-red-50 transition-all">
               <i data-lucide="trash-2" class="w-5 h-5"></i>
             </button>
           </form>
@@ -769,7 +661,7 @@ function renderPermissionsPage() {
   }
 }
 
-function validatePermissionForm() {
+async function validatePermissionForm() {
   const module = document.querySelector('input[name="module"]').value.trim();
   const action = document.querySelector('input[name="action_name"]').value.trim();
   
@@ -783,82 +675,69 @@ function validatePermissionForm() {
     return false;
   }
   
-  // Realiza la petición AJAX para crear el permiso
   const formData = new FormData(document.getElementById('permissionForm'));
   
-  fetch(window.location.href, {
-    method: 'POST',
-    body: formData
-  })
-  .then(response => {
-    // Si la respuesta es 200 (éxito)
-    if (response.ok) {
-      alert('Permiso creado exitosamente');
-      window.location.reload(); 
+  try {
+    const response = await fetch('', {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showNotification('OK', 'success');
+      setTimeout(() => location.reload(), 1000);
     } else {
-      // Manejar errores basados en el código de respuesta HTTP
-      response.text().then(text => {
-        let errorMessage = 'Error al crear el permiso';
-        if (response.status === 400) {
-          errorMessage = 'Error: Faltan campos obligatorios.';
-        } else if (response.status === 409) {
-          errorMessage = 'Error: Este permiso ya existe.';
-        } else if (response.status === 500) {
-          errorMessage = 'Error interno del servidor al intentar guardar el permiso.';
-        }
-        alert(errorMessage);
-      }).catch(() => {
-        alert('Error desconocido al procesar la respuesta del servidor.');
-      });
+      showNotification('Error', 'error');
     }
-  })
-  .catch(error => {
-    alert('Error de conexión con el servidor: ' + error.message);
-  });
+  } catch (error) {
+    showNotification('Error de conexión', 'error');
+  }
   
-  // Detener el envío tradicional del formulario
   return false;
 }
 
-function validateEditPermissionForm() {
-  const module = document.getElementById('edit-permission-module').value.trim();
-  const action = document.getElementById('edit-permission-action').value.trim();
-  
-  if (!module) {
-    alert('El campo Módulo es obligatorio');
-    return false;
+async function togglePermissionStatus(form) {
+  const formData = new FormData(form);
+
+  try {
+    const response = await fetch('', {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showNotification('OK', 'success');
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      showNotification('Error', 'error');
+    }
+  } catch (error) {
+    showNotification('Error de conexión', 'error');
   }
-  
-  if (!action) {
-    alert('El campo Acción es obligatorio');
-    return false;
-  }
-  
-  return true;
 }
 
-function debounce(func, wait) {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-}
-
-function editPermission(id) {
-  const permission = allPermissions.find(p => p.id == id);
-  if (!permission) return;
-  
-  document.getElementById('edit-permission-id').value = id;
-  document.getElementById('edit-permission-module').value = permission.module;
-  document.getElementById('edit-permission-action').value = permission.action;
-  document.getElementById('edit-permission-description').value = permission.description || '';
-  
-  document.getElementById('edit-permission-modal').classList.remove('hidden');
+async function toggleRolePermission(formData) {
+  try {
+    const response = await fetch('', {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showNotification('OK', 'success');
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      showNotification('Error', 'error');
+    }
+  } catch (error) {
+    showNotification('Error de conexión', 'error');
+  }
 }
 
 function filterPermissions() {
@@ -875,8 +754,7 @@ function filterPermissions() {
     return matchesModule && matchesAction;
   });
   
-  allPermissions = filteredPermissions;
-  totalPermissions = allPermissions.length;
+  totalPermissions = filteredPermissions.length;
   totalPages = Math.ceil(totalPermissions / perPage);
   currentPage = 1;
   
@@ -892,7 +770,6 @@ function loadRolePermissions() {
   }
   
   currentRoleId = roleId;
-  document.getElementById('remove-all-role-id').value = roleId;
   
   const role = allRoles.find(r => r.id == roleId);
   if (role) {
@@ -922,6 +799,34 @@ function loadRolePermissions() {
   
   document.getElementById('assigned-count').textContent = role.permissions ? role.permissions.length : 0;
   document.getElementById('permissions-panel').classList.remove('hidden');
+}
+
+async function removeAllRolePermissions() {
+  if (!currentRoleId || !confirm('¿Estás seguro de remover todos los permisos de este rol?')) {
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('action', 'remove_all_permissions_from_role');
+    formData.append('id', currentRoleId);
+
+    const response = await fetch('', {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showNotification('OK', 'success');
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      showNotification('Error', 'error');
+    }
+  } catch (error) {
+    showNotification('Error de conexión', 'error');
+  }
 }
 
 function searchPermissions() {
@@ -972,13 +877,14 @@ function manageUserPermissions(userId) {
   document.getElementById('user-role-name').textContent = user.role_name;
   document.getElementById('user-avatar').textContent = userName.substring(0, 2);
   
-  renderUserPermissions(user.permissions, user.role_id);
+  renderUserPermissions(user);
   document.getElementById('user-permissions-modal').classList.remove('hidden');
 }
 
-function renderUserPermissions(userPermissions, roleId) {
-  const role = allRoles.find(r => r.id == roleId);
+function renderUserPermissions(user) {
+  const role = allRoles.find(r => r.id == user.role_id);
   const rolePermissions = role && role.permissions ? role.permissions : [];
+  const userPermissions = user.permissions || [];
   
   renderUserRolePermissions(rolePermissions);
   renderUserAdditionalPermissions(userPermissions, rolePermissions);
@@ -1019,7 +925,7 @@ function renderUserAdditionalPermissions(userPermissions, rolePermissions) {
   }
   
   additionalPermissions.forEach(permission => {
-    const isAssigned = userPermissions && userPermissions.some(up => up.id == permission.id);
+    const isAssigned = userPermissions.some(up => up.id == permission.id);
     
     const row = document.createElement('tr');
     row.className = 'hover:bg-gray-50';
@@ -1029,18 +935,70 @@ function renderUserAdditionalPermissions(userPermissions, rolePermissions) {
         <div class="text-sm text-gray-500">${permission.description || ''}</div>
       </td>
       <td class="px-6 py-4">
-        <form method="POST" class="toggle-user-permission-form">
-          <input type="hidden" name="action" value="${isAssigned ? 'remove_permission_from_user' : 'assign_permission_to_user'}">
-          <input type="hidden" name="id" value="${currentUserId}">
-          <input type="hidden" name="permission_id" value="${permission.id}">
-          <button type="submit" class="relative inline-flex items-center h-6 rounded-full w-11 transition-colors duration-200 ease-in-out ${isAssigned ? 'bg-purple-600' : 'bg-gray-300'}">
-            <span class="inline-block w-4 h-4 transform bg-white rounded-full shadow-md transition-transform duration-200 ease-in-out ${isAssigned ? 'translate-x-6' : 'translate-x-1'}"></span>
-          </button>
-        </form>
+        <button onclick="toggleUserPermission(${permission.id}, ${isAssigned})" 
+                class="p-2 rounded-lg ${isAssigned ? 'bg-red-100 text-red-600 hover:bg-red-200' : 'bg-green-100 text-green-600 hover:bg-green-200'}">
+          <i data-lucide="${isAssigned ? 'x' : 'check'}" class="w-4 h-4"></i>
+        </button>
       </td>
     `;
     container.appendChild(row);
   });
+}
+
+async function toggleUserPermission(permissionId, isCurrentlyAssigned) {
+  const action = isCurrentlyAssigned ? 'remove_permission_from_user' : 'assign_permission_to_user';
+  
+  try {
+    const formData = new FormData();
+    formData.append('action', action);
+    formData.append('id', currentUserId);
+    formData.append('permission_id', permissionId);
+
+    const response = await fetch('', {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showNotification('OK', 'success');
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      showNotification('Error', 'error');
+    }
+  } catch (error) {
+    showNotification('Error de conexión', 'error');
+  }
+}
+
+async function removeAllUserPermissions() {
+  if (!currentUserId || !confirm('¿Estás seguro de remover todos los permisos de este usuario?')) {
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+    formData.append('action', 'remove_all_permissions_from_user');
+    formData.append('id', currentUserId);
+
+    const response = await fetch('', {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      showNotification('OK', 'success');
+      closeModal('user-permissions-modal');
+      setTimeout(() => location.reload(), 1000);
+    } else {
+      showNotification('Error', 'error');
+    }
+  } catch (error) {
+    showNotification('Error de conexión', 'error');
+  }
 }
 
 function searchUserPermissions() {
@@ -1076,19 +1034,42 @@ function closeModal(modalId) {
   document.getElementById(modalId).classList.add('hidden');
 }
 
+function showNotification(message, type) {
+  let notification = document.getElementById('notification');
+  if (!notification) {
+    notification = document.createElement('div');
+    notification.id = 'notification';
+    document.getElementById('permissions-module').insertBefore(notification, document.getElementById('permissions-module').firstChild);
+  }
+  
+  notification.textContent = message;
+  notification.className = `mb-4 px-4 py-3 rounded-lg ${type === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`;
+  notification.classList.remove('hidden');
+  
+  setTimeout(() => {
+    notification.classList.add('hidden');
+  }, 3000);
+}
+
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
   return div.innerHTML;
 }
 
-if (window.lucide) {
-  lucide.createIcons();
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
 }
 
-window.addEventListener('click', function(event) {
-  if (event.target.id === 'user-permissions-modal' || event.target.id === 'edit-permission-modal') {
-    closeModal(event.target.id);
-  }
-});
+if (typeof lucide !== 'undefined') {
+  lucide.createIcons();
+}
 </script>

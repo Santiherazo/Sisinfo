@@ -13,8 +13,6 @@ if (!defined('AUTOSAVE_DIR')) {
 if (!file_exists(__PATH_CACHE__)) mkdir(__PATH_CACHE__, 0755, true);
 if (!file_exists(AUTOSAVE_DIR)) mkdir(AUTOSAVE_DIR, 0755, true);
 
-// ==================== MANEJO DE SOLICITUDES POST ====================
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'request_reevaluation') {
     $projectId = $_POST['project_id'] ?? null;
     $lastEvaluationId = $_POST['last_evaluation_id'] ?? null;
@@ -85,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'submit_evaluation') {
     
     if ($projectId && $userId) {
         try {
-            // Si es string JSON, decodificar
             if (is_string($criteriosData)) {
                 $criteriosData = json_decode($criteriosData, true);
             }
@@ -94,17 +91,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'submit_evaluation') {
             $reevaluationManager = new ReevaluationManager($pdo);
             
             if ($isReevaluate === '1') {
-                // RE-EVALUACIÓN: Actualizar registros existentes
-                $success = handleReevaluation($evaluationManager, $projectId, $userId, $criteriosData, $comentarioGeneral, $reevaluationId);
+                $success = handleReevaluation($evaluationManager, $reevaluationManager, $projectId, $userId, $criteriosData, $comentarioGeneral, $reevaluationId);
                 
                 if ($success) {
-                    // Limpiar cache de autoguardado
                     $cacheKey = "autosave_{$userId}_{$projectId}";
                     $EvaluationCache->deleteAutoSave($cacheKey, 'autosave');
                     
                     $_SESSION['success_message'] = 'Re-evaluación guardada correctamente.';
                     
-                    // Si fue una re-evaluación aprobada, actualizar el estado
                     if ($reevaluationId) {
                         $reevaluationManager->markAsCompleted($reevaluationId);
                     }
@@ -112,7 +106,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'submit_evaluation') {
                     $_SESSION['error_message'] = 'Error al guardar la re-evaluación.';
                 }
             } else {
-                // EVALUACIÓN NORMAL: Comportamiento original
                 $success = handleNewEvaluation($evaluationManager, $projectId, $userId, $criteriosData, $comentarioGeneral);
                 
                 if ($success) {
@@ -133,8 +126,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'submit_evaluation') {
     header("Location: " . evalcp_base() . "?module=evaluations");
     exit;
 }
-
-// ==================== INICIALIZACIÓN Y VALIDACIONES ====================
 
 if (!$evaluationProjectId) {
     echo '<div class="bg-white rounded-xl shadow-sm p-6 text-center">';
@@ -226,11 +217,6 @@ if ($isReevaluate && $hasUserEvaluated) {
     }
 }
 
-if ($shouldShowRequestForm) {
-    showReevaluationRequestForm($project, $ultimaEvaluacion, $reevaluationStatus, $isWithin72Hours);
-    return;
-}
-
 $savedScores = [];
 $savedComments = [];
 $savedActiveStates = [];
@@ -238,8 +224,13 @@ $savedGeneralComments = '';
 
 $cacheKey = "autosave_{$userId}_{$evaluationProjectId}";
 
-// SI HAY EVALUACIÓN EN BD, CARGAR DESDE AHÍ Y GUARDAR EN CACHE
-if ($hasUserEvaluated && !empty($userRatings)) {
+if ($isReevaluate && $hasUserEvaluated) {
+    if (!$canReevaluateDirectly) {
+        $EvaluationCache->deleteAutoSave($cacheKey, 'autosave');
+        showReevaluationRequestForm($project, $ultimaEvaluacion, $reevaluationStatus, $isWithin72Hours);
+        return;
+    }
+    
     foreach ($userRatings as $rating) {
         if (is_array($rating) && isset($rating['criterio_nombre'])) {
             $criterionId = normalizeCriterionId($rating['criterio_nombre']);
@@ -253,7 +244,6 @@ if ($hasUserEvaluated && !empty($userRatings)) {
         $savedGeneralComments = $userSummary['comentario_general'] ?? '';
     }
 
-    // GUARDAR EN CACHE PARA FUTURAS CARGAS
     $autoSaveData = [
         'criterios' => [],
         'active_states' => $savedActiveStates,
@@ -273,15 +263,45 @@ if ($hasUserEvaluated && !empty($userRatings)) {
     }
     
     $EvaluationCache->storeAutoSave($cacheKey, $autoSaveData, 86400, 'autosave');
-} 
-// SI NO HAY EVALUACIÓN, CARGAR DESDE CACHE
-else {
+} elseif ($hasUserEvaluated && !empty($userRatings)) {
+    foreach ($userRatings as $rating) {
+        if (is_array($rating) && isset($rating['criterio_nombre'])) {
+            $criterionId = normalizeCriterionId($rating['criterio_nombre']);
+            $savedScores[$criterionId] = floatval($rating['calificacion'] ?? 0);
+            $savedComments[$criterionId] = $rating['observacion_personal'] ?? '';
+            $savedActiveStates[$criterionId] = true;
+        }
+    }
+    
+    if (!empty($userSummary)) {
+        $savedGeneralComments = $userSummary['comentario_general'] ?? '';
+    }
+
+    $autoSaveData = [
+        'criterios' => [],
+        'active_states' => $savedActiveStates,
+        'comentario_general' => $savedGeneralComments,
+        'estadisticas' => [
+            'tiempo_transcurrido' => 0,
+            'fecha_autoguardado' => date('Y-m-d H:i:s')
+        ]
+    ];
+    
+    foreach ($savedScores as $criterionId => $score) {
+        $autoSaveData['criterios'][$criterionId] = [
+            'valor' => $score,
+            'comentario' => $savedComments[$criterionId] ?? '',
+            'justificacion' => ''
+        ];
+    }
+    
+    $EvaluationCache->storeAutoSave($cacheKey, $autoSaveData, 86400, 'autosave');
+} else {
     $cacheData = $EvaluationCache->getAutoSave($cacheKey, 'autosave');
 
     if ($cacheData && is_array($cacheData)) {
         $rawData = $cacheData;
         
-        // SI VIENE CON ESTRUCTURA metadata/data, EXTRAER SOLO DATA
         if (isset($rawData['data']) && is_array($rawData['data'])) {
             $rawData = $rawData['data'];
         }
@@ -305,9 +325,12 @@ else {
     }
 }
 
-showEvaluationForm($project, $isReevaluate, $reevaluationStatus, $criteriaConfig, $ultimaEvaluacion, $isWithin72Hours, $savedScores, $savedComments, $savedActiveStates, $savedGeneralComments);
+if ($shouldShowRequestForm) {
+    showReevaluationRequestForm($project, $ultimaEvaluacion, $reevaluationStatus, $isWithin72Hours);
+    return;
+}
 
-// ==================== FUNCIONES AUXILIARES ====================
+showEvaluationForm($project, $isReevaluate, $reevaluationStatus, $criteriaConfig, $ultimaEvaluacion, $isWithin72Hours, $savedScores, $savedComments, $savedActiveStates, $savedGeneralComments);
 
 function normalizeCriterionId($criterionName) {
     $mapping = [
@@ -352,9 +375,8 @@ function handleAutoSave($EvaluationCache, $userId, $project_id, $postData) {
     return $EvaluationCache->storeAutoSave($cacheKey, $autoSaveData, 86400, 'autosave');
 }
 
-function handleReevaluation(EvaluationManager $evaluationManager, int $projectId, int $userId, array $criteriosData, string $comentarioGeneral, ?int $reevaluationId = null): bool {
+function handleReevaluation(EvaluationManager $evaluationManager, ReevaluationManager $reevaluationManager, int $projectId, int $userId, array $criteriosData, string $comentarioGeneral, ?int $reevaluationId = null): bool {
     try {
-        // 1. Obtener las evaluaciones existentes del usuario para este proyecto
         $existingRatings = $evaluationManager->getRatingsByUser($projectId, $userId);
         $existingSummary = $evaluationManager->getSummaryByUser($projectId, $userId);
         
@@ -362,27 +384,40 @@ function handleReevaluation(EvaluationManager $evaluationManager, int $projectId
             throw new Exception("No se encontraron evaluaciones existentes para actualizar");
         }
         
-        // 2. Actualizar cada criterio existente
+        $modificationType = $reevaluationId ? 'aprobada' : 'automatica';
+        $modificationId = $reevaluationManager->registerModificationAttempt($projectId, $userId, $modificationType, $reevaluationId);
+        
+        $updatedCriteria = [];
         foreach ($existingRatings as $existingRating) {
             $criterionId = normalizeCriterionId($existingRating['criterio_nombre']);
             
             if (isset($criteriosData[$criterionId])) {
                 $newData = $criteriosData[$criterionId];
+                $oldScore = floatval($existingRating['calificacion'] ?? 0);
+                $newScore = floatval($newData['valor'] ?? 0);
                 
-                // Actualizar el rating existente
-                $updateData = [
-                    'calificacion' => floatval($newData['valor'] ?? 0),
-                    'observacion_personal' => $newData['comentario'] ?? '',
-                    'estado' => 'reevaluado' // Marcar como re-evaluado
-                ];
-                
-                $evaluationManager->updateRating($existingRating['id'], $updateData);
+                if ($oldScore != $newScore || $existingRating['observacion_personal'] != ($newData['comentario'] ?? '')) {
+                    $updateData = [
+                        'calificacion' => $newScore,
+                        'observacion_personal' => $newData['comentario'] ?? '',
+                        'estado' => 'reevaluado'
+                    ];
+                    
+                    if ($evaluationManager->updateRating($existingRating['id'], $updateData)) {
+                        $updatedCriteria[] = [
+                            'criterio_id' => $existingRating['id'],
+                            'criterio_nombre' => $existingRating['criterio_nombre'],
+                            'puntuacion_anterior' => $oldScore,
+                            'puntuacion_nueva' => $newScore,
+                            'comentario_anterior' => $existingRating['observacion_personal'] ?? '',
+                            'comentario_nuevo' => $newData['comentario'] ?? ''
+                        ];
+                    }
+                }
             }
         }
         
-        // 3. Actualizar el summary existente
         if ($existingSummary) {
-            // Calcular nueva calificación total
             $totalScore = 0;
             $activeCount = 0;
             
@@ -395,6 +430,7 @@ function handleReevaluation(EvaluationManager $evaluationManager, int $projectId
             }
             
             $averageScore = $activeCount > 0 ? $totalScore / $activeCount : 0;
+            $oldAverageScore = floatval($existingSummary['calificacion_total'] ?? 0);
             
             $summaryData = [
                 'comentario_general' => $comentarioGeneral,
@@ -405,6 +441,14 @@ function handleReevaluation(EvaluationManager $evaluationManager, int $projectId
             ];
             
             $evaluationManager->updateRatingSummary($existingSummary['id'], $summaryData);
+            
+            $reevaluationManager->completeModificationAttempt($modificationId, [
+                'criterios_modificados' => $updatedCriteria,
+                'puntuacion_total_anterior' => $oldAverageScore,
+                'puntuacion_total_nueva' => $averageScore,
+                'comentario_general_anterior' => $existingSummary['comentario_general'] ?? '',
+                'comentario_general_nuevo' => $comentarioGeneral
+            ]);
         }
         
         return true;
@@ -421,7 +465,6 @@ function handleNewEvaluation(EvaluationManager $evaluationManager, int $projectI
         $totalScore = 0;
         $activeCount = 0;
         
-        // Insertar cada criterio
         foreach ($criteriosData as $criterionId => $criterionData) {
             $score = floatval($criterionData['valor'] ?? 0);
             
@@ -443,7 +486,6 @@ function handleNewEvaluation(EvaluationManager $evaluationManager, int $projectI
             $evaluationManager->addRating($ratingData);
         }
         
-        // Insertar summary
         $averageScore = $activeCount > 0 ? $totalScore / $activeCount : 0;
         
         $summaryData = [
@@ -464,8 +506,6 @@ function handleNewEvaluation(EvaluationManager $evaluationManager, int $projectI
         return false;
     }
 }
-
-// ==================== FUNCIONES DE VISUALIZACIÓN ====================
 
 function showReevaluationRequestForm($project, $ultimaEvaluacion, $reevaluationStatus, $isWithin72Hours) {
     ?>
@@ -765,7 +805,477 @@ function showEvaluationForm($project, $isReevaluate, $reevaluationStatus, $crite
     </div>
 
     <script>
-    // ... (todo el código JavaScript permanece igual) ...
+    const projectId = <?php echo $project['id']; ?>;
+    const userId = <?php echo $_SESSION['userid']; ?>;
+    const isReevaluate = <?php echo $isReevaluate ? 'true' : 'false'; ?>;
+    const isWithin72Hours = <?php echo $isWithin72Hours ? 'true' : 'false'; ?>;
+    const escalaMaxima = <?php echo $criteriaConfig['puntuacion']['valor_maximo'] ?? 10; ?>;
+
+    let evaluationScores = <?php echo json_encode($savedScores); ?>;
+    let evaluationComments = <?php echo json_encode($savedComments); ?>;
+    let activeCriterionStates = <?php echo json_encode($savedActiveStates); ?>;
+    let savedGeneralComments = "<?php echo addslashes($savedGeneralComments); ?>";
+
+    const filteredCriteriaIds = <?php echo json_encode(array_column($filteredCriteria, 'id')); ?>;
+    const criteriaConfig = <?php echo json_encode($filteredCriteria); ?>;
+
+    filteredCriteriaIds.forEach(criterionId => {
+        if (activeCriterionStates[criterionId] === undefined) {
+            activeCriterionStates[criterionId] = true;
+        }
+        if (evaluationScores[criterionId] === undefined) {
+            evaluationScores[criterionId] = 0;
+        }
+        if (evaluationComments[criterionId] === undefined) {
+            evaluationComments[criterionId] = '';
+        }
+    });
+
+    let autoSaveInterval;
+    let evaluationSubmitted = false;
+    const AUTO_SAVE_DELAY = 30000;
+    let lastSaveTime = 0;
+
+    function getJustificationForScore(criterionId, score) {
+        const criterion = criteriaConfig.find(c => c.id === criterionId);
+        if (!criterion || !criterion.evaluaciones) return '';
+        
+        const categories = <?php echo json_encode($criteriaConfig['categorias_calificacion'] ?? []); ?>;
+        let currentCategory = '';
+        
+        for (const category of Object.values(categories)) {
+            if (score >= category.minimo && score <= category.maximo) {
+                currentCategory = category.id;
+                break;
+            }
+        }
+        
+        for (const evalCategory of Object.values(criterion.evaluaciones)) {
+            if (evalCategory.categoria_id === currentCategory) {
+                return evalCategory.condiciones || '';
+            }
+        }
+        
+        return '';
+    }
+
+    function toggleCriterion(criterionId) {
+        activeCriterionStates[criterionId] = !activeCriterionStates[criterionId];
+        const container = document.querySelector(`[data-criterion-id="${criterionId}"]`);
+        if (!container) return;
+        
+        const toggleBtn = container.querySelector('.criterion-toggle');
+        const statusSpan = container.querySelector('.criterion-status');
+        const contentDiv = container.querySelector('.criterion-content');
+        const slider = container.querySelector('.criterion-slider');
+        const textarea = container.querySelector('.criterion-comment');
+        
+        if (activeCriterionStates[criterionId]) {
+            toggleBtn.className = 'criterion-toggle p-2 rounded-full transition-colors bg-green-100 text-green-600 hover:bg-green-200';
+            statusSpan.className = 'criterion-status px-2 py-1 rounded text-xs font-medium bg-green-100 text-green-800';
+            statusSpan.textContent = 'Activo';
+            contentDiv.classList.remove('opacity-50');
+            if (slider) slider.disabled = false;
+            if (textarea) textarea.disabled = false;
+            
+            if (evaluationScores[criterionId] !== undefined && evaluationScores[criterionId] > 0) {
+                slider.value = evaluationScores[criterionId];
+                updateScoreSlider(criterionId, evaluationScores[criterionId]);
+            }
+            if (evaluationComments[criterionId] !== undefined) {
+                textarea.value = evaluationComments[criterionId];
+            }
+        } else {
+            toggleBtn.className = 'criterion-toggle p-2 rounded-full transition-colors bg-gray-200 text-gray-500 hover:bg-gray-300';
+            statusSpan.className = 'criterion-status px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-600';
+            statusSpan.textContent = 'Inactivo';
+            contentDiv.classList.add('opacity-50');
+            if (slider) slider.disabled = true;
+            if (textarea) textarea.disabled = true;
+
+            evaluationScores[criterionId] = 0;
+            evaluationComments[criterionId] = '';
+            
+            const scoreValueElement = document.getElementById(`score-value-${criterionId}`);
+            const ratingTextElement = document.getElementById(`rating-text-${criterionId}`);
+            const justificationElement = document.getElementById(`justification-text-${criterionId}`);
+            if (scoreValueElement) scoreValueElement.textContent = '0';
+            if (ratingTextElement) ratingTextElement.textContent = 'Regular';
+            if (justificationElement) justificationElement.textContent = '';
+            if (slider) slider.value = 0;
+            if (textarea) textarea.value = '';
+        }
+        
+        const icon = toggleBtn.querySelector('i');
+        if (icon) icon.setAttribute('data-lucide', activeCriterionStates[criterionId] ? 'check-circle' : 'x-circle');
+        if (window.lucide && window.lucide.createIcons) {
+            window.lucide.createIcons();
+        }
+        
+        updateActiveCriteriaCount();
+        updateCriteriaCounter();
+        calculateTotalScore();
+        saveAutoSave();
+    }
+
+    function updateScoreSlider(id, value) {
+        const numericValue = parseFloat(value);
+        const scoreValueElement = document.getElementById(`score-value-${id}`);
+        if (scoreValueElement) scoreValueElement.textContent = numericValue.toFixed(1);
+        
+        evaluationScores[id] = numericValue;
+        
+        let ratingText = 'Regular';
+        const categories = <?php echo json_encode($criteriaConfig['categorias_calificacion'] ?? []); ?>;
+        for (const category of Object.values(categories)) {
+            if (numericValue >= category.minimo && numericValue <= category.maximo) {
+                ratingText = category.nombre;
+                break;
+            }
+        }
+        
+        const ratingTextElement = document.getElementById(`rating-text-${id}`);
+        if (ratingTextElement) ratingTextElement.textContent = ratingText;
+        
+        const autoJustification = getJustificationForScore(id, numericValue);
+        const justificationElement = document.getElementById(`justification-text-${id}`);
+        
+        if (justificationElement) {
+            justificationElement.textContent = autoJustification;
+        }
+        
+        calculateTotalScore();
+        saveAutoSave();
+    }
+
+    function updateComment(criterionId, comment) {
+        evaluationComments[criterionId] = comment;
+        saveAutoSave();
+    }
+
+    function prepareEvaluationData() {
+        const criteriosData = {};
+        filteredCriteriaIds.forEach(criterionId => {
+            const justification = getJustificationForScore(criterionId, evaluationScores[criterionId] || 0);
+            criteriosData[criterionId] = {
+                valor: evaluationScores[criterionId] || 0,
+                comentario: evaluationComments[criterionId] || '',
+                justificacion: justification
+            };
+        });
+        
+        return {
+            criterios: JSON.stringify(criteriosData),
+            active_states: JSON.stringify(activeCriterionStates),
+            comentario_general: document.getElementById('evaluationComments').value,
+            elapsed_time: 0
+        };
+    }
+
+    function initializeAutoSave() {
+        autoSaveInterval = setInterval(() => {
+            saveAutoSave();
+        }, AUTO_SAVE_DELAY);
+        
+        window.addEventListener('beforeunload', function() {
+            if (!evaluationSubmitted) {
+                saveAutoSave(true);
+            }
+        });
+    }
+
+    function saveAutoSave(isSync = false) {
+        if (evaluationSubmitted) return;
+        
+        const currentTime = Date.now();
+        if (!isSync && (currentTime - lastSaveTime < 10000)) {
+            return;
+        }
+        
+        const evaluationData = prepareEvaluationData();
+        
+        if (isSync) {
+            saveAutoSaveSync(evaluationData);
+        } else {
+            saveAutoSaveAsync(evaluationData);
+        }
+    }
+
+    function saveAutoSaveAsync(evaluationData) {
+        const formData = new FormData();
+        formData.append('action', 'autosave');
+        formData.append('project_id', projectId);
+        formData.append('criterios', evaluationData.criterios);
+        formData.append('comentario_general', evaluationData.comentario_general);
+        formData.append('active_states', evaluationData.active_states);
+        formData.append('elapsed_time', evaluationData.elapsed_time);
+        
+        fetch('', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(result => {
+            if (result === 'OK') {
+                lastSaveTime = Date.now();
+                showAutoSaveIndicator();
+            }
+        })
+        .catch(error => {
+            console.error('Error en autoguardado:', error);
+        });
+    }
+
+    function saveAutoSaveSync(evaluationData) {
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+        formData.append('action', 'autosave');
+        formData.append('project_id', projectId);
+        formData.append('criterios', evaluationData.criterios);
+        formData.append('comentario_general', evaluationData.comentario_general);
+        formData.append('active_states', evaluationData.active_states);
+        formData.append('elapsed_time', evaluationData.elapsed_time);
+        
+        xhr.open('POST', '', false);
+        xhr.send(formData);
+    }
+
+    function showAutoSaveIndicator() {
+        const indicator = document.createElement('div');
+        indicator.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-3 py-2 rounded-lg shadow-lg z-50';
+        indicator.innerHTML = `
+            <div class="flex items-center space-x-2">
+                <i data-lucide="check-circle" class="w-4 h-4"></i>
+                <span class="text-sm">Guardado automáticamente</span>
+            </div>
+        `;
+        
+        document.body.appendChild(indicator);
+        
+        if (window.lucide && window.lucide.createIcons) {
+            window.lucide.createIcons();
+        }
+        
+        setTimeout(() => {
+            indicator.remove();
+        }, 2000);
+    }
+
+    function submitEvaluation() {
+        if (evaluationSubmitted) return;
+        
+        if (isReevaluate) {
+            const confirmed = confirm('¿Estás seguro de que quieres enviar la re-evaluación? Esta es tu ÚNICA oportunidad de cambio. Una vez enviada, no podrás modificarla nuevamente.');
+            if (!confirmed) {
+                return;
+            }
+        }
+        
+        const submitButton = document.getElementById('submitEvaluation');
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Enviando...';
+        }
+        
+        evaluationSubmitted = true;
+        clearInterval(autoSaveInterval);
+        
+        document.getElementById('evaluationForm').submit();
+    }
+
+    function calculateTotalScore() {
+        let total = 0;
+        let evaluatedCount = 0;
+        let activeCount = 0;
+        
+        filteredCriteriaIds.forEach(criterionId => {
+            if (activeCriterionStates[criterionId] === true) {
+                activeCount++;
+                const score = evaluationScores[criterionId] || 0;
+                if (score > 0) {
+                    total += score;
+                    evaluatedCount++;
+                }
+            }
+        });
+        
+        const average = evaluatedCount > 0 ? total / evaluatedCount : 0;
+        const totalScoreElement = document.getElementById('totalScore');
+        if (totalScoreElement) totalScoreElement.textContent = `${average.toFixed(1)}/${escalaMaxima}`;
+        
+        const statusElement = document.getElementById('totalStatus');
+        if (statusElement) {
+            if (evaluatedCount === activeCount && activeCount > 0) {
+                statusElement.textContent = 'Evaluación completa';
+                statusElement.className = 'px-4 py-2 rounded-lg font-medium bg-green-100 text-green-800';
+            } else if (evaluatedCount > 0) {
+                statusElement.textContent = `Criterios evaluados: ${evaluatedCount}/${activeCount}`;
+                statusElement.className = 'px-4 py-2 rounded-lg font-medium bg-blue-100 text-blue-800';
+            } else if (activeCount > 0) {
+                statusElement.textContent = `${activeCount} criterios activos`;
+                statusElement.className = 'px-4 py-2 rounded-lg font-medium bg-yellow-100 text-yellow-800';
+            } else {
+                statusElement.textContent = 'Sin criterios activos';
+                statusElement.className = 'px-4 py-2 rounded-lg font-medium bg-gray-100 text-gray-800';
+            }
+        }
+        
+        updateActiveCriteriaCount();
+        updateCriteriaCounter();
+    }
+
+    function updateActiveCriteriaCount() {
+        let activeCount = 0;
+        filteredCriteriaIds.forEach(criterionId => {
+            if (activeCriterionStates[criterionId] === true) {
+                activeCount++;
+            }
+        });
+        
+        const activeCountElement = document.getElementById('activeCountDisplay');
+        if (activeCountElement) activeCountElement.textContent = activeCount;
+    }
+
+    function updateCriteriaCounter() {
+        let activeCount = 0;
+        let evaluatedCount = 0;
+        
+        filteredCriteriaIds.forEach(criterionId => {
+            if (activeCriterionStates[criterionId] === true) {
+                activeCount++;
+                const score = evaluationScores[criterionId] || 0;
+                if (score > 0) {
+                    evaluatedCount++;
+                }
+            }
+        });
+        
+        const evaluatedElement = document.getElementById('evaluatedCountDisplay');
+        const totalActiveElement = document.getElementById('totalActiveDisplay');
+        if (evaluatedElement) evaluatedElement.textContent = evaluatedCount;
+        if (totalActiveElement) totalActiveElement.textContent = activeCount;
+    }
+
+    function initializeFormValues() {
+        filteredCriteriaIds.forEach(criterionId => {
+            const slider = document.querySelector(`[data-criterion-id="${criterionId}"] .criterion-slider`);
+            const textarea = document.querySelector(`[data-criterion-id="${criterionId}"] .criterion-comment`);
+            const scoreValueElement = document.getElementById(`score-value-${criterionId}`);
+            const ratingTextElement = document.getElementById(`rating-text-${criterionId}`);
+            const justificationElement = document.getElementById(`justification-text-${criterionId}`);
+            
+            if (slider) {
+                slider.value = evaluationScores[criterionId] || 0;
+            }
+            
+            if (scoreValueElement) {
+                scoreValueElement.textContent = (evaluationScores[criterionId] || 0).toFixed(1);
+            }
+            
+            if (ratingTextElement) {
+                let ratingText = 'Regular';
+                const categories = <?php echo json_encode($criteriaConfig['categorias_calificacion'] ?? []); ?>;
+                for (const category of Object.values(categories)) {
+                    if ((evaluationScores[criterionId] || 0) >= category.minimo && (evaluationScores[criterionId] || 0) <= category.maximo) {
+                        ratingText = category.nombre;
+                        break;
+                    }
+                }
+                ratingTextElement.textContent = ratingText;
+            }
+            
+            if (justificationElement) {
+                const autoJustification = getJustificationForScore(criterionId, evaluationScores[criterionId] || 0);
+                justificationElement.textContent = autoJustification;
+            }
+            
+            if (textarea) {
+                textarea.value = evaluationComments[criterionId] || '';
+            }
+            
+            const container = document.querySelector(`[data-criterion-id="${criterionId}"]`);
+            if (container) {
+                const toggleBtn = container.querySelector('.criterion-toggle');
+                const statusSpan = container.querySelector('.criterion-status');
+                const contentDiv = container.querySelector('.criterion-content');
+                
+                const isActive = activeCriterionStates[criterionId] ?? true;
+                
+                if (toggleBtn) {
+                    toggleBtn.className = `criterion-toggle p-2 rounded-full transition-colors ${isActive ? 'bg-green-100 text-green-600 hover:bg-green-200' : 'bg-gray-200 text-gray-500 hover:bg-gray-300'}`;
+                    const icon = toggleBtn.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', isActive ? 'check-circle' : 'x-circle');
+                    }
+                }
+                
+                if (statusSpan) {
+                    statusSpan.className = `criterion-status px-2 py-1 rounded text-xs font-medium ${isActive ? 'bg-green-100 text-green-800' : 'bg-gray-200 text-gray-600'}`;
+                    statusSpan.textContent = isActive ? 'Activo' : 'Inactivo';
+                }
+                
+                if (contentDiv) {
+                    contentDiv.classList.toggle('opacity-50', !isActive);
+                }
+                
+                if (slider) {
+                    slider.disabled = !isActive;
+                }
+                
+                if (textarea) {
+                    textarea.disabled = !isActive;
+                }
+            }
+        });
+        
+        const generalComments = document.getElementById('evaluationComments');
+        if (generalComments) {
+            generalComments.value = savedGeneralComments;
+        }
+        
+        calculateTotalScore();
+        updateActiveCriteriaCount();
+        updateCriteriaCounter();
+        
+        if (window.lucide && window.lucide.createIcons) {
+            window.lucide.createIcons();
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        if (window.lucide && window.lucide.createIcons) {
+            window.lucide.createIcons();
+        }
+        
+        initializeFormValues();
+        
+        const generalComments = document.getElementById('evaluationComments');
+        if (generalComments) {
+            let generalCommentsTimeout;
+            generalComments.addEventListener('input', function() {
+                clearTimeout(generalCommentsTimeout);
+                generalCommentsTimeout = setTimeout(() => {
+                    saveAutoSave();
+                }, 1000);
+            });
+        }
+        
+        document.getElementById('evaluationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitEvaluation();
+        });
+        
+        if (!evaluationSubmitted) {
+            initializeAutoSave();
+        }
+    });
+
+    window.addEventListener('beforeunload', function(e) {
+        if (!evaluationSubmitted) {
+            e.preventDefault();
+            e.returnValue = '¿Estás seguro de que quieres salir? Tu evaluación no ha sido enviada.';
+        }
+    });
     </script>
     <?php
 }
