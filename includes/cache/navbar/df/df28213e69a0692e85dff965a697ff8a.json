@@ -1,0 +1,47 @@
+{
+    "metadata": {
+        "key": "navbar_profile_49",
+        "created": "2025-11-06 11:36:24",
+        "expires": 1762447284,
+        "ttl": 300,
+        "size": 871
+    },
+    "data": {
+        "navbar": {
+            "profileImg": null,
+            "fullName": "Michell Mendez Sanchez",
+            "email": "michell.mendezsan@unipaz.edu.co",
+            "initials": "MM",
+            "notifications": [
+                {
+                    "id": 86,
+                    "user_id": 49,
+                    "type": "success",
+                    "title": "Inicio de sesión exitoso",
+                    "message": "Has iniciado sesión correctamente en tu cuenta.",
+                    "url": "usercp\/",
+                    "seen": 0,
+                    "created_at": "2025-11-06 11:09:35"
+                },
+                {
+                    "id": 65,
+                    "user_id": 49,
+                    "type": "success",
+                    "title": "Registro exitoso",
+                    "message": "Bienvenido al sistema",
+                    "url": null,
+                    "seen": 0,
+                    "created_at": "2025-11-05 21:47:58"
+                }
+            ],
+            "unreadCount": 2,
+            "hasAdminAccess": false,
+            "hasEvaluatorAccess": false
+        },
+        "metadata": {
+            "user_id": 49,
+            "stored_at": "2025-11-06 11:36:24",
+            "notifications_count": 2
+        }
+    }
+}

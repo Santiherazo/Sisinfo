@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_12",
+        "created": "2025-11-05 21:25:59",
+        "expires": 1762396259,
+        "ttl": 300,
+        "size": 362
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Andrés Guillén Donado",
+            "email": "andres.guillendo@unipaz.edu.co",
+            "initials": "AG",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 12,
+            "stored_at": "2025-11-05 21:25:59",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

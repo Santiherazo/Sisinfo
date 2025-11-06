@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_2",
+        "created": "2025-11-06 09:13:03",
+        "expires": 1762438683,
+        "ttl": 300,
+        "size": 357
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Cipriano López Vides",
+            "email": "cipriano.lopez@unipaz.edu.co",
+            "initials": "CL",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 2,
+            "stored_at": "2025-11-06 09:13:03",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

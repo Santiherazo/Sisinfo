@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_51",
+        "created": "2025-11-06 08:05:17",
+        "expires": 1762434617,
+        "ttl": 300,
+        "size": 357
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Javier Berrio Polanco",
+            "email": "javier.berrio@unipaz.edu.co",
+            "initials": "JB",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 51,
+            "stored_at": "2025-11-06 08:05:17",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

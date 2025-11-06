@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_50",
+        "created": "2025-11-06 12:55:21",
+        "expires": 1762452021,
+        "ttl": 300,
+        "size": 351
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Miguel Mont Lopez",
+            "email": "miguel.mont@unipaz.edu.co",
+            "initials": "MM",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 50,
+            "stored_at": "2025-11-06 12:55:21",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

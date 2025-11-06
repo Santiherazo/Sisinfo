@@ -1,0 +1,47 @@
+{
+    "metadata": {
+        "key": "navbar_profile_29",
+        "created": "2025-11-06 08:05:55",
+        "expires": 1762434655,
+        "ttl": 300,
+        "size": 872
+    },
+    "data": {
+        "navbar": {
+            "profileImg": null,
+            "fullName": "Hermes Acevedo Castellanos",
+            "email": "hermes.acevedo@unipaz.edu.co",
+            "initials": "HA",
+            "notifications": [
+                {
+                    "id": 80,
+                    "user_id": 29,
+                    "type": "success",
+                    "title": "Inicio de sesión exitoso",
+                    "message": "Has iniciado sesión correctamente en tu cuenta.",
+                    "url": "usercp\/",
+                    "seen": 0,
+                    "created_at": "2025-11-06 08:05:55"
+                },
+                {
+                    "id": 40,
+                    "user_id": 29,
+                    "type": "success",
+                    "title": "Registro exitoso",
+                    "message": "Bienvenido al sistema",
+                    "url": null,
+                    "seen": 0,
+                    "created_at": "2025-11-05 21:03:35"
+                }
+            ],
+            "unreadCount": 2,
+            "hasAdminAccess": false,
+            "hasEvaluatorAccess": true
+        },
+        "metadata": {
+            "user_id": 29,
+            "stored_at": "2025-11-06 08:05:55",
+            "notifications_count": 2
+        }
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_13",
+        "created": "2025-11-05 20:27:07",
+        "expires": 1762392727,
+        "ttl": 300,
+        "size": 356
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Jesse Guerra Robles",
+            "email": "jesse.guerraro@unipaz.edu.co",
+            "initials": "JG",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 13,
+            "stored_at": "2025-11-05 20:27:07",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

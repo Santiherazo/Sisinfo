@@ -1,22 +1,22 @@
 <?php
-if (!mconfig('active')) throw new Exception('El módulo home está deshabilitado.');
+if (!mconfig('active')) throw new Exception('Este módulo se encuentra deshabilitado.');
 ?>
 
 <!-- Hero Section con Slider -->
 <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden bg-[var(--color-bg)]">
     <div class="hero-slider absolute inset-0">
         <!-- Slide 1 -->
-        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-1000" style="background-image: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-100 transition-opacity duration-1000" style="background-image: url('<?php echo __PATH_IMG__ . 'hero/hero_1.jpg'; ?>');">
             <div class="absolute inset-0 bg-[var(--color-navbar-bg)]/60"></div>
         </div>
         
         <!-- Slide 2 -->
-        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-0 transition-opacity duration-1000" style="background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-0 transition-opacity duration-1000" style="background-image: url('<?php echo __PATH_IMG__ . 'hero/hero_2.jpg'; ?>');">
             <div class="absolute inset-0 bg-[var(--color-navbar-bg)]/60"></div>
         </div>
         
         <!-- Slide 3 -->
-        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-0 transition-opacity duration-1000" style="background-image: url('https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-0 transition-opacity duration-1000" style="background-image: url('<?php echo __PATH_IMG__ . 'hero/hero_3.jpg'; ?>');">
             <div class="absolute inset-0 bg-[var(--color-navbar-bg)]/60"></div>
         </div>
     </div>
@@ -29,60 +29,23 @@ if (!mconfig('active')) throw new Exception('El módulo home está deshabilitado
 
     <div class="relative z-10 text-center text-white max-w-6xl mx-auto px-4">
         <div class="animate-fadeIn">
-            <div class="flex items-center justify-center space-x-2 mb-6">
-                <div class="flex items-center space-x-1">
-                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
-                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
-                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
-                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
-                    <i data-lucide="star" class="w-5 h-5 fill-yellow-400 text-yellow-400"></i>
-                </div>
-                <span class="text-sm font-medium">Calificación 4.9/5 por usuarios</span>
-            </div>
-
             <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
                 <span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                    Transformamos la Evaluación Académica
+                    Semillero de investigación en Soluciones Informáticas
                 </span>
             </h1>
 
             <p class="text-xl md:text-2xl mb-8 text-white/90 max-w-4xl mx-auto leading-relaxed">
-                Plataforma integral para gestionar, evaluar y promover proyectos de investigación universitarios con tecnología de vanguardia
+                Brindar soluciones informáticas a problemáticas de la región y el país.
             </p>
 
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-                <button class="text-lg px-8 py-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-all hover:scale-105 transform flex items-center">
-                    Explorar Plataforma
-                    <i data-lucide="arrow-right" class="ml-2 h-5 w-5"></i>
-                </button>
-                <button class="text-lg px-8 py-4 bg-white/10 backdrop-blur-md border border-white/30 hover:bg-white/20 rounded-lg flex items-center">
-                    <i data-lucide="play" class="mr-2 h-5 w-5"></i>
-                    Ver Demo
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
-                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
-                    <div class="flex items-center justify-center mb-3">
-                        <i data-lucide="users" class="w-8 h-8 text-[var(--color-primary)]"></i>
-                    </div>
-                    <div class="text-3xl font-bold mb-2">2,500+</div>
-                    <div class="text-sm text-white/80">Usuarios Activos</div>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
-                    <div class="flex items-center justify-center mb-3">
-                        <i data-lucide="award" class="w-8 h-8 text-[var(--color-secondary)]"></i>
-                    </div>
-                    <div class="text-3xl font-bold mb-2">850+</div>
-                    <div class="text-sm text-white/80">Proyectos Evaluados</div>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
-                    <div class="flex items-center justify-center mb-3">
-                        <i data-lucide="star" class="w-8 h-8 text-[var(--color-accent)]"></i>
-                    </div>
-                    <div class="text-3xl font-bold mb-2">98%</div>
-                    <div class="text-sm text-white/80">Satisfacción</div>
-                </div>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
+                <a href="/us" class="text-lg px-8 py-4 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-lg hover:opacity-90 transition-all hover:scale-105 transform flex items-center">
+                    Nosotros
+                </a>
+                <a href="/projects" class="text-lg px-8 py-4 bg-white/10 backdrop-blur-md border border-white/30 hover:bg-white/20 rounded-lg flex items-center">
+                    Ver Proyectos
+                </a>
             </div>
         </div>
     </div>
@@ -118,21 +81,21 @@ if (!mconfig('active')) throw new Exception('El módulo home está deshabilitado
                     <i data-lucide="target" class="w-8 h-8"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-4 text-[var(--color-heading)]">Misión</h3>
-                <p class="text-[var(--color-text-muted)] leading-relaxed">Facilitar y optimizar los procesos de evaluación académica mediante tecnología innovadora</p>
+                <p class="text-[var(--color-text-muted)] leading-relaxed">“SISINFO¨ (Semillero de investigación en Soluciones Informáticas) es un semillero que busca brindar soluciones informáticas a problemáticas de la región y el país teniendo en cuenta relaciones de Ciencia Tecnología- Sociedad –Ambiente (CTSA), donde el estudiante adquiera competencias científicas, tecnológicas y ciudadanas que favorecen su participación en las organizaciones de ámbito educativo y empresarial.</p>
             </div>
             <div class="bg-[var(--color-surface)] rounded-xl shadow-md p-8 text-center animate-slideUp hover:-translate-y-2 hover:shadow-xl transition-all duration-300" style="animation-delay: 0.2s;">
                 <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-purple-100 flex items-center justify-center text-[var(--color-secondary)]">
                     <i data-lucide="eye" class="w-8 h-8"></i>
                 </div>
                 <h3 class="text-xl font-bold mb-4 text-[var(--color-heading)]">Visión</h3>
-                <p class="text-[var(--color-text-muted)] leading-relaxed">Ser la plataforma líder en evaluación académica a nivel latinoamericano</p>
+                <p class="text-[var(--color-text-muted)] leading-relaxed">Para el año 2030 el semillero de investigación SISINFO será reconocido en la región del Magdalena Medio por ser pionero en ofrecer soluciones informáticas a problemas del contexto, brindando a sus miembros conocimientos y destrezas generados por la aplicación de la ciencia, la tecnología y la ingeniería en la solución de problemas.</p>
             </div>
             <div class="bg-[var(--color-surface)] rounded-xl shadow-md p-8 text-center animate-slideUp hover:-translate-y-2 hover:shadow-xl transition-all duration-300" style="animation-delay: 0.4s;">
                 <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-red-100 flex items-center justify-center text-[var(--color-accent)]">
                     <i data-lucide="heart" class="w-8 h-8"></i>
                 </div>
-                <h3 class="text-xl font-bold mb-4 text-[var(--color-heading)]">Valores</h3>
-                <p class="text-[var(--color-text-muted)] leading-relaxed">Transparencia, excelencia académica, innovación y colaboración institucional</p>
+                <h3 class="text-xl font-bold mb-4 text-[var(--color-heading)]">Objetivo</h3>
+                <p class="text-[var(--color-text-muted)] leading-relaxed">Brindar soluciones informáticas a problemáticas de la región y el país teniendo en cuenta relaciones CTSA, mediante el uso de estrategias, métodos, y metodologías propias de la ingeniería informática</p>
             </div>
         </div>
 
@@ -765,3 +728,67 @@ if (!mconfig('active')) throw new Exception('El módulo home está deshabilitado
         </p>
     </div>
 </div>
+
+<script>
+// JavaScript para el slider
+document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.hero-slider > div');
+    const dots = document.querySelectorAll('.slider-dot');
+    let currentSlide = 0;
+    let slideInterval;
+
+    function showSlide(n) {
+        // Ocultar todas las slides
+        slides.forEach(slide => {
+            slide.style.opacity = '0';
+        });
+        
+        // Remover clase activa de todos los dots
+        dots.forEach(dot => {
+            dot.classList.remove('bg-white/50');
+            dot.classList.add('bg-white/30');
+        });
+        
+        // Mostrar slide actual
+        slides[n].style.opacity = '1';
+        
+        // Activar dot correspondiente
+        dots[n].classList.remove('bg-white/30');
+        dots[n].classList.add('bg-white/50');
+        
+        currentSlide = n;
+    }
+
+    function nextSlide() {
+        let next = currentSlide + 1;
+        if (next >= slides.length) {
+            next = 0;
+        }
+        showSlide(next);
+    }
+
+    // Inicializar slider
+    showSlide(0);
+    
+    // Iniciar intervalo automático
+    slideInterval = setInterval(nextSlide, 5000);
+
+    // Event listeners para los dots
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', function() {
+            clearInterval(slideInterval);
+            showSlide(index);
+            // Reiniciar intervalo
+            slideInterval = setInterval(nextSlide, 5000);
+        });
+    });
+
+    // Cerrar banner inferior
+    const closeBannerBtn = document.getElementById('close-bottom-banner');
+    if (closeBannerBtn) {
+        closeBannerBtn.addEventListener('click', function() {
+            this.closest('.bg-gradient-to-r').style.display = 'none';
+        });
+    }
+});
+</script>

@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_5",
+        "created": "2025-10-10 13:00:21",
+        "expires": 1760119521,
+        "ttl": 300,
+        "size": 344
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "evaluador dos",
+            "email": "evaluadordos@prueba.com",
+            "initials": "ED",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 5,
+            "stored_at": "2025-10-10 13:00:21",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

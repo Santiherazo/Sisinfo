@@ -32,8 +32,8 @@ try {
             $newPassword = $_POST['new_password'] ?? '';
             $repeatPassword = $_POST['repeat_password'] ?? '';
 
-            if (!check_value($newPassword) || strlen($newPassword) < 8) {
-                echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="alert-circle" class="w-5 h-5"></i><span>La nueva contraseña debe tener al menos 8 caracteres.</span></div></div>';
+            if (!check_value($newPassword) || strlen($newPassword) < 6) {
+                echo '<div id="popup-message" class="fixed top-4 right-4 z-50 animate-slideIn"><div class="bg-red-500 text-white px-6 py-4 rounded-lg shadow-lg flex items-center space-x-2"><i data-lucide="alert-circle" class="w-5 h-5"></i><span>La nueva contraseña debe tener al menos 6 caracteres.</span></div></div>';
                 throw new Exception();
             }
 

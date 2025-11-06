@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_3",
+        "created": "2025-10-09 22:49:30",
+        "expires": 1760068470,
+        "ttl": 300,
+        "size": 344
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "evaluador uno",
+            "email": "evaluadoruno@prueba.com",
+            "initials": "EU",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 3,
+            "stored_at": "2025-10-09 22:49:30",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

@@ -1,0 +1,54 @@
+{
+    "metadata": {
+        "key": "session_b871abaf90d8de214e3da221341b29d3f47d03f82422f35f0b427a973d060a55",
+        "created": "2025-10-09 23:03:30",
+        "expires": 1760072610,
+        "ttl": 3600,
+        "size": 1109
+    },
+    "data": {
+        "session": {
+            "id_sesion": 1,
+            "id_proyecto": 1,
+            "tipo_cierre": "automatico",
+            "metadata_sesion": {
+                "fecha_inicio": "2025-10-09 22:52:12",
+                "fecha_finalizacion": "2025-10-09 23:22:12",
+                "duracion_segundos": 1800
+            },
+            "evaluadores": [
+                {
+                    "id_usuario": 3,
+                    "nombre": "evaluador uno",
+                    "username": "evauno000",
+                    "email": "evaluadoruno@prueba.com",
+                    "estado_evaluacion": "completada",
+                    "estadisticas_evaluacion": {
+                        "tiempo_dedicado_segundos": 0,
+                        "porcentaje_completado": 0
+                    }
+                },
+                {
+                    "id_usuario": 5,
+                    "nombre": "evaluador dos",
+                    "username": "evados000",
+                    "email": "evaluadordos@prueba.com",
+                    "estado_evaluacion": "en progreso",
+                    "estadisticas_evaluacion": {
+                        "tiempo_dedicado_segundos": 0,
+                        "porcentaje_completado": 0
+                    }
+                }
+            ],
+            "analisis_general": {
+                "duracion_promedio_evaluacion": 0,
+                "total_errores_reportados": 0
+            }
+        },
+        "statistics": {
+            "evaluators_total": 2,
+            "evaluators_completed": 1,
+            "last_activity": "2025-10-09 23:03:30"
+        }
+    }
+}

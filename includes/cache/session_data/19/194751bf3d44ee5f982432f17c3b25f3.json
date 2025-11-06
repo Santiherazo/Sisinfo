@@ -1,0 +1,54 @@
+{
+    "metadata": {
+        "key": "session_e25c265fc5535be7aff83a1f3ca68ee9215b8d5eaa9140ee8e88afdf38fb752a",
+        "created": "2025-11-06 09:44:48",
+        "expires": 1762443888,
+        "ttl": 3600,
+        "size": 1114
+    },
+    "data": {
+        "session": {
+            "id_sesion": 4,
+            "id_proyecto": 22,
+            "tipo_cierre": "automatico",
+            "metadata_sesion": {
+                "fecha_inicio": "2025-11-06 09:40:27",
+                "fecha_finalizacion": "2025-11-06 10:10:27",
+                "duracion_segundos": 1800
+            },
+            "evaluadores": [
+                {
+                    "id_usuario": 23,
+                    "nombre": "Karen Salom",
+                    "username": "karsal841",
+                    "email": "karem.salom@unipaz.edu.co",
+                    "estado_evaluacion": "en progreso",
+                    "estadisticas_evaluacion": {
+                        "tiempo_dedicado_segundos": 0,
+                        "porcentaje_completado": 0
+                    }
+                },
+                {
+                    "id_usuario": 28,
+                    "nombre": "Edwin Durán",
+                    "username": "edwdur836",
+                    "email": "edwin.duran@unipaz.edu.co",
+                    "estado_evaluacion": "en progreso",
+                    "estadisticas_evaluacion": {
+                        "tiempo_dedicado_segundos": 0,
+                        "porcentaje_completado": 0
+                    }
+                }
+            ],
+            "analisis_general": {
+                "duracion_promedio_evaluacion": 0,
+                "total_errores_reportados": 0
+            }
+        },
+        "statistics": {
+            "evaluators_total": 2,
+            "evaluators_completed": 0,
+            "last_activity": "2025-11-06 09:44:48"
+        }
+    }
+}

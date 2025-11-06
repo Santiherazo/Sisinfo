@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_15",
+        "created": "2025-11-05 20:34:28",
+        "expires": 1762393168,
+        "ttl": 300,
+        "size": 365
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Miguel Velasquez Orozco",
+            "email": "miguel.velasquezoro@unipaz.edu.co",
+            "initials": "MV",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 15,
+            "stored_at": "2025-11-05 20:34:28",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

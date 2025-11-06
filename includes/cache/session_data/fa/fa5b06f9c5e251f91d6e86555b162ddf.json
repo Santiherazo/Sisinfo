@@ -1,0 +1,43 @@
+{
+    "metadata": {
+        "key": "session_18521e12725df69ff6a8f3e449ef028575ca4c63373cec5b46fe10b419620d09",
+        "created": "2025-11-05 19:36:37",
+        "expires": 1762392997,
+        "ttl": 3600,
+        "size": 827
+    },
+    "data": {
+        "session": {
+            "id_sesion": 1,
+            "id_proyecto": 1,
+            "tipo_cierre": "automatico",
+            "metadata_sesion": {
+                "fecha_inicio": "2025-11-05 19:36:36",
+                "fecha_finalizacion": "2025-11-05 20:06:36",
+                "duracion_segundos": 1800
+            },
+            "evaluadores": [
+                {
+                    "id_usuario": 2,
+                    "nombre": "Cipriano López",
+                    "username": "cipló233",
+                    "email": "cipriano.lopez@unipaz.edu.co",
+                    "estado_evaluacion": "en progreso",
+                    "estadisticas_evaluacion": {
+                        "tiempo_dedicado_segundos": 0,
+                        "porcentaje_completado": 0
+                    }
+                }
+            ],
+            "analisis_general": {
+                "duracion_promedio_evaluacion": 0,
+                "total_errores_reportados": 0
+            }
+        },
+        "statistics": {
+            "evaluators_total": 1,
+            "evaluators_completed": 0,
+            "last_activity": "2025-11-05 19:36:37"
+        }
+    }
+}
