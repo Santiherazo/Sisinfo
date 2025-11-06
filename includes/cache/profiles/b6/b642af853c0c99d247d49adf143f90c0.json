@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_1",
+        "created": "2025-11-06 11:01:08",
+        "expires": 1762445168,
+        "ttl": 300,
+        "size": 354
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Administrador Usuario",
+            "email": "herazopsantiago@gmail.com",
+            "initials": "AU",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 1,
+            "stored_at": "2025-11-06 11:01:08",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

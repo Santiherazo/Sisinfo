@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_20",
+        "created": "2025-11-05 20:43:07",
+        "expires": 1762393687,
+        "ttl": 300,
+        "size": 363
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Miguel Martinez Conver",
+            "email": "miguel.martinezcon@unipaz.edu.co",
+            "initials": "MM",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 20,
+            "stored_at": "2025-11-05 20:43:07",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_11",
+        "created": "2025-11-05 20:23:19",
+        "expires": 1762392499,
+        "ttl": 300,
+        "size": 360
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Andres Garcia Rubio",
+            "email": "andres.garcitiarub@unipaz.edu.co",
+            "initials": "AG",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 11,
+            "stored_at": "2025-11-05 20:23:19",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

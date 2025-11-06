@@ -1,0 +1,47 @@
+{
+    "metadata": {
+        "key": "navbar_profile_20",
+        "created": "2025-11-05 21:03:49",
+        "expires": 1762394929,
+        "ttl": 300,
+        "size": 872
+    },
+    "data": {
+        "navbar": {
+            "profileImg": null,
+            "fullName": "Miguel Martinez Conver",
+            "email": "miguel.martinezcon@unipaz.edu.co",
+            "initials": "MM",
+            "notifications": [
+                {
+                    "id": 32,
+                    "user_id": 20,
+                    "type": "success",
+                    "title": "Inicio de sesión exitoso",
+                    "message": "Has iniciado sesión correctamente en tu cuenta.",
+                    "url": "usercp\/",
+                    "seen": 0,
+                    "created_at": "2025-11-05 20:43:07"
+                },
+                {
+                    "id": 30,
+                    "user_id": 20,
+                    "type": "success",
+                    "title": "Registro exitoso",
+                    "message": "Bienvenido al sistema",
+                    "url": null,
+                    "seen": 0,
+                    "created_at": "2025-11-05 20:41:38"
+                }
+            ],
+            "unreadCount": 2,
+            "hasAdminAccess": false,
+            "hasEvaluatorAccess": false
+        },
+        "metadata": {
+            "user_id": 20,
+            "stored_at": "2025-11-05 21:03:49",
+            "notifications_count": 2
+        }
+    }
+}

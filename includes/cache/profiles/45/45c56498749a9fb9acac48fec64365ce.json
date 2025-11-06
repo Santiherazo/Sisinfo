@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_49",
+        "created": "2025-11-06 11:40:38",
+        "expires": 1762447538,
+        "ttl": 300,
+        "size": 362
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Michell Mendez Sanchez",
+            "email": "michell.mendezsan@unipaz.edu.co",
+            "initials": "MM",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 49,
+            "stored_at": "2025-11-06 11:40:38",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

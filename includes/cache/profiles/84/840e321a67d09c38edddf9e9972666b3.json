@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_28",
+        "created": "2025-11-06 08:48:01",
+        "expires": 1762437181,
+        "ttl": 300,
+        "size": 355
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Edwin Durán Blandón",
+            "email": "edwin.duran@unipaz.edu.co",
+            "initials": "ED",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 28,
+            "stored_at": "2025-11-06 08:48:01",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

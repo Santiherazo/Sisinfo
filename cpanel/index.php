@@ -33,7 +33,6 @@
 
     <link rel="shortcut icon" href="<?php echo __PATH_TEMPLATE__; ?>favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="<?php echo __PATH_TEMPLATE__; ?>apple-touch-icon.png">
-    <link rel="manifest" href="/manifest.json">
 
     <title><?php config('website_name'); ?> | Admin Panel</title>
 

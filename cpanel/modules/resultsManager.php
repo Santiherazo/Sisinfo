@@ -1,680 +1,795 @@
 <?php
+$logger = new ErrorLogger();
 $projectManager = new ProjectManager($pdo);
+$sessionManager = new EvaluationSessionManager($pdo, $logger);
 $evaluationManager = new EvaluationManager($pdo);
-$researchLines = new ResearchLineManager($pdo);
+$researchManager = new researchLineManager($pdo);
+$userManager = new UserManager($pdo);
+$filterCategory = $researchManager->getAllActivas();
+$criteriaConfig = loadConfig('evaluation_config');
 $uploadManager = new UploadManager();
 
-$researchLinesJson = $researchLines->getAllActivas();
-$allProyects = $projectManager->getAllProjects();
-$allEvaluations = $evaluationManager->getAllRatingsWithSummaries();
+$allProjects = $projectManager->getAllProjects();
+$allEvaluations = $evaluationManager->getAllRatingsWithSummariesSimple(1000);
 
-// Crear un mapeo de ID de línea de investigación a nombre
-$researchLinesMap = [];
-foreach ($researchLinesJson as $line) {
-    $researchLinesMap[$line['id']] = $line['nombre'];
+$allUsers = [];
+try {
+    $usersData = $userManager->getAllUsers();
+    foreach ($usersData as $user) {
+        if (isset($user['id'])) {
+            $allUsers[$user['id']] = $user;
+        }
+    }
+} catch (Exception $e) {
+    error_log("Error obteniendo usuarios: " . $e->getMessage());
+}
+
+$lineasMap = [];
+foreach ($filterCategory as $linea) {
+    $lineasMap[$linea['id']] = $linea['nombre'];
+}
+
+function getTotalCriteriaCount($config) {
+    $count = 0;
+    
+    if (isset($config['criterios']) && is_array($config['criterios'])) {
+        $count = count($config['criterios']);
+    }
+    
+    if ($count === 0 && isset($config['categorias']) && is_array($config['categorias'])) {
+        foreach ($config['categorias'] as $categoria) {
+            if (isset($categoria['criterios']) && is_array($categoria['criterios'])) {
+                $count += count($categoria['criterios']);
+            }
+        }
+    }
+    
+    return $count > 0 ? $count : 9;
 }
 
 $processedProjects = [];
-foreach ($allProyects as $project) {
+foreach ($allProjects as $project) {
     $documents = [];
     $projectDir = $project['directorio'] ?? null;
     
     if ($projectDir) {
         $basePath = __PATH_UPLOADS__ . 'docs/projects/' . $projectDir . '/';
         if (is_dir($basePath)) {
-            $files = $uploadManager->listAllContents($basePath);
-            foreach ($files as $file) {
-                $filePath = $basePath . $file;
-                if (file_exists($filePath)) {
-                    $relativePath = 'docs/projects/' . $projectDir . '/' . $file;
-                    
-                    $documents[] = [
-                        'id' => md5($file),
-                        'name' => $file,
-                        'path' => $relativePath,
-                        'full_path' => $filePath,
-                        'size' => filesize($filePath),
-                        'url' => $handler->getDocumentUrl($relativePath),
-                        'previewable' => $handler->canPreviewInBrowser($file),
-                        'size_formatted' => $handler->getFileSize($relativePath)
+            try {
+                $files = $uploadManager->listAllContents($basePath);
+                foreach ($files as $file) {
+                    $filePath = $basePath . $file;
+                    if (file_exists($filePath)) {
+                        $relativePath = 'docs/projects/' . $projectDir . '/' . $file;
+                        $documents[] = [
+                            'id' => md5($file),
+                            'name' => $file,
+                            'path' => $relativePath,
+                            'full_path' => $filePath,
+                            'size' => filesize($filePath),
+                            'url' => $handler->getDocumentUrl($relativePath),
+                            'previewable' => $handler->canPreviewInBrowser($file),
+                            'size_formatted' => $handler->getFileSize($relativePath)
+                        ];
+                    }
+                }
+            } catch (Exception $e) {
+                error_log("Error reading project files for project {$project['id']}: " . $e->getMessage());
+            }
+        }
+    }
+    
+    $lineaNombre = $lineasMap[$project['linea_investigacion_id']] ?? 'Línea ' . $project['linea_investigacion_id'];
+
+    $projectEvaluations = [];
+    $evaluators = [];
+    $evaluationDetails = [];
+    
+    foreach ($allEvaluations as $evaluation) {
+        if ($evaluation[RATINGS_PROJECT_ID] == $project['id']) {
+            $projectEvaluations[] = $evaluation;
+            
+            $evaluatorId = $evaluation[RATINGS_EVALUADOR_UID] ?? null;
+            if ($evaluatorId && !in_array($evaluatorId, $evaluators)) {
+                $evaluators[] = $evaluatorId;
+            }
+            
+            if ($evaluatorId) {
+                if (!isset($evaluationDetails[$evaluatorId])) {
+                    $evaluationDetails[$evaluatorId] = [
+                        'user_info' => $allUsers[$evaluatorId] ?? ['nombre' => 'Usuario ' . $evaluatorId],
+                        'ratings' => []
                     ];
                 }
-            }
-        }
-    }
-    
-    // Organizar evaluaciones para este proyecto por evaluador
-    $projectEvaluations = [];
-    foreach ($allEvaluations as $evaluation) {
-        if ($evaluation['project_id'] == $project['id']) {
-            $evaluadorId = $evaluation['evaluador_uid'] ?? null;
-            $sessionToken = $evaluation['session_token'] ?? null;
-            
-            if (!$evaluadorId || !$sessionToken) {
-                continue; // Saltar evaluaciones sin información esencial
-            }
-            
-            if (!isset($projectEvaluations[$evaluadorId])) {
-                $projectEvaluations[$evaluadorId] = [
-                    'evaluador' => [
-                        'id' => $evaluadorId,
-                        'username' => $evaluation['evaluador_username'] ?? 'N/A',
-                        'firstname' => $evaluation['evaluador_firstname'] ?? 'Evaluador',
-                        'lastname' => $evaluation['evaluador_lastname'] ?? 'Anónimo'
-                    ],
-                    'evaluaciones' => []
-                ];
-            }
-            
-            // Agrupar por sesión de evaluación
-            if (!isset($projectEvaluations[$evaluadorId]['evaluaciones'][$sessionToken])) {
-                $projectEvaluations[$evaluadorId]['evaluaciones'][$sessionToken] = [
-                    'summary' => [
-                        'id' => $evaluation['summary_id'] ?? null,
-                        'comentario' => $evaluation['summary_comentario'] ?? '',
-                        'calificacion_total' => $evaluation['summary_calificacion_total'] ?? 0,
-                        'estado_evaluacion' => $evaluation['summary_estado_evaluacion'] ?? 'pendiente',
-                        'tiempo_total' => $evaluation['summary_tiempo_total'] ?? 0,
-                        'fecha_inicio' => $evaluation['summary_fecha_inicio'] ?? null,
-                        'fecha_fin' => $evaluation['summary_fecha_fin'] ?? null
-                    ],
-                    'criterios' => []
-                ];
-            }
-            
-            // Agregar criterio a la evaluación solo si tiene información válida
-            if (isset($evaluation['criterio_nombre'])) {
-                $projectEvaluations[$evaluadorId]['evaluaciones'][$sessionToken]['criterios'][] = [
-                    'nombre' => $evaluation['criterio_nombre'],
-                    'valor' => $evaluation['criterio_valor'] ?? '',
-                    'calificacion' => $evaluation['calificacion'] ?? 0,
-                    'observacion_personal' => $evaluation['observacion_personal'] ?? ''
+                
+                $evaluationDetails[$evaluatorId]['ratings'][] = [
+                    'criterio' => $evaluation[RATINGS_CRITERIO_NOMBRE] ?? '',
+                    'puntuacion' => $evaluation[RATINGS_CALIFICACION] ?? 0,
+                    'justificacion' => $evaluation[RATINGS_CRITERIO_VALOR] ?? '',
+                    'comentarios' => $evaluation[RATINGS_OBSERVACION_PERSONAL] ?? '',
+                    'fecha' => $evaluation[RATINGS_UPDATED_AT] ?? $evaluation[RATINGS_CREATED_AT] ?? ''
                 ];
             }
         }
     }
     
-    // Reorganizar las evaluaciones para una estructura más limpia
-    $evaluacionesFinales = [];
-    foreach ($projectEvaluations as $evaluadorData) {
-        foreach ($evaluadorData['evaluaciones'] as $evaluacion) {
-            // Solo incluir evaluaciones que tengan criterios
-            if (!empty($evaluacion['criterios'])) {
-                $evaluacionesFinales[] = [
-                    'evaluador' => $evaluadorData['evaluador'],
-                    'summary' => $evaluacion['summary'],
-                    'criterios' => $evaluacion['criterios']
-                ];
+    $hasEvaluations = !empty($projectEvaluations);
+    $totalEvaluators = count($evaluators);
+    
+    $activeSessions = $sessionManager->getActiveSessionsByProject($project['id']);
+    $hasActiveSession = !empty($activeSessions);
+    
+    $sessionParticipants = [];
+    $sessionProgress = [];
+    
+    foreach ($activeSessions as $session) {
+        $sessionId = $session[EVALUATION_SESSION_FIELD_ID];
+        
+        $participants = $sessionManager->getSessionParticipants($sessionId);
+        $progress = $sessionManager->getSessionProgress($sessionId);
+        
+        $sessionParticipants[$sessionId] = $participants;
+        $sessionProgress[$sessionId] = $progress;
+        
+        foreach ($sessionParticipants[$sessionId] as &$participant) {
+            $userId = $participant['id'] ?? null;
+            if ($userId) {
+                $participant['user_info'] = $allUsers[$userId] ?? ['nombre' => 'Usuario ' . $userId];
+            } else {
+                $participant['user_info'] = ['nombre' => 'Usuario desconocido'];
             }
         }
     }
     
-    $researchers = [];
-    foreach ($project['researchers'] as $researcher) {
-        $researchers[] = [
-            'id' => $researcher['id'] ?? null,
-            'username' => $researcher['username'] ?? '',
-            'email' => $researcher['email'] ?? '',
-            'firstname' => $researcher['firstname'] ?? '',
-            'lastname' => $researcher['lastname'] ?? '',
-            'role' => $researcher['role'] ?? '',
-            'state' => $researcher['state'] ?? ''
-        ];
+    $allRatings = $evaluationManager->getRatingsByProject($project['id']);
+    $allSummaries = $evaluationManager->getRatingSummariesByProject($project['id']);
+    
+    $projectStats = $evaluationManager->getProjectEvaluationStats($project['id']);
+    $averageScore = $projectStats['average_score'] ?? 0;
+    
+    $criteriosEvaluadosGlobal = 0;
+    if (!empty($allRatings)) {
+        $uniqueCriterios = [];
+        foreach ($allRatings as $rating) {
+            if (isset($rating[RATINGS_CRITERIO_NOMBRE])) {
+                $uniqueCriterios[$rating[RATINGS_CRITERIO_NOMBRE]] = true;
+            }
+        }
+        $criteriosEvaluadosGlobal = count($uniqueCriterios);
+        $totalCriterios = getTotalCriteriaCount($criteriaConfig);
+        if ($criteriosEvaluadosGlobal > $totalCriterios) {
+            $criteriosEvaluadosGlobal = $totalCriterios;
+        }
     }
-    
-    $teachers = [];
-    foreach ($project['teachers'] as $teacher) {
-        $teachers[] = [
-            'id' => $teacher['id'] ?? null,
-            'username' => $teacher['username'] ?? '',
-            'email' => $teacher['email'] ?? '',
-            'firstname' => $teacher['firstname'] ?? '',
-            'lastname' => $teacher['lastname'] ?? '',
-            'role' => $teacher['role'] ?? '',
-            'state' => $teacher['state'] ?? ''
-        ];
-    }
-    
-    $reviewers = [];
-    foreach ($project['reviewers'] as $reviewer) {
-        $reviewers[] = [
-            'id' => $reviewer['id'] ?? null,
-            'username' => $reviewer['username'] ?? '',
-            'email' => $reviewer['email'] ?? '',
-            'firstname' => $reviewer['firstname'] ?? '',
-            'lastname' => $reviewer['lastname'] ?? '',
-            'state' => $reviewer['state'] ?? ''
-        ];
-    }
-    
-    // Obtener el nombre de la línea de investigación
-    $lineaNombre = isset($researchLinesMap[$project['linea_investigacion_id']]) 
-        ? $researchLinesMap[$project['linea_investigacion_id']] 
-        : 'Línea no especificada';
-    
+
     $processedProjects[] = [
-        'id' => $project['id'] ?? null,
-        'titulo' => $project['titulo'] ?? 'Sin título',
-        'linea_investigacion_id' => $project['linea_investigacion_id'] ?? null,
-        'linea_investigacion_nombre' => $lineaNombre,
-        'visibilidad' => $project['visibilidad'] ?? 'privada',
-        'activo' => $project['activo'] ?? false,
-        'directorio' => $project['directorio'] ?? null,
-        'version' => $project['version'] ?? '1.0',
-        'fase' => $project['fase'] ?? 'inicial',
-        'estado' => $project['estado'] ?? 'pendiente',
-        'descripcion' => $project['descripcion'] ?? '',
-        'palabras_clave' => $project['palabras_clave'] ?? '',
-        'calificado' => $project['calificado'] ?? false,
-        'puntuacion' => $project['puntuacion'] ?? 0,
-        'timer_segundos' => $project['timer_segundos'] ?? 0,
-        'hora_programada' => $project['hora_programada'] ?? null,
+        'id' => $project['id'],
+        'titulo' => $project['titulo'],
+        'descripcion' => $project['descripcion'] ?? null,
+        'palabras_clave' => $project['palabras_clave'] ?? null,
+        'linea_investigacion_id' => $project['linea_investigacion_id'],
+        'linea_nombre' => $lineaNombre,
+        'fase' => $project['fase'],
+        'version' => $project['version'],
         'fecha_presentacion' => $project['fecha_presentacion'] ?? null,
-        'creado_en' => $project['creado_en'] ?? null,
-        'actualizado_en' => $project['actualizado_en'] ?? null,
-        'researchers' => $researchers,
-        'teachers' => $teachers,
-        'reviewers' => $reviewers,
-        'documents' => $documents,
-        'evaluations' => $evaluacionesFinales
+        'hora_programada' => $project['hora_programada'] ?? null,
+        'timer_segundos' => $project['timer_segundos'] ?? 0,
+        'documentos' => $documents,
+        'evaluado' => $hasEvaluations ? 1 : 0,
+        'total_evaluadores' => $totalEvaluators,
+        'puntuacion_promedio' => $averageScore,
+        'evaluaciones' => $projectEvaluations,
+        'all_ratings' => $allRatings,
+        'all_summaries' => $allSummaries,
+        'evaluation_details' => $evaluationDetails,
+        'criterios_evaluados' => $criteriosEvaluadosGlobal,
+        'total_criterios' => getTotalCriteriaCount($criteriaConfig),
+        'sesion_activa' => $hasActiveSession,
+        'total_sesiones' => count($activeSessions),
+        'sesiones_activas' => $activeSessions,
+        'session_participants' => $sessionParticipants,
+        'session_progress' => $sessionProgress,
+        'estado' => $project['estado'] ?? 'nuevo',
+        'reviewers' => $project['reviewers'] ?? [],
+        'created_at' => $project['created_at'] ?? null,
+        'updated_at' => $project['updated_at'] ?? null
     ];
 }
 
-// Contar evaluaciones completadas y pendientes
-$completedEvaluations = 0;
-$pendingEvaluations = 0;
+$projectsJson = json_encode($processedProjects, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP);
+
+$totalProjects = count($processedProjects);
+$evaluatedProjects = 0;
+$pendingProjects = 0;
+$projectsWithActiveSessions = 0;
+$totalSessions = 0;
+$activeSessionsCount = 0;
+$totalAverageScore = 0;
+$totalEvaluators = 0;
 
 foreach ($processedProjects as $project) {
-    foreach ($project['evaluations'] as $evaluation) {
-        if (($evaluation['summary']['estado_evaluacion'] ?? '') === 'completa') {
-            $completedEvaluations++;
-        } else {
-            $pendingEvaluations++;
-        }
+    if ($project['evaluado']) {
+        $evaluatedProjects++;
+        $totalAverageScore += $project['puntuacion_promedio'] ?? 0;
+        $totalEvaluators += $project['total_evaluadores'];
+    } else {
+        $pendingProjects++;
     }
+    
+    if ($project['sesion_activa']) {
+        $projectsWithActiveSessions++;
+    }
+    
+    $totalSessions += $project['total_sesiones'];
+    $activeSessionsCount += count($project['sesiones_activas']);
 }
+
+$systemAverage = $evaluatedProjects > 0 ? $totalAverageScore / $evaluatedProjects : 0;
+$averageEvaluatorsPerProject = $evaluatedProjects > 0 ? $totalEvaluators / $evaluatedProjects : 0;
 ?>
 
-<!-- El resto del HTML y JavaScript permanece igual -->
-<div class="glassmorphism rounded-2xl p-6 shadow-xl mb-6">
-    <div class="flex items-center justify-between mb-6">
+<div class="bg-white rounded-xl shadow-sm p-4 md:p-6 mb-6">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900 mb-2">Módulo de Evaluaciones</h2>
-            <p class="text-slate-600">Gestione evaluaciones y calificaciones de proyectos académicos</p>
+            <h2 class="text-lg md:text-xl font-semibold text-gray-800">Panel Administrativo - Evaluaciones y Sesiones</h2>
+            <p class="text-sm text-gray-600 mt-1">Visión completa de todas las evaluaciones y sesiones del sistema</p>
         </div>
-        <div class="flex items-center gap-4">
-            <div class="text-center">
-                <p class="text-2xl font-bold text-green-600"><?php echo $completedEvaluations; ?></p>
-                <p class="text-xs text-slate-500">Completadas</p>
-            </div>
-            <div class="text-center">
-                <p class="text-2xl font-bold text-orange-600"><?php echo $pendingEvaluations; ?></p>
-                <p class="text-xs text-slate-500">Pendientes</p>
-            </div>
+        <div class="flex flex-wrap gap-2">
+            <select id="filterLinea" class="p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                <option value="">Todas las líneas</option>
+                <?php foreach ($filterCategory as $linea): ?>
+                <option value="<?php echo $linea['id']; ?>"><?php echo htmlspecialchars($linea['nombre']); ?></option>
+                <?php endforeach; ?>
+            </select>
+            <select id="filterEstado" class="p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                <option value="">Todos los estados</option>
+                <option value="evaluado">Con evaluaciones</option>
+                <option value="pendiente">Sin evaluaciones</option>
+                <option value="sesion_activa">Con sesión activa</option>
+                <option value="con_sesiones">Con sesiones</option>
+            </select>
         </div>
     </div>
 
-    <div class="mb-6">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-lg font-semibold text-slate-900">Proyectos Evaluados</h3>
-            <div class="flex gap-2">
-                <button class="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full font-medium">Todos</button>
-                <button class="px-3 py-1 text-sm bg-white/60 text-slate-700 rounded-full font-medium">Recientes</button>
-                <button class="px-3 py-1 text-sm bg-white/60 text-slate-700 rounded-full font-medium">Mejores</button>
-            </div>
-        </div>
-        
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <?php foreach ($processedProjects as $project): ?>
-            <div class="bg-white/60 rounded-xl p-6 hover:bg-white/80 transition-all duration-200 shadow-lg">
-                <div class="flex items-start justify-between mb-4">
-                    <div class="flex-1">
-                        <h4 class="font-bold text-slate-900 mb-2"><?php echo htmlspecialchars($project['titulo']); ?></h4>
-                        <p class="text-sm text-slate-600 mb-1"><?php echo htmlspecialchars($project['descripcion']); ?></p>
-                        <span class="inline-block px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">
-                            <?php echo htmlspecialchars($project['linea_investigacion_nombre']); ?>
-                        </span>
-                    </div>
-                    <div class="flex flex-col items-end">
-                        <div class="flex items-center gap-1">
-                            <i data-lucide="star" class="w-4 h-4 fill-yellow-400 text-yellow-400"></i>
-                            <span class="font-bold text-slate-900">
-                                <?php 
-                                $totalScore = 0;
-                                $evaluationCount = 0;
-                                foreach ($project['evaluations'] as $evaluation) {
-                                    if (($evaluation['summary']['estado_evaluacion'] ?? '') === 'completa') {
-                                        $totalScore += floatval($evaluation['summary']['calificacion_total'] ?? 0);
-                                        $evaluationCount++;
-                                    }
-                                }
-                                echo $evaluationCount > 0 ? number_format($totalScore / $evaluationCount, 1) : '0.0';
-                                ?>
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead>
+                <tr class="border-b border-gray-200">
+                    <th class="pb-3 text-left text-sm font-semibold text-gray-600">Proyecto</th>
+                    <th class="pb-3 text-left text-sm font-semibold text-gray-600">Línea - Fase</th>
+                    <th class="pb-3 text-left text-sm font-semibold text-gray-600">Evaluaciones</th>
+                    <th class="pb-3 text-left text-sm font-semibold text-gray-600">Sesiones</th>
+                    <th class="pb-3 text-left text-sm font-semibold text-gray-600">Calificación</th>
+                    <th class="pb-3 text-left text-sm font-semibold text-gray-600">Estado</th>
+                    <th class="pb-3 text-left text-sm font-semibold text-gray-600">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($processedProjects as $project): ?>
+                <?php
+                $statusClass = $project['evaluado'] ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800';
+                $statusText = $project['evaluado'] ? 'Evaluado' : 'Pendiente';
+                
+                if ($project['sesion_activa']) {
+                    $statusClass = 'bg-purple-100 text-purple-800';
+                    $statusText = 'Sesión Activa';
+                }
+                
+                $scoreColorClass = 'text-gray-400';
+                $progressColor = 'bg-gray-200';
+                if ($project['evaluado']) {
+                    $scoreColorClass = ($project['puntuacion_promedio'] < 3) ? 'text-red-600' : 'text-green-600';
+                    $progressColor = ($project['puntuacion_promedio'] < 3) ? 'bg-red-500' : 'bg-green-500';
+                }
+                ?>
+                <tr class="border-b border-gray-100 hover:bg-gray-50 project-row" 
+                    data-linea="<?php echo $project['linea_investigacion_id']; ?>"
+                    data-estado="<?php 
+                        if ($project['sesion_activa']) echo 'sesion_activa';
+                        elseif ($project['evaluado']) echo 'evaluado';
+                        else echo 'pendiente';
+                    ?>"
+                    data-sesiones="<?php echo $project['total_sesiones'] > 0 ? 'con_sesiones' : 'sin_sesiones'; ?>">
+                    <td class="py-4">
+                        <div>
+                            <p class="font-medium text-gray-800"><?php echo htmlspecialchars($project['titulo']); ?></p>
+                            <p class="text-sm text-gray-500">v<?php echo $project['version']; ?></p>
+                            <?php if ($project['sesion_activa']): ?>
+                            <span class="inline-block mt-1 px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">
+                                <i class="fas fa-play-circle mr-1"></i>Sesión Activa
                             </span>
+                            <?php endif; ?>
                         </div>
-                        <span class="text-xs text-slate-500">/5.0</span>
-                    </div>
-                </div>
-                <div class="space-y-2 mb-4">
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="user" class="w-4 h-4 text-slate-500"></i>
-                        <span class="text-sm text-slate-600">
-                            <?php
-                            $principalResearchers = array_filter($project['researchers'], function($researcher) {
-                                return ($researcher['role'] ?? '') === 'principal';
-                            });
-                            if (!empty($principalResearchers)) {
-                                $researcher = reset($principalResearchers);
-                                echo 'Estudiante: ' . htmlspecialchars(($researcher['firstname'] ?? '') . ' ' . ($researcher['lastname'] ?? ''));
-                            } else {
-                                echo 'Estudiante: No asignado';
-                            }
-                            ?>
+                    </td>
+                    <td class="py-4">
+                        <p class="text-sm text-gray-700"><?php echo htmlspecialchars($project['linea_nombre']); ?></p>
+                        <p class="text-xs text-gray-500">Fase <?php echo $project['fase']; ?></p>
+                    </td>
+                    <td class="py-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-700">
+                                <?php echo $project['total_evaluadores']; ?>
+                            </span>
+                            <span class="text-xs text-gray-500">evaluadores</span>
+                        </div>
+                        <div class="text-xs text-gray-500 mt-1">
+                            <?php echo $project['criterios_evaluados'] . '/' . $project['total_criterios']; ?> criterios
+                        </div>
+                    </td>
+                    <td class="py-4">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm font-medium text-gray-700">
+                                <?php echo $project['total_sesiones']; ?>
+                            </span>
+                            <span class="text-xs text-gray-500">sesiones</span>
+                        </div>
+                        <?php if ($project['sesion_activa']): ?>
+                        <div class="text-xs text-purple-600 mt-1">
+                            <?php echo count($project['sesiones_activas']); ?> activas
+                        </div>
+                        <?php endif; ?>
+                    </td>
+                    <td class="py-4">
+                        <?php if ($project['evaluado']): ?>
+                        <div class="flex items-center">
+                            <span class="text-sm font-medium <?php echo $scoreColorClass; ?> mr-2">
+                                <?php echo number_format($project['puntuacion_promedio'], 1); ?>
+                            </span>
+                            <div class="w-16 bg-gray-200 rounded-full h-2">
+                                <div class="<?php echo $progressColor; ?> h-2 rounded-full" style="width: <?php echo ($project['puntuacion_promedio'] ?? 0) * 10; ?>%"></div>
+                            </div>
+                        </div>
+                        <?php else: ?>
+                        <span class="text-sm text-gray-400">-</span>
+                        <?php endif; ?>
+                    </td>
+                    <td class="py-4">
+                        <span class="text-xs font-medium px-3 py-1 rounded-full <?php echo $statusClass; ?>">
+                            <?php echo $statusText; ?>
                         </span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="user-check" class="w-4 h-4 text-slate-500"></i>
-                        <span class="text-sm text-slate-600">
-                            <?php
-                            if (!empty($project['teachers'])) {
-                                $teacher = $project['teachers'][0];
-                                echo 'Asesor: ' . htmlspecialchars(($teacher['firstname'] ?? '') . ' ' . ($teacher['lastname'] ?? ''));
-                            } else {
-                                echo 'Asesor: No asignado';
-                            }
-                            ?>
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="calendar" class="w-4 h-4 text-slate-500"></i>
-                        <span class="text-sm text-slate-600">
-                            <?php
-                            $lastEvaluationDate = '';
-                            foreach ($project['evaluations'] as $evaluation) {
-                                if (($evaluation['summary']['estado_evaluacion'] ?? '') === 'completa') {
-                                    $evalDate = !empty($evaluation['summary']['fecha_fin']) ? date('d M Y', strtotime($evaluation['summary']['fecha_fin'])) : '';
-                                    if ($evalDate > $lastEvaluationDate) {
-                                        $lastEvaluationDate = $evalDate;
-                                    }
-                                }
-                            }
-                            echo 'Evaluado: ' . ($lastEvaluationDate ?: 'No evaluado');
-                            ?>
-                        </span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <i data-lucide="users" class="w-4 h-4 text-slate-500"></i>
-                        <span class="text-sm text-slate-600">
-                            Evaluadores: <?php echo count($project['reviewers']); ?>
-                        </span>
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <div class="flex justify-between text-xs text-slate-500 mb-1">
-                        <span>Progreso</span>
-                        <span>
-                            <?php
-                            $totalEvaluations = count($project['evaluations']);
-                            $completedEvaluations = 0;
-                            foreach ($project['evaluations'] as $evaluation) {
-                                if (($evaluation['summary']['estado_evaluacion'] ?? '') === 'completa') {
-                                    $completedEvaluations++;
-                                }
-                            }
-                            $progress = $totalEvaluations > 0 ? ($completedEvaluations / $totalEvaluations) * 100 : 0;
-                            echo round($progress) . '%';
-                            ?>
-                        </span>
-                    </div>
-                    <div class="w-full bg-slate-200 rounded-full h-2">
-                        <div class="bg-green-500 h-2 rounded-full" style="width: <?php echo $progress; ?>%"></div>
-                    </div>
-                </div>
-                <button onclick="openEvaluationModal(<?php echo $project['id']; ?>)" class="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/60 border border-white/20 rounded-xl hover:bg-white/80 transition-all">
-                    <i data-lucide="file-text" class="w-4 h-4"></i>
-                    Detalles Completo
-                </button>
-            </div>
-            <?php endforeach; ?>
+                    </td>
+                    <td class="py-4">
+                        <div class="flex space-x-1">
+                            <button class="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors view-project" 
+                                    data-project-id="<?php echo $project['id']; ?>"
+                                    title="Ver Detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            
+                            <button class="p-2 bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors view-evaluations" 
+                                    data-project-id="<?php echo $project['id']; ?>"
+                                    title="Ver Evaluaciones">
+                                <i class="fas fa-list-check"></i>
+                            </button>
+                            
+                            <?php if ($project['sesion_activa']): ?>
+                            <button class="p-2 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors view-session" 
+                                    data-project-id="<?php echo $project['id']; ?>"
+                                    title="Ver Sesión Activa">
+                                <i class="fas fa-play-circle"></i>
+                            </button>
+                            <?php endif; ?>
+                        </div>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+                
+                <?php if (empty($processedProjects)): ?>
+                <tr>
+                    <td colspan="7" class="py-8 text-center text-gray-500">
+                        <div class="text-4xl text-gray-300 mb-2"><i class="fas fa-clipboard-list"></i></div>
+                        <p>No hay proyectos en el sistema</p>
+                    </td>
+                </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="flex justify-between items-center mt-6 pt-4 border-t border-gray-200">
+        <p class="text-sm text-gray-600">Mostrando <?php echo count($processedProjects); ?> proyectos del sistema</p>
+        <div class="flex space-x-2">
+            <button class="px-3 py-1 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="px-3 py-1 rounded-lg bg-primary-600 text-white">1</button>
+            <button class="px-3 py-1 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 </div>
 
-<!-- Modal para Ver Evaluación -->
-<div id="evaluationModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden">
-    <div class="glassmorphism rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        <div class="p-6">
-            <div class="flex justify-between items-start mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-900">Detalles de Evaluación</h2>
-                    <p class="text-slate-600">Información completa sobre la evaluación realizada</p>
-                </div>
-                <button onclick="closeEvaluationModal()" class="p-2 rounded-full hover:bg-white/20 transition-all">
-                    <i data-lucide="x" class="w-6 h-6 text-slate-600"></i>
-                </button>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
+    <div class="bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-sm p-6 border border-blue-100">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Total Proyectos</p>
+                <p class="text-2xl font-bold text-gray-800"><?php echo $totalProjects; ?></p>
             </div>
+            <div class="bg-blue-100 p-3 rounded-lg">
+                <i class="fas fa-folder-open text-blue-600 text-xl"></i>
+            </div>
+        </div>
+        <div class="flex justify-between text-xs text-gray-500 mt-2">
+            <span><?php echo $evaluatedProjects; ?> evaluados</span>
+            <span><?php echo $pendingProjects; ?> pendientes</span>
+        </div>
+    </div>
 
-            <div id="modalContent">
-                <!-- El contenido se cargará dinámicamente con JavaScript -->
+    <div class="bg-gradient-to-br from-white to-green-50 rounded-xl shadow-sm p-6 border border-green-100">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Sesiones Activas</p>
+                <p class="text-2xl font-bold text-gray-800"><?php echo $activeSessionsCount; ?></p>
             </div>
+            <div class="bg-green-100 p-3 rounded-lg">
+                <i class="fas fa-play-circle text-green-600 text-xl"></i>
+            </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">En curso</p>
+    </div>
+
+    <div class="bg-gradient-to-br from-white to-purple-50 rounded-xl shadow-sm p-6 border border-purple-100">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Calificación Promedio</p>
+                <p class="text-2xl font-bold text-gray-800"><?php echo number_format($systemAverage, 1); ?></p>
+            </div>
+            <div class="bg-purple-100 p-3 rounded-lg">
+                <i class="fas fa-chart-line text-purple-600 text-xl"></i>
+            </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">Promedio del sistema</p>
+    </div>
+
+    <div class="bg-gradient-to-br from-white to-orange-50 rounded-xl shadow-sm p-6 border border-orange-100">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-sm font-medium text-gray-600">Evaluadores Activos</p>
+                <p class="text-2xl font-bold text-gray-800"><?php echo $totalEvaluators; ?></p>
+            </div>
+            <div class="bg-orange-100 p-3 rounded-lg">
+                <i class="fas fa-users text-orange-600 text-xl"></i>
+            </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">
+            <?php echo number_format($averageEvaluatorsPerProject, 1); ?> por proyecto
+        </p>
+    </div>
+</div>
+
+<div class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-sm p-6 border border-gray-100">
+    <h3 class="text-lg font-semibold text-gray-800 mb-6 flex items-center">
+        <span class="bg-gray-100 p-2 rounded-lg mr-3"><i class="fas fa-cogs text-gray-600"></i></span>
+        Acciones Administrativas
+    </h3>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <button class="flex flex-col items-center justify-center p-5 bg-white border border-blue-200 rounded-xl text-blue-700 hover:bg-blue-50 hover:shadow-md transition-all duration-200 group"
+                onclick="showAllEvaluations()">
+            <i class="fas fa-list-check text-2xl mb-3 group-hover:scale-110 transition-transform"></i>
+            <span class="text-sm font-semibold">Todas las Evaluaciones</span>
+            <span class="text-xs text-gray-500 mt-1">Ver completas</span>
+        </button>
+        <button class="flex flex-col items-center justify-center p-5 bg-white border border-purple-200 rounded-xl text-purple-700 hover:bg-purple-50 hover:shadow-md transition-all duration-200 group"
+                onclick="showActiveSessions()">
+            <i class="fas fa-play-circle text-2xl mb-3 group-hover:scale-110 transition-transform"></i>
+            <span class="text-sm font-semibold">Sesiones Activas</span>
+            <span class="text-xs text-gray-500 mt-1"><?php echo $activeSessionsCount; ?> en curso</span>
+        </button>
+        <button class="flex flex-col items-center justify-center p-5 bg-white border border-green-200 rounded-xl text-green-700 hover:bg-green-50 hover:shadow-md transition-all duration-200 group"
+                onclick="exportData()">
+            <i class="fas fa-file-export text-2xl mb-3 group-hover:scale-110 transition-transform"></i>
+            <span class="text-sm font-semibold">Exportar Datos</span>
+            <span class="text-xs text-gray-500 mt-1">JSON/CSV</span>
+        </button>
+        <button class="flex flex-col items-center justify-center p-5 bg-white border border-orange-200 rounded-xl text-orange-700 hover:bg-orange-50 hover:shadow-md transition-all duration-200 group"
+                onclick="showAdvancedStats()">
+            <i class="fas fa-chart-bar text-2xl mb-3 group-hover:scale-110 transition-transform"></i>
+            <span class="text-sm font-semibold">Estadísticas</span>
+            <span class="text-xs text-gray-500 mt-1">Reportes del sistema</span>
+        </button>
+    </div>
+</div>
+
+<div id="projectDetailsModal" class="modal-overlay">
+    <div class="modal-content w-full max-w-4xl">
+        <div class="modal-header">
+            <h3 class="text-lg font-semibold" id="projectModalTitle">Detalles del Proyecto</h3>
+            <button class="close-modal p-2 hover:bg-gray-100 rounded-lg">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="projectModalBody">
+        </div>
+        <div class="modal-footer">
+            <button class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 close-modal">Cerrar</button>
         </div>
     </div>
 </div>
 
 <script>
-// Datos de proyectos para usar en el modal
-const projectsData = <?php echo json_encode($processedProjects); ?>;
+const projectsData = <?php echo $projectsJson; ?>;
 
-// Mapa de líneas de investigación
-const researchLinesMap = <?php echo json_encode($researchLinesMap); ?>;
+document.getElementById('filterLinea').addEventListener('change', filterProjects);
+document.getElementById('filterEstado').addEventListener('change', filterProjects);
 
-function openEvaluationModal(projectId) {
+function filterProjects() {
+    const lineaFilter = document.getElementById('filterLinea').value;
+    const estadoFilter = document.getElementById('filterEstado').value;
+    const projectRows = document.querySelectorAll('.project-row');
+    
+    let visibleCount = 0;
+    
+    projectRows.forEach(row => {
+        const projectLinea = row.getAttribute('data-linea');
+        const projectEstado = row.getAttribute('data-estado');
+        const projectSesiones = row.getAttribute('data-sesiones');
+        
+        const showLinea = !lineaFilter || projectLinea === lineaFilter;
+        let showEstado = true;
+        
+        if (estadoFilter) {
+            switch(estadoFilter) {
+                case 'con_sesiones':
+                    showEstado = projectSesiones === 'con_sesiones';
+                    break;
+                default:
+                    showEstado = projectEstado === estadoFilter;
+            }
+        }
+        
+        if (showLinea && showEstado) {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    const counterElement = document.querySelector('.flex.justify-between.items-center.mt-6.pt-4 p:first-child');
+    if (counterElement) {
+        counterElement.textContent = `Mostrando ${visibleCount} de ${projectsData.length} proyectos`;
+    }
+}
+
+function showAllEvaluations() {
+    document.getElementById('filterEstado').value = 'evaluado';
+    filterProjects();
+}
+
+function showActiveSessions() {
+    document.getElementById('filterEstado').value = 'sesion_activa';
+    filterProjects();
+}
+
+function exportData() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(projectsData, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "evaluaciones_sistema_" + new Date().toISOString().split('T')[0] + ".json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+    
+    alert('Datos exportados correctamente. Se ha descargado un archivo JSON con toda la información.');
+}
+
+function showAdvancedStats() {
+    const totalScore = projectsData.reduce((sum, project) => sum + (project.puntuacion_promedio || 0), 0);
+    const avgScore = totalScore / projectsData.filter(p => p.puntuacion_promedio > 0).length;
+    
+    const statsHtml = `
+        <div class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-blue-800">Proyectos por Estado</h4>
+                    <p class="text-sm">Evaluados: ${projectsData.filter(p => p.evaluado).length}</p>
+                    <p class="text-sm">Pendientes: ${projectsData.filter(p => !p.evaluado).length}</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-green-800">Sesiones</h4>
+                    <p class="text-sm">Totales: ${projectsData.reduce((sum, p) => sum + p.total_sesiones, 0)}</p>
+                    <p class="text-sm">Activas: ${projectsData.reduce((sum, p) => sum + p.sesiones_activas.length, 0)}</p>
+                </div>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-lg">
+                <h4 class="font-semibold text-purple-800">Calificaciones</h4>
+                <p class="text-sm">Promedio del sistema: ${avgScore.toFixed(2)}</p>
+                <p class="text-sm">Rango: ${Math.min(...projectsData.filter(p => p.puntuacion_promedio > 0).map(p => p.puntuacion_promedio)).toFixed(2)} - ${Math.max(...projectsData.filter(p => p.puntuacion_promedio > 0).map(p => p.puntuacion_promedio)).toFixed(2)}</p>
+            </div>
+        </div>
+    `;
+    
+    showCustomModal('Estadísticas del Sistema', statsHtml);
+}
+
+function showCustomModal(title, content) {
+    const modal = document.getElementById('projectDetailsModal');
+    const titleEl = document.getElementById('projectModalTitle');
+    const bodyEl = document.getElementById('projectModalBody');
+    
+    titleEl.textContent = title;
+    bodyEl.innerHTML = content;
+    modal.style.display = 'flex';
+}
+
+function showProjectDetails(projectId) {
     const project = projectsData.find(p => p.id == projectId);
     if (!project) return;
     
-    // Construir el contenido del modal
-    let modalContent = `
-        <div class="grid md:grid-cols-3 gap-6 mb-8">
-            <div class="md:col-span-2">
-                <div class="bg-white/60 rounded-xl p-6 shadow-lg mb-6">
-                    <h3 class="text-xl font-bold text-slate-900 mb-4">Proyecto: ${escapeHtml(project.titulo)}</h3>
-                    <p class="text-slate-700 mb-4">${escapeHtml(project.descripcion)}</p>
-                    
-                    <div class="flex items-center gap-2 mb-6">
-                        <span class="inline-block px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded-full font-medium">
-                            ${escapeHtml(project.linea_investigacion_nombre)}
-                        </span>
-                        <span class="inline-block px-3 py-1 text-sm bg-purple-100 text-purple-800 rounded-full font-medium">
-                            ${project.fase}
-                        </span>
-                        <span class="inline-block px-3 py-1 text-sm ${
-                            project.estado === 'aprobado' ? 'bg-green-100 text-green-800' : 
-                            project.estado === 'rechazado' ? 'bg-red-100 text-red-800' : 
-                            'bg-yellow-100 text-yellow-800'
-                        } rounded-full font-medium">
-                            ${project.estado}
-                        </span>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div>
-                            <h4 class="font-semibold text-slate-900 mb-2">Información del Proyecto</h4>
-                            <div class="space-y-2">
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="user" class="w-4 h-4 text-slate-500"></i>
-                                    <span class="text-sm text-slate-700">
-                                        ${getPrincipalResearcher(project)}
-                                    </span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="user-check" class="w-4 h-4 text-slate-500"></i>
-                                    <span class="text-sm text-slate-700">
-                                        ${getAdvisor(project)}
-                                    </span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="calendar" class="w-4 h-4 text-slate-500"></i>
-                                    <span class="text-sm text-slate-700">
-                                        Fecha presentación: ${project.fecha_presentacion || 'No especificada'}
-                                    </span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="clock" class="w-4 h-4 text-slate-500"></i>
-                                    <span class="text-sm text-slate-700">
-                                        Hora programada: ${project.hora_programada || 'No especificada'}
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <h4 class="font-semibold text-slate-900 mb-2">Detalles Técnicos</h4>
-                            <div class="space-y-2">
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="git-branch" class="w-4 h-4 text-blue-500"></i>
-                                    <span class="text-sm text-slate-700">Fase: ${project.fase}</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="award" class="w-4 h-4 text-blue-500"></i>
-                                    <span class="text-sm text-slate-700">Versión: ${project.version}</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="eye" class="w-4 h-4 text-blue-500"></i>
-                                    <span class="text-sm text-slate-700">Visibilidad: ${project.visibilidad}</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="file-text" class="w-4 h-4 text-slate-500"></i>
-                                    <span class="text-sm text-slate-700">Documentos: ${project.documents.length}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    ${project.palabras_clave ? `
-                    <div class="bg-slate-100/50 rounded-lg p-4">
-                        <h4 class="font-semibold text-slate-900 mb-2">Palabras Clave</h4>
-                        <div class="flex flex-wrap gap-2">
-                            ${project.palabras_clave.split(',').map(word => 
-                                `<span class="px-2 py-1 text-xs bg-white text-slate-700 rounded-full">${escapeHtml(word.trim())}</span>`
-                            ).join('')}
-                        </div>
-                    </div>
-                    ` : ''}
-                </div>`;
-    
-    // Añadir evaluaciones si existen
-    if (project.evaluations && project.evaluations.length > 0) {
-        modalContent += `<div class="bg-white/60 rounded-xl p-6 shadow-lg mb-6">
-            <h3 class="text-xl font-bold text-slate-900 mb-4">Evaluaciones Realizadas</h3>
-            <div class="space-y-6">`;
-        
-        project.evaluations.forEach((evaluation, index) => {
-            const evaluationDate = evaluation.summary.fecha_fin ? new Date(evaluation.summary.fecha_fin).toLocaleDateString() : 'En progreso';
-            const totalTime = evaluation.summary.tiempo_total || 0;
-            const hours = Math.floor(totalTime / 3600);
-            const minutes = Math.floor((totalTime % 3600) / 60);
-            
-            modalContent += `
-            <div class="pb-6 ${index < project.evaluations.length - 1 ? 'border-b border-slate-200' : ''}">
-                <div class="flex justify-between items-center mb-4">
-                    <div>
-                        <h4 class="font-semibold text-slate-800">Evaluación de ${evaluation.evaluador.firstname} ${evaluation.evaluador.lastname}</h4>
-                        <p class="text-sm text-slate-500">${evaluation.evaluador.username}</p>
-                    </div>
-                    <span class="text-sm ${evaluation.summary.estado_evaluacion === 'completa' ? 'text-green-600' : 'text-orange-600'} font-medium">
-                        ${evaluation.summary.estado_evaluacion === 'completa' ? 'Completada' : 'En progreso'}
-                    </span>
+    const html = `
+        <div class="space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <h4 class="font-semibold text-gray-700">Información General</h4>
+                    <p><strong>Título:</strong> ${project.titulo}</p>
+                    <p><strong>Línea:</strong> ${project.linea_nombre}</p>
+                    <p><strong>Fase:</strong> ${project.fase}</p>
+                    <p><strong>Versión:</strong> ${project.version}</p>
                 </div>
-                
-                <div class="grid grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <p class="text-sm text-slate-600"><strong>Fecha:</strong> ${evaluationDate}</p>
-                        <p class="text-sm text-slate-600"><strong>Duración:</strong> ${hours > 0 ? hours + 'h ' : ''}${minutes}m</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-lg font-bold text-slate-900">Calificación: ${evaluation.summary.calificacion_total || 0}/5.0</p>
-                        ${evaluation.summary.comentario ? `<p class="text-sm text-slate-600 mt-1"><strong>Comentario:</strong> ${evaluation.summary.comentario}</p>` : ''}
-                    </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700">Estadísticas</h4>
+                    <p><strong>Evaluadores:</strong> ${project.total_evaluadores}</p>
+                    <p><strong>Sesiones:</strong> ${project.total_sesiones}</p>
+                    <p><strong>Criterios evaluados:</strong> ${project.criterios_evaluados}/${project.total_criterios}</p>
+                    ${project.puntuacion_promedio ? `<p><strong>Calificación promedio:</strong> <span class="${project.puntuacion_promedio < 3 ? 'text-red-600' : 'text-green-600'}">${project.puntuacion_promedio.toFixed(2)}</span></p>` : ''}
                 </div>
-                
-                <div class="space-y-3">
-                    <h5 class="font-medium text-slate-800">Criterios evaluados:</h5>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">`;
-            
-            evaluation.criterios.forEach(criterio => {
-                const calificacion = parseFloat(criterio.calificacion) || 0;
-                const percentage = (calificacion / 5) * 100;
-                modalContent += `
-                        <div class="bg-slate-50/50 p-3 rounded-lg">
-                            <div class="flex justify-between mb-1">
-                                <span class="font-medium text-slate-800">${criterio.nombre}</span>
-                                <span class="text-sm font-semibold">${calificacion}/5</span>
-                            </div>
-                            <div class="w-full bg-slate-200 rounded-full h-2 mb-2">
-                                <div class="bg-blue-500 h-2 rounded-full" style="width: ${percentage}%"></div>
-                            </div>
-                            <p class="text-xs text-slate-600 mb-1"><strong>Descripción:</strong> ${criterio.valor || 'Sin descripción'}</p>
-                            ${criterio.observacion_personal ? `<p class="text-xs text-slate-500"><strong>Comentario:</strong> ${criterio.observacion_personal}</p>` : ''}
-                        </div>`;
-            });
-            
-            modalContent += `</div></div></div>`;
-        });
-        
-        modalContent += `</div></div>`;
-    } else {
-        modalContent += `<div class="bg-white/60 rounded-xl p-6 shadow-lg mb-6">
-            <div class="text-center py-8">
-                <i data-lucide="clipboard-list" class="w-12 h-12 text-slate-400 mx-auto mb-4"></i>
-                <h4 class="text-lg font-semibold text-slate-700 mb-2">No hay evaluaciones aún</h4>
-                <p class="text-slate-500">Este proyecto no ha sido evaluado todavía.</p>
             </div>
-        </div>`;
+            
+            ${project.descripcion ? `
+            <div>
+                <h4 class="font-semibold text-gray-700">Descripción</h4>
+                <p class="text-sm text-gray-600">${project.descripcion}</p>
+            </div>
+            ` : ''}
+            
+            ${project.palabras_clave ? `
+            <div>
+                <h4 class="font-semibold text-gray-700">Palabras Clave</h4>
+                <p class="text-sm text-gray-600">${project.palabras_clave}</p>
+            </div>
+            ` : ''}
+        </div>
+    `;
+    
+    showCustomModal(`Detalles: ${project.titulo}`, html);
+}
+
+function showProjectEvaluations(projectId) {
+    const project = projectsData.find(p => p.id == projectId);
+    if (!project) return;
+    
+    let evaluationsHtml = '';
+    
+    if (project.evaluado && Object.keys(project.evaluation_details).length > 0) {
+        evaluationsHtml = `
+            <div class="space-y-6">
+                <div class="flex justify-between items-center">
+                    <h4 class="font-semibold text-gray-700">Evaluaciones realizadas</h4>
+                    <span class="badge badge-success">${Object.keys(project.evaluation_details).length} evaluadores</span>
+                </div>
+                
+                ${Object.entries(project.evaluation_details).map(([userId, data]) => `
+                    <div class="border rounded-lg p-4">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h5 class="font-semibold">${data.user_info.nombre || data.user_info.username || 'Usuario ' + userId}</h5>
+                                <p class="text-sm text-gray-600">${data.user_info.email || ''}</p>
+                            </div>
+                            <span class="badge badge-info">${data.ratings.length} criterios</span>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            ${data.ratings.map(rating => `
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded">
+                                    <span class="text-sm">${rating.criterio}</span>
+                                    <span class="font-semibold ${rating.puntuacion < 3 ? 'text-red-600' : 'text-green-600'}">${rating.puntuacion}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    } else {
+        evaluationsHtml = `
+            <div class="text-center py-8">
+                <i class="fas fa-clipboard-list text-4xl text-gray-300 mb-3"></i>
+                <p class="text-gray-500">No hay evaluaciones para este proyecto</p>
+            </div>
+        `;
     }
     
-    modalContent += `</div><div class="space-y-6">`;
+    showCustomModal(`Evaluaciones: ${project.titulo}`, evaluationsHtml);
+}
+
+function showActiveSession(projectId) {
+    const project = projectsData.find(p => p.id == projectId);
+    if (!project || !project.sesion_activa) return;
     
-    // Resumen de calificaciones
-    let totalScore = 0;
-    let evaluationCount = 0;
+    const activeSession = project.sesiones_activas[0];
+    const sessionId = activeSession[EVALUATION_SESSION_FIELD_ID];
+    const participants = project.session_participants[sessionId] || [];
+    const progress = project.session_progress[sessionId] || { total_participants: 0, completed_count: 0, completion_percentage: 0 };
     
-    if (project.evaluations && project.evaluations.length > 0) {
-        project.evaluations.forEach(evaluation => {
-            if (evaluation.summary.estado_evaluacion === 'completa') {
-                totalScore += parseFloat(evaluation.summary.calificacion_total || 0);
-                evaluationCount++;
+    const html = `
+        <div class="space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <h4 class="font-semibold text-gray-700">Información de la Sesión</h4>
+                    <p><strong>Token:</strong> <code>${activeSession[EVALUATION_SESSION_FIELD_TOKEN]}</code></p>
+                    <p><strong>Inicio:</strong> ${new Date(activeSession[EVALUATION_SESSION_FIELD_START]).toLocaleString()}</p>
+                    <p><strong>Duración:</strong> ${activeSession[EVALUATION_SESSION_FIELD_DURATION]} segundos</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-700">Progreso</h4>
+                    <p><strong>Participantes:</strong> ${progress.total_participants}</p>
+                    <p><strong>Completadas:</strong> ${progress.completed_count}</p>
+                    <p><strong>Progreso:</strong> ${progress.completion_percentage}%</p>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-semibold text-gray-700 mb-3">Participantes</h4>
+                <div class="space-y-2">
+                    ${participants.map(participant => `
+                        <div class="flex justify-between items-center p-3 border rounded-lg">
+                            <div>
+                                <p class="font-medium">${participant.user_info.nombre || participant.firstname + ' ' + participant.lastname || participant.username}</p>
+                                <p class="text-sm text-gray-600">${participant.user_info.email || ''}</p>
+                            </div>
+                            <span class="badge ${participant.completed ? 'badge-success' : 'badge-warning'}">
+                                ${participant.completed ? 'Completado' : 'Pendiente'}
+                            </span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    showCustomModal(`Sesión Activa: ${project.titulo}`, html);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.close-modal').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        });
+    });
+    
+    document.querySelectorAll('.modal-overlay').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
             }
         });
-    }
+    });
     
-    const averageScore = evaluationCount > 0 ? totalScore / evaluationCount : 0;
-    const percentage = (averageScore / 5) * 100;
-    
-    modalContent += `
-        <div class="bg-white/60 rounded-xl p-6 shadow-lg">
-            <h3 class="text-xl font-bold text-slate-900 mb-4">Resumen de Calificaciones</h3>
-            <div class="flex items-center justify-center mb-4">
-                <div class="relative w-32 h-32">
-                    <svg class="w-full h-full" viewBox="0 0 36 36">
-                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                            fill="none" stroke="#e6e6e6" stroke-width="3"/>
-                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                            fill="none" stroke="#4ade80" stroke-width="3" stroke-dasharray="${percentage}, 100"/>
-                        <text x="18" y="20.5" text-anchor="middle" font-size="8" fill="#334155" font-weight="bold">${averageScore.toFixed(1)}/5</text>
-                        <text x="18" y="24.5" text-anchor="middle" font-size="5" fill="#64748b">Puntuación</text>
-                    </svg>
-                </div>
-            </div>
-            <div class="space-y-2">
-                <div class="flex justify-between text-sm">
-                    <span class="text-slate-600">Evaluaciones completadas:</span>
-                    <span class="font-medium text-slate-800">${evaluationCount}</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-slate-600">Puntuación promedio:</span>
-                    <span class="font-medium text-slate-800">${averageScore.toFixed(1)}/5.0</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-slate-600">Estado:</span>
-                    <span class="font-medium ${project.estado === 'aprobado' ? 'text-green-600' : project.estado === 'rechazado' ? 'text-red-600' : 'text-blue-600'}">${project.estado}</span>
-                </div>
-                <div class="flex justify-between text-sm">
-                    <span class="text-slate-600">Calificado:</span>
-                    <span class="font-medium text-slate-800">${project.calificado ? 'Sí' : 'No'}</span>
-                </div>
-            </div>
-        </div>`;
-    
-    // Documentos del proyecto
-    modalContent += `
-        <div class="bg-white/60 rounded-xl p-6 shadow-lg">
-            <h3 class="text-xl font-bold text-slate-900 mb-4">Documentos del Proyecto</h3>
-            <div class="space-y-3">`;
-    
-    if (project.documents && project.documents.length > 0) {
-        project.documents.forEach(document => {
-            modalContent += `
-                <div class="flex items-center justify-between p-3 bg-white/40 rounded-lg">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="file-text" class="w-5 h-5 text-slate-500"></i>
-                        <div>
-                            <p class="text-sm font-medium text-slate-800">${document.name}</p>
-                            <p class="text-xs text-slate-500">${document.size_formatted}</p>
-                        </div>
-                    </div>
-                    <a href="${document.url}" target="_blank" class="p-2 text-slate-600 hover:text-blue-600 transition-colors">
-                        <i data-lucide="download" class="w-4 h-4"></i>
-                    </a>
-                </div>`;
+    document.querySelectorAll('.view-project').forEach(button => {
+        button.addEventListener('click', function() {
+            const projectId = this.getAttribute('data-project-id');
+            showProjectDetails(projectId);
         });
-    } else {
-        modalContent += `
-            <div class="text-center py-4">
-                <i data-lucide="file-x" class="w-8 h-8 text-slate-400 mx-auto mb-2"></i>
-                <p class="text-slate-500">No hay documentos disponibles</p>
-            </div>`;
-    }
+    });
     
-    modalContent += `</div></div>`;
-    
-    // Información de evaluadores asignados
-    modalContent += `
-        <div class="bg-white/60 rounded-xl p-6 shadow-lg">
-            <h3 class="text-xl font-bold text-slate-900 mb-4">Evaluadores Asignados</h3>
-            <div class="space-y-3">`;
-    
-    if (project.reviewers && project.reviewers.length > 0) {
-        project.reviewers.forEach(reviewer => {
-            modalContent += `
-                <div class="flex items-center gap-3 p-2">
-                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span class="text-sm font-medium text-blue-700">${(reviewer.firstname || '').charAt(0)}${(reviewer.lastname || '').charAt(0)}</span>
-                    </div>
-                    <div>
-                        <p class="text-sm font-medium text-slate-800">${reviewer.firstname || ''} ${reviewer.lastname || ''}</p>
-                        <p class="text-xs text-slate-500">${reviewer.username || ''}</p>
-                    </div>
-                </div>`;
+    document.querySelectorAll('.view-evaluations').forEach(button => {
+        button.addEventListener('click', function() {
+            const projectId = this.getAttribute('data-project-id');
+            showProjectEvaluations(projectId);
         });
-    } else {
-        modalContent += `
-            <div class="text-center py-4">
-                <i data-lucide="users" class="w-8 h-8 text-slate-400 mx-auto mb-2"></i>
-                <p class="text-slate-500">No hay evaluadores asignados</p>
-            </div>`;
-    }
+    });
     
-    modalContent += `</div></div></div></div>`;
-    
-    // Insertar el contenido en el modal
-    document.getElementById('modalContent').innerHTML = modalContent;
-    
-    // Mostrar el modal
-    document.getElementById('evaluationModal').classList.remove('hidden');
-    
-    // Renderizar iconos de Lucide
-    if (window.lucide) {
-        lucide.createIcons();
-    }
-}
+    document.querySelectorAll('.view-session').forEach(button => {
+        button.addEventListener('click', function() {
+            const projectId = this.getAttribute('data-project-id');
+            showActiveSession(projectId);
+        });
+    });
+});
 
-function closeEvaluationModal() {
-    document.getElementById('evaluationModal').classList.add('hidden');
-}
-
-// Funciones auxiliares
-function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function getPrincipalResearcher(project) {
-    const principal = project.researchers.find(r => r.role === 'principal');
-    return principal ? `Estudiante: ${principal.firstname || ''} ${principal.lastname || ''}` : 'Estudiante: No asignado';
-}
-
-function getAdvisor(project) {
-    return project.teachers.length > 0 ? `Asesor: ${project.teachers[0].firstname || ''} ${project.teachers[0].lastname || ''}` : 'Asesor: No asignado';
-}
+filterProjects();
 </script>

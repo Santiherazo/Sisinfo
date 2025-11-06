@@ -1,0 +1,74 @@
+{
+    "metadata": {
+        "key": "autosave_3_1",
+        "created": "2025-11-03 18:11:50",
+        "expires": 1762297910,
+        "ttl": 86400,
+        "size": 1323
+    },
+    "data": {
+        "criterios": {
+            "introduccion": {
+                "valor": 3.3,
+                "comentario": "test",
+                "justificacion": ""
+            },
+            "justificacion": {
+                "valor": 3.2,
+                "comentario": "test",
+                "justificacion": ""
+            },
+            "marco_teorico": {
+                "valor": 0.8,
+                "comentario": "test",
+                "justificacion": ""
+            },
+            "metodologia": {
+                "valor": 1.8,
+                "comentario": "test",
+                "justificacion": ""
+            },
+            "objetivos": {
+                "valor": 3.1,
+                "comentario": "test",
+                "justificacion": ""
+            },
+            "planteamiento_problema": {
+                "valor": 3.2,
+                "comentario": "test",
+                "justificacion": ""
+            },
+            "resultados": {
+                "valor": 1.8,
+                "comentario": "test",
+                "justificacion": ""
+            },
+            "sustentacion": {
+                "valor": 4.3,
+                "comentario": "test",
+                "justificacion": ""
+            },
+            "titulo": {
+                "valor": 3.5,
+                "comentario": "test",
+                "justificacion": ""
+            }
+        },
+        "active_states": {
+            "introduccion": true,
+            "justificacion": true,
+            "marco_teorico": true,
+            "metodologia": true,
+            "objetivos": true,
+            "planteamiento_problema": true,
+            "resultados": true,
+            "sustentacion": true,
+            "titulo": true
+        },
+        "comentario_general": "test",
+        "estadisticas": {
+            "tiempo_transcurrido": 0,
+            "fecha_autoguardado": "2025-11-03 18:11:50"
+        }
+    }
+}

@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_29",
+        "created": "2025-11-06 08:05:55",
+        "expires": 1762434655,
+        "ttl": 300,
+        "size": 363
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Hermes Acevedo Castellanos",
+            "email": "hermes.acevedo@unipaz.edu.co",
+            "initials": "HA",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 29,
+            "stored_at": "2025-11-06 08:05:55",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

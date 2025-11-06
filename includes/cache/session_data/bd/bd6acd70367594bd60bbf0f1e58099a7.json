@@ -1,0 +1,65 @@
+{
+    "metadata": {
+        "key": "session_7811fd0d7b5ecb3583021de041b4337ac40e4dc8ec749c7e8f63c16ecc7a61df",
+        "created": "2025-11-06 09:15:05",
+        "expires": 1762442105,
+        "ttl": 3600,
+        "size": 1410
+    },
+    "data": {
+        "session": {
+            "id_sesion": 3,
+            "id_proyecto": 5,
+            "tipo_cierre": "automatico",
+            "metadata_sesion": {
+                "fecha_inicio": "2025-11-06 09:02:46",
+                "fecha_finalizacion": "2025-11-06 09:32:46",
+                "duracion_segundos": 1800
+            },
+            "evaluadores": [
+                {
+                    "id_usuario": 23,
+                    "nombre": "Karen Salom",
+                    "username": "karsal841",
+                    "email": "karem.salom@unipaz.edu.co",
+                    "estado_evaluacion": "en progreso",
+                    "estadisticas_evaluacion": {
+                        "tiempo_dedicado_segundos": 0,
+                        "porcentaje_completado": 0
+                    }
+                },
+                {
+                    "id_usuario": 29,
+                    "nombre": "Hermes Acevedo",
+                    "username": "herace164",
+                    "email": "hermes.acevedo@unipaz.edu.co",
+                    "estado_evaluacion": "en progreso",
+                    "estadisticas_evaluacion": {
+                        "tiempo_dedicado_segundos": 0,
+                        "porcentaje_completado": 0
+                    }
+                },
+                {
+                    "id_usuario": 28,
+                    "nombre": "Edwin Durán",
+                    "username": "edwdur836",
+                    "email": "edwin.duran@unipaz.edu.co",
+                    "estado_evaluacion": "en progreso",
+                    "estadisticas_evaluacion": {
+                        "tiempo_dedicado_segundos": 0,
+                        "porcentaje_completado": 0
+                    }
+                }
+            ],
+            "analisis_general": {
+                "duracion_promedio_evaluacion": 0,
+                "total_errores_reportados": 0
+            }
+        },
+        "statistics": {
+            "evaluators_total": 3,
+            "evaluators_completed": 0,
+            "last_activity": "2025-11-06 09:15:05"
+        }
+    }
+}

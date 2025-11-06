@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_21",
+        "created": "2025-11-05 23:18:46",
+        "expires": 1762403026,
+        "ttl": 300,
+        "size": 365
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Natalia Rodriguez Urrutia",
+            "email": "natalia.rodriguez@unipaz.edu.co",
+            "initials": "NR",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 21,
+            "stored_at": "2025-11-05 23:18:46",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

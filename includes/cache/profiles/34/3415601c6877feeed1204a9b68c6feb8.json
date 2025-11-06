@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_53",
+        "created": "2025-11-06 08:06:22",
+        "expires": 1762434682,
+        "ttl": 300,
+        "size": 356
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Daniel Pose Villafañe",
+            "email": "daniel.pose@unipaz.edu.co",
+            "initials": "DP",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 53,
+            "stored_at": "2025-11-06 08:06:22",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

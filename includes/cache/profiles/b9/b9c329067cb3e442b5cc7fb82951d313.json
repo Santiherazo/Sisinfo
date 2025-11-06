@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_10",
+        "created": "2025-11-05 20:13:48",
+        "expires": 1762391928,
+        "ttl": 300,
+        "size": 355
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Victor Campo Caballero",
+            "email": "victorecampo22@gmail.com",
+            "initials": "VC",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 10,
+            "stored_at": "2025-11-05 20:13:48",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

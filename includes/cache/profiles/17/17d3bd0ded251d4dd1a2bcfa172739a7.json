@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_25",
+        "created": "2025-11-06 08:05:37",
+        "expires": 1762434637,
+        "ttl": 300,
+        "size": 351
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Jhonis Rios Munera",
+            "email": "jhoni.rios@unipaz.edu.co",
+            "initials": "JR",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 25,
+            "stored_at": "2025-11-06 08:05:37",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}

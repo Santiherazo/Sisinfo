@@ -1,0 +1,27 @@
+{
+    "metadata": {
+        "key": "user_profile_30",
+        "created": "2025-11-06 11:14:31",
+        "expires": 1762445971,
+        "ttl": 300,
+        "size": 354
+    },
+    "data": {
+        "profile": {
+            "profileImg": null,
+            "fullName": "Luis Oviedo Ochoa",
+            "email": "luis.oviedooch@unipaz.edu.co",
+            "initials": "LO",
+            "notifications": [],
+            "unreadCount": 0
+        },
+        "metadata": {
+            "user_id": 30,
+            "stored_at": "2025-11-06 11:14:31",
+            "access_levels": {
+                "admin": false,
+                "evaluator": false
+            }
+        }
+    }
+}
