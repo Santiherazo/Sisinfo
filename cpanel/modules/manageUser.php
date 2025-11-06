@@ -80,7 +80,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $allUsers = $profileManager->getAllUsers();
-$usersJson = json_encode($allUsers);
+$groupedUsers = [];
+foreach ($allUsers as $user) {
+    $userId = $user['id'];
+    if (!isset($groupedUsers[$userId])) {
+        $groupedUsers[$userId] = [
+            'id' => $user['id'],
+            'first_name' => $user['first_name'],
+            'middle_name' => $user['middle_name'],
+            'last_name' => $user['last_name'],
+            'second_last_name' => $user['second_last_name'],
+            'birth_date' => $user['birth_date'],
+            'gender' => $user['gender'],
+            'country' => $user['country'],
+            'city' => $user['city'],
+            'address' => $user['address'],
+            'id_type' => $user['id_type'],
+            'id_number' => $user['id_number'],
+            'university' => $user['university'],
+            'program' => $user['program'],
+            'semester' => $user['semester'],
+            'phone_number' => $user['phone_number'],
+            'email' => $user['email'],
+            'institutional_email' => $user['institutional_email'],
+            'card_code' => $user['card_code'],
+            'status' => $user['status'],
+            'created_at' => $user['created_at'],
+            'role_names' => [],
+            'roles' => []
+        ];
+    }
+    if (!empty($user['role_name'])) {
+        $groupedUsers[$userId]['role_names'][] = $user['role_name'];
+        $groupedUsers[$userId]['roles'][] = [
+            'name' => $user['role_name'],
+            'id' => $user['role_id']
+        ];
+    }
+}
+
+$usersJson = json_encode(array_values($groupedUsers));
 $rolesJson = json_encode($roleManager->getAllRoles());
 ?>
 
@@ -107,11 +146,11 @@ $rolesJson = json_encode($roleManager->getAllRoles());
         </div>
 
         <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" id="users-grid">
-            <?php foreach ($allUsers as $user): ?>
+            <?php foreach ($groupedUsers as $user): ?>
             <div class="bg-white rounded-lg p-4 border border-slate-100 hover:shadow-md transition-all user-card min-h-[220px] flex flex-col" data-id="<?= $user['id'] ?>" 
                  data-name="<?= htmlspecialchars(strtolower($user['first_name'] . ' ' . $user['last_name'])) ?>" 
                  data-email="<?= htmlspecialchars(strtolower($user['email'])) ?>" 
-                 data-role="<?= htmlspecialchars(strtolower($user['role_name'])) ?>" 
+                 data-role="<?= htmlspecialchars(strtolower(implode(' ', $user['role_names']))) ?>" 
                  data-status="<?= $user['status'] ?>">
                 <div class="flex justify-between items-start mb-4 px-1">
                     <div class="flex items-center gap-3 min-w-0">
@@ -142,9 +181,11 @@ $rolesJson = json_encode($roleManager->getAllRoles());
 
                 <div class="space-y-2 mb-4 flex-1">
                     <div class="flex flex-wrap gap-1">
-                        <span class="px-2 py-1 <?= $user['role_name'] === 'Admin' ? 'bg-purple-100 text-purple-800' : ($user['role_name'] === 'Docente' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800') ?> rounded-md text-xs font-medium truncate max-w-[120px]">
-                            <?= htmlspecialchars($user['role_name']) ?>
-                        </span>
+                        <?php foreach ($user['role_names'] as $roleName): ?>
+                            <span class="px-2 py-1 <?= $roleName === 'Admin' ? 'bg-purple-100 text-purple-800' : ($roleName === 'Docente' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800') ?> rounded-md text-xs font-medium truncate max-w-[120px]">
+                                <?= htmlspecialchars($roleName) ?>
+                            </span>
+                        <?php endforeach; ?>
                         <span class="px-2 py-1 <?= $user['status'] == 1 ? 'bg-green-100 text-green-800' : ($user['status'] == 2 || $user['status'] == 3 ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800') ?> rounded-md text-xs font-medium">
                             <?= $user['status'] == 1 ? 'Activo' : ($user['status'] == 2 || $user['status'] == 3 ? 'Bloqueado' : 'Inactivo') ?>
                         </span>
@@ -176,7 +217,7 @@ $rolesJson = json_encode($roleManager->getAllRoles());
         </div>
 
         <div class="flex justify-between items-center mt-6">
-            <p class="text-sm text-slate-600">Mostrando <span id="users-count"><?= count($allUsers) ?></span> usuarios</p>
+            <p class="text-sm text-slate-600">Mostrando <span id="users-count"><?= count($groupedUsers) ?></span> usuarios</p>
         </div>
     </div>
 </div>
@@ -561,7 +602,9 @@ $rolesJson = json_encode($roleManager->getAllRoles());
                         <h3 class="text-2xl font-bold text-slate-900 truncate">${user.first_name || ''} ${user.last_name || ''}</h3>
                         <p class="text-slate-600 mb-2 truncate">${user.email || 'Sin email registrado'}</p>
                         <div class="flex gap-2 flex-wrap">
-                            <span class="px-3 py-1 ${user.role_name === 'Admin' ? 'bg-purple-100 text-purple-800' : (user.role_name === 'Docente' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800')} rounded-full text-sm font-semibold truncate max-w-[120px]">${user.role_name || 'Sin rol'}</span>
+                            ${user.role_names.map(roleName => `
+                                <span class="px-3 py-1 ${roleName === 'Admin' ? 'bg-purple-100 text-purple-800' : (roleName === 'Docente' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800')} rounded-full text-sm font-semibold truncate max-w-[120px]">${roleName || 'Sin rol'}</span>
+                            `).join('')}
                             <span class="px-3 py-1 ${user.status == 1 ? 'bg-green-100 text-green-800' : (user.status == 2 || user.status == 3 ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800')} rounded-full text-sm font-semibold">${user.status == 1 ? 'Activo' : (user.status == 2 || user.status == 3 ? 'Bloqueado' : 'Inactivo')}</span>
                         </div>
                     </div>
