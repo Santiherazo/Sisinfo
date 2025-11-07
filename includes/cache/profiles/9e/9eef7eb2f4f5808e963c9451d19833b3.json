@@ -1,8 +1,8 @@
 {
     "metadata": {
         "key": "user_profile_50",
-        "created": "2025-11-06 12:55:21",
-        "expires": 1762452021,
+        "created": "2025-11-06 23:52:41",
+        "expires": 1762491461,
         "ttl": 300,
         "size": 351
     },
@@ -17,7 +17,7 @@
         },
         "metadata": {
             "user_id": 50,
-            "stored_at": "2025-11-06 12:55:21",
+            "stored_at": "2025-11-06 23:52:41",
             "access_levels": {
                 "admin": false,
                 "evaluator": false

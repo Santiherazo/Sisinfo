@@ -1,10 +1,10 @@
 {
     "metadata": {
         "key": "navbar_profile_50",
-        "created": "2025-11-06 12:55:20",
-        "expires": 1762452020,
+        "created": "2025-11-06 23:52:41",
+        "expires": 1762491461,
         "ttl": 300,
-        "size": 1127
+        "size": 1928
     },
     "data": {
         "navbar": {
@@ -13,6 +13,36 @@
             "email": "miguel.mont@unipaz.edu.co",
             "initials": "MM",
             "notifications": [
+                {
+                    "id": 94,
+                    "user_id": 50,
+                    "type": "success",
+                    "title": "Inicio de sesión exitoso",
+                    "message": "Has iniciado sesión correctamente en tu cuenta.",
+                    "url": "usercp\/",
+                    "seen": 0,
+                    "created_at": "2025-11-06 23:52:41"
+                },
+                {
+                    "id": 93,
+                    "user_id": 50,
+                    "type": "success",
+                    "title": "Inicio de sesión exitoso",
+                    "message": "Has iniciado sesión correctamente en tu cuenta.",
+                    "url": "usercp\/",
+                    "seen": 0,
+                    "created_at": "2025-11-06 21:28:34"
+                },
+                {
+                    "id": 91,
+                    "user_id": 50,
+                    "type": "success",
+                    "title": "Inicio de sesión exitoso",
+                    "message": "Has iniciado sesión correctamente en tu cuenta.",
+                    "url": "usercp\/",
+                    "seen": 0,
+                    "created_at": "2025-11-06 21:24:37"
+                },
                 {
                     "id": 90,
                     "user_id": 50,
@@ -44,14 +74,14 @@
                     "created_at": "2025-11-05 21:48:48"
                 }
             ],
-            "unreadCount": 3,
+            "unreadCount": 6,
             "hasAdminAccess": false,
             "hasEvaluatorAccess": false
         },
         "metadata": {
             "user_id": 50,
-            "stored_at": "2025-11-06 12:55:20",
-            "notifications_count": 3
+            "stored_at": "2025-11-06 23:52:41",
+            "notifications_count": 6
         }
     }
 }

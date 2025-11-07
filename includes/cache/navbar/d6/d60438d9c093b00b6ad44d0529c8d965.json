@@ -1,10 +1,10 @@
 {
     "metadata": {
         "key": "navbar_profile_2",
-        "created": "2025-11-06 11:07:04",
-        "expires": 1762445524,
+        "created": "2025-11-06 21:25:05",
+        "expires": 1762482605,
         "ttl": 300,
-        "size": 3260
+        "size": 3527
     },
     "data": {
         "navbar": {
@@ -13,6 +13,16 @@
             "email": "cipriano.lopez@unipaz.edu.co",
             "initials": "CL",
             "notifications": [
+                {
+                    "id": 92,
+                    "user_id": 2,
+                    "type": "success",
+                    "title": "Inicio de sesión exitoso",
+                    "message": "Has iniciado sesión correctamente en tu cuenta.",
+                    "url": "usercp\/",
+                    "seen": 0,
+                    "created_at": "2025-11-06 21:25:05"
+                },
                 {
                     "id": 76,
                     "user_id": 2,
@@ -124,14 +134,14 @@
                     "created_at": "2025-11-05 19:11:28"
                 }
             ],
-            "unreadCount": 11,
+            "unreadCount": 12,
             "hasAdminAccess": true,
             "hasEvaluatorAccess": true
         },
         "metadata": {
             "user_id": 2,
-            "stored_at": "2025-11-06 11:07:04",
-            "notifications_count": 11
+            "stored_at": "2025-11-06 21:25:05",
+            "notifications_count": 12
         }
     }
 }
